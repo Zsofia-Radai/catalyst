@@ -1,0 +1,46 @@
+.habitForm {
+  display: grid;
+  grid-template-columns: 1fr 5fr;
+  gap: 10px;
+  text-align: end;
+  background: #6b45aee8;
+  width: 32%;
+  padding: 25px;
+  margin: 20px 0px;
+}
+
+.habitForm input,
+select,
+textarea {
+  background: #59d9ae;
+  border: 1px solid #0a5e42;
+  border-radius: 5px;
+  padding: 5px;
+  width: 100%;
+}
+
+.habitForm textarea,
+input {
+  box-sizing: border-box;
+}
+
+.errorMessage {
+  color: #19ff00;
+}
+
+.habitForm input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(28, 159, 100, 0.2);
+}
+
+.habitForm textarea {
+  resize: vertical;
+}
+
+.submitButton {
+  grid-column: 1 / -1;
+  justify-self: end;
+}

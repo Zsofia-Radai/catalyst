@@ -1,0 +1,38 @@
+.habitForm {
+  transform: translateY(-12px);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease;
+}
+
+.habitFormOpen {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.habitsContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.habitCard {
+  background: var(--card-color);
+  border-radius: 5px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr 5fr 0fr;
+}
+
+.habitName {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.deleteIcon {
+  cursor: pointer;
+}

@@ -1,0 +1,26 @@
+.page {
+  padding: 20px;
+}
+
+.tabs {
+  display: flex;
+  gap: 2rem;
+  width: 30%;
+  border-bottom: 1px solid #cfcfcf;
+}
+
+.tab {
+  text-decoration: none;
+  color: white;
+  padding-bottom: 0.75rem;
+  position: relative;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.activeTab {
+  color: #1e1e1e;
+  border-bottom: 2px solid #1e1e1e;
+  margin-bottom: -1px;
+}

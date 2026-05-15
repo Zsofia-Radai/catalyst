@@ -1,0 +1,49 @@
+.backdrop {
+  position: fixed;
+  z-index: 9998;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.58);
+  backdrop-filter: blur(2px);
+}
+
+.modal {
+  background: #008073;
+  width: min(380px, calc(100% - 32px));
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.timeContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 20px;
+  gap: 0 30px;
+}
+
+.habits {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 5px;
+}
+
+.habitChip {
+  background: var(--card-color);
+  border-radius: 5px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr 5fr 0fr;
+  border: 2px solid transparent;
+}
+
+.selected {
+  border: 2px solid black;
+}
+
+.time {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
