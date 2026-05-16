@@ -1,7 +1,9 @@
 import type { Habit } from "../types/habit";
+import type { Session } from "../types/session";
 
 export const HOURS = Array.from({ length: 16 }, (_, index) => index + 8);
 export const MINUTES = Array.from([0, 15, 30, 45]);
+export const NIGHT_HOURS = Array.from({ length: 8 }, (_, index) => index);
 
 export function formatSessionTime(date: string | Date) {
   return new Date(date).toLocaleTimeString("hu-HU", {
@@ -33,4 +35,18 @@ export function formatCurrentDate(date: Date) {
 
 export function getHabitData(habits: Habit[], habitId: string) {
   return habits.find((habit) => habit.id === habitId);
+}
+
+export function isSameDay(date1: Date, date2: Date) {
+  return (
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getDate() === date2.getDate()
+  );
+}
+
+export function getSessionForHour(sessions: Session[], hour: number) {
+  return sessions.filter(
+    (session) => new Date(session.startedAt).getHours() === hour,
+  );
 }

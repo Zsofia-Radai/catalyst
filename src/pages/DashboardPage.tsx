@@ -1,52 +1,20 @@
 import { useEffect, useState } from "react";
-import { SessionModal } from "../components/SessionModal/SessionModal";
+import { SessionBlock } from "../components/SessionBlock/SessionBlock";
+import { SessionFormModal } from "../components/SessionModal/SessionFormModal";
 import layout from "../layout/AppLayout.module.css";
-import {
-  HABIT_CATEGORY_META,
-  type Habit,
-  type HabitMeta,
-} from "../types/habit";
+import { type Habit } from "../types/habit";
 import type { Session } from "../types/session";
+import { Button } from "../ui/Button/Button";
 import { EmptyState } from "../ui/EmptyState/EmptyState";
 import {
   formatCurrentDate,
-  formatSessionTime,
   formatTime,
-  getHabitData,
+  getSessionForHour,
   HOURS,
+  isSameDay,
+  NIGHT_HOURS,
 } from "../utils/dashboardUtils";
 import styles from "./DashboardPage.module.css";
-
-const HOUR_HEIGHT = 72;
-
-function isSameDay(date1: Date, date2: Date) {
-  return (
-    date1.getFullYear() === date2.getFullYear() &&
-    date1.getMonth() === date2.getMonth() &&
-    date1.getDate() === date2.getDate()
-  );
-}
-
-function getSessionForHour(sessions: Session[], hour: number) {
-  return sessions.filter(
-    (session) => new Date(session.startedAt).getHours() === hour,
-  );
-}
-
-function getSessionStyle(session: Session, meta: HabitMeta) {
-  const start = new Date(session.startedAt);
-  const end = new Date(session.finishedAt);
-
-  const startMinutes = start.getMinutes();
-
-  const durationMinutes = (end.getTime() - start.getTime()) / 1000 / 60;
-
-  return {
-    top: `${(startMinutes / 60) * HOUR_HEIGHT}px`,
-    height: `${(durationMinutes / 60) * HOUR_HEIGHT}px`,
-    "--card-color": meta.color,
-  };
-}
 
 export function DasboardPage() {
   const [storedHabits, setStoredHabits] = useState<Habit[]>(() =>
@@ -56,6 +24,7 @@ export function DasboardPage() {
     JSON.parse(localStorage.getItem("sessions") || "[]"),
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showNightSessions, setShowNightSessions] = useState(false);
   const [startTime, setStartTime] = useState(0);
   const currentDate = new Date();
   const todaysSessions = storedSessions.filter((session) =>
@@ -126,44 +95,44 @@ export function DasboardPage() {
             >
               <span>{formatTime(hour)}</span>
               <div className={styles.hourContent}>
-                {sessions.map((session) => {
-                  const habitData = getHabitData(storedHabits, session.habitId);
-                  if (!habitData) return null;
-                  const meta = HABIT_CATEGORY_META[habitData.category];
-                  const Icon = meta.icon;
-                  return (
-                    <div
-                      key={session.id}
-                      className={styles.sessionBlock}
-                      style={getSessionStyle(session, meta)}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <div className={styles.sessionIcon}>
-                        <Icon />
-                      </div>
-
-                      <strong className={styles.habitName}>
-                        {habitData.name}
-                      </strong>
-
-                      <span className={styles.sessionNote}>
-                        {session.notes}
-                      </span>
-
-                      <span className={styles.sessionTime}>
-                        {formatSessionTime(session.startedAt)} -{" "}
-                        {formatSessionTime(session.finishedAt)}
-                      </span>
-                    </div>
-                  );
-                })}
+                {sessions.map((session) => (
+                  <SessionBlock session={session} habits={storedHabits} />
+                ))}
               </div>
             </div>
           );
         })}
       </div>
+
+      <section className={styles.nightSessions}>
+        <Button
+          type="button"
+          onClick={() => setShowNightSessions((prev) => !prev)}
+        >
+          Show night sessions
+        </Button>
+
+        <div
+          className={`${styles.nightDrawer} ${
+            showNightSessions ? styles.open : ""
+          }`}
+        >
+          <div className={styles.nightDrawerInner}>
+            <div className={styles.timeline}>
+              {NIGHT_HOURS.map((hour) => {
+                return (
+                  <div key={hour} className={styles.hourRow}>
+                    <span>{formatTime(hour)}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {isModalOpen && (
-        <SessionModal
+        <SessionFormModal
           onCancel={cancelSessionModal}
           onSessionCreated={handleSessionCreated}
           startTime={startTime}

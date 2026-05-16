@@ -11,7 +11,7 @@ import {
 import styles from "./SessionModal.module.css";
 import { CircleX } from "lucide-react";
 
-type SessionModalProps = {
+type SessionFormModalProps = {
   onCancel: () => void;
   onSessionCreated: (session: Session) => void;
   startTime: number;
@@ -42,12 +42,12 @@ function createSession(data: Inputs): Session {
   };
 }
 
-export function SessionModal({
+export function SessionFormModal({
   onCancel,
   onSessionCreated,
   startTime,
   habits,
-}: SessionModalProps) {
+}: SessionFormModalProps) {
   const { register, setValue, handleSubmit, control, reset } = useForm<Inputs>({
     defaultValues: {
       startHour: startTime,
