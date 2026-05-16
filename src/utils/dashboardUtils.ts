@@ -1,9 +1,11 @@
 import type { Habit } from "../types/habit";
 import type { Session } from "../types/session";
 
-export const HOURS = Array.from({ length: 16 }, (_, index) => index + 8);
+export const FULL_DAY_HOURS = Array.from({ length: 24 }, (_, index) => index);
+export const DAY_HOURS = FULL_DAY_HOURS.filter((hour) => hour >= 8);
+export const NIGHT_HOURS = FULL_DAY_HOURS.filter((hour) => hour < 8);
+export const MODAL_HOURS = [...DAY_HOURS, ...NIGHT_HOURS];
 export const MINUTES = Array.from([0, 15, 30, 45]);
-export const NIGHT_HOURS = Array.from({ length: 8 }, (_, index) => index);
 
 export function formatSessionTime(date: string | Date) {
   return new Date(date).toLocaleTimeString("hu-HU", {
