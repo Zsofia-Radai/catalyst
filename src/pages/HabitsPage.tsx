@@ -43,10 +43,11 @@ export function HabitsPage() {
               className={styles.habitCard}
               style={{ "--card-color": meta.color } as React.CSSProperties}
             >
-              <Icon size={20} />
+              <Icon />
               <div>
                 <div className={styles.habitName}>{habit.name}</div>
                 <div>{habit.goal}</div>
+                <div>{habit.loggedHours ?? 0} hrs total</div>
               </div>
               <CircleX
                 className={styles.deleteIcon}

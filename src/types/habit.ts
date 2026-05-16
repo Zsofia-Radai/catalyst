@@ -47,4 +47,5 @@ export type Habit = {
   category: HabitCategory;
   createdAt: number;
   goal?: string;
+  loggedHours: number;
 };

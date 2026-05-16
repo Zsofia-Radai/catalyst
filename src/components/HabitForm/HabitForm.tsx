@@ -24,6 +24,7 @@ function createHabit(data: Inputs): Habit {
     category: data.category,
     createdAt: Date.now(),
     goal: data.goal,
+    loggedHours: 0,
   };
 }
 
