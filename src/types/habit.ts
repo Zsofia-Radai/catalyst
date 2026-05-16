@@ -28,10 +28,13 @@ export const HABIT_CATEGORIES = [
   "social",
 ] as const;
 
-export const HABIT_CATEGORY_META: Record<
-  HabitCategory,
-  { label: string; icon: LucideIcon; color: string }
-> = {
+export type HabitMeta = {
+  label: string;
+  icon: LucideIcon;
+  color: string;
+};
+
+export const HABIT_CATEGORY_META: Record<HabitCategory, HabitMeta> = {
   mind: { label: "Mind", icon: Brain, color: "#03A9F4" },
   body: { label: "Body", icon: Dumbbell, color: "#26b62c" },
   hobby: { label: "Hobby", icon: Palette, color: "#FFC107" },

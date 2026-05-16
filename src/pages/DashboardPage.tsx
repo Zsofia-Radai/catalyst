@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
+import { SessionModal } from "../components/SessionModal/SessionModal";
 import layout from "../layout/AppLayout.module.css";
+import {
+  HABIT_CATEGORY_META,
+  type Habit,
+  type HabitMeta,
+} from "../types/habit";
+import type { Session } from "../types/session";
 import { EmptyState } from "../ui/EmptyState/EmptyState";
 import {
   formatCurrentDate,
@@ -9,9 +16,6 @@ import {
   HOURS,
 } from "../utils/dashboardUtils";
 import styles from "./DashboardPage.module.css";
-import { SessionModal } from "../components/SessionModal/SessionModal";
-import type { Session } from "../types/session";
-import { HABIT_CATEGORY_META, type Habit } from "../types/habit";
 
 const HOUR_HEIGHT = 72;
 
@@ -29,7 +33,7 @@ function getSessionForHour(sessions: Session[], hour: number) {
   );
 }
 
-function getSessionStyle(session: Session) {
+function getSessionStyle(session: Session, meta: HabitMeta) {
   const start = new Date(session.startedAt);
   const end = new Date(session.finishedAt);
 
@@ -40,6 +44,7 @@ function getSessionStyle(session: Session) {
   return {
     top: `${(startMinutes / 60) * HOUR_HEIGHT}px`,
     height: `${(durationMinutes / 60) * HOUR_HEIGHT}px`,
+    "--card-color": meta.color,
   };
 }
 
@@ -130,7 +135,7 @@ export function DasboardPage() {
                     <div
                       key={session.id}
                       className={styles.sessionBlock}
-                      style={getSessionStyle(session)}
+                      style={getSessionStyle(session, meta)}
                       onClick={(e) => e.stopPropagation()}
                     >
                       <div className={styles.sessionIcon}>

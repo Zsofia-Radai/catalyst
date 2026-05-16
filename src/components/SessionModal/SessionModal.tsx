@@ -9,6 +9,7 @@ import {
   MINUTES,
 } from "../../utils/dashboardUtils";
 import styles from "./SessionModal.module.css";
+import { CircleX } from "lucide-react";
 
 type SessionModalProps = {
   onCancel: () => void;
@@ -69,8 +70,11 @@ export function SessionModal({
   return (
     <div className={styles.backdrop} onClick={onCancel}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <div className={styles.header}>
           <h2>Add session</h2>
+          <CircleX className={styles.deleteIcon} onClick={onCancel} />
+        </div>
+        <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <div>Activity</div>
           <div className={styles.habits}>
             {habits?.map((habit) => {

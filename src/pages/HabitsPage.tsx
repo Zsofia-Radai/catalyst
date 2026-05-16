@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import layout from "../layout/AppLayout.module.css";
 import { Button } from "../ui/Button/Button";
 import { HabitForm } from "../components/HabitForm/HabitForm";
@@ -12,14 +12,17 @@ export function HabitsPage() {
   );
   const [isFormOpen, setIsFormOpen] = useState(false);
 
+  useEffect(() => {
+    localStorage.setItem("habits", JSON.stringify(storedHabits));
+  }, [storedHabits]);
+
   const addHabit = () => {
     setIsFormOpen(!isFormOpen);
   };
 
   const handleHabitCreated = (habit: Habit) => {
-    console.log(habit);
     setIsFormOpen(false);
-    localStorage.setItem("habits", JSON.stringify([...storedHabits, habit]));
+    setSToredHabits((prev: Habit[]) => [...prev, habit]);
   };
 
   const deleteHabit = (id: string) => {
