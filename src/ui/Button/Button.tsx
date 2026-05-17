@@ -1,32 +1,22 @@
-import type { CSSProperties } from "react";
+import type { ButtonHTMLAttributes } from "react";
 import styles from "./Button.module.css";
 
-type ButtonTypes = "button" | "submit" | "reset";
-
-type ButtonProps = {
-  type: ButtonTypes;
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: React.ReactNode;
-  onClick?: () => void;
   variant?: string;
-  className?: string;
-  style?: CSSProperties;
 };
 
 export function Button({
-  type,
   children,
-  onClick,
   variant,
   className,
-  style,
+  ...props
 }: ButtonProps) {
   const variantClass = variant ? styles[variant] : "";
   return (
     <button
       className={`${styles.button} ${variantClass} ${className || ""}`}
-      type={type}
-      onClick={onClick}
-      style={style}
+      {...props}
     >
       {children}
     </button>

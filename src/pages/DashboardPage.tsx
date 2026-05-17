@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { SessionBlock } from "../components/SessionBlock/SessionBlock";
-import { NewSessionForm } from "../components/SessionModal/NewSessionForm";
+import { EditSessionModal } from "../components/SessionModal/EditSessionModal";
+import { NewSessionModal } from "../components/SessionModal/NewSessionModal";
+import { useHabits } from "../context/HabitsContext";
+import { useSessions } from "../context/SessionsContext";
 import layout from "../layout/AppLayout.module.css";
-import { type Habit } from "../types/habit";
+import type { Session } from "../types/session";
 import { Button } from "../ui/Button/Button";
 import { EmptyState } from "../ui/EmptyState/EmptyState";
 import {
@@ -14,16 +17,15 @@ import {
   NIGHT_HOURS,
 } from "../utils/dashboardUtils";
 import styles from "./DashboardPage.module.css";
-import { useSessions } from "../context/SessionsContext";
 
 export function DasboardPage() {
-  const [storedHabits] = useState<Habit[]>(() =>
-    JSON.parse(localStorage.getItem("habits") || "[]"),
-  );
+  const { habits } = useHabits();
   const { sessions } = useSessions();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isNewSessionModalOpen, setIsNewSessionModalOpen] = useState(false);
+  const [isEditSessionModalOpen, setIsEditSessionModalOpen] = useState(false);
   const [showNightSessions, setShowNightSessions] = useState(false);
   const [startTime, setStartTime] = useState(0);
+  const [selectedSession, setSelectedSession] = useState<Session | null>(null);
   const currentDate = new Date();
   const todaysSessions = sessions.filter((session) =>
     isSameDay(new Date(session.startedAt), currentDate),
@@ -31,17 +33,28 @@ export function DasboardPage() {
 
   const addSession = (hour: number) => {
     setStartTime(hour);
-    setIsModalOpen(true);
+    setIsNewSessionModalOpen(true);
   };
 
-  const cancelSessionModal = () => {
-    setIsModalOpen(false);
+  const closeNewSessionModal = () => {
+    setIsNewSessionModalOpen(false);
+  };
+
+  const closeEditSessionModal = () => {
+    setIsEditSessionModalOpen(false);
+  };
+
+  const handleSessionBlockClicked = (sessionId: string) => {
+    const session = sessions.find((session) => session.id === sessionId);
+    if (!session) return;
+    setSelectedSession(session);
+    setIsEditSessionModalOpen(true);
   };
 
   return (
     <div className={layout.page}>
       <div>{formatCurrentDate(currentDate)}</div>
-      {!storedHabits && (
+      {!habits && (
         <div>
           <div>No tracked sessions for today yet.</div>
           <EmptyState
@@ -65,9 +78,10 @@ export function DasboardPage() {
               <div className={styles.hourContent}>
                 {sessions.map((session) => (
                   <SessionBlock
+                    onClick={() => handleSessionBlockClicked(session.id)}
                     key={session.id}
                     session={session}
-                    habits={storedHabits}
+                    habits={habits}
                   />
                 ))}
               </div>
@@ -103,11 +117,19 @@ export function DasboardPage() {
         </div>
       </section>
 
-      {isModalOpen && (
-        <NewSessionForm
-          onCancel={cancelSessionModal}
+      {isNewSessionModalOpen && (
+        <NewSessionModal
+          closeModal={closeNewSessionModal}
           startTime={startTime}
-          habits={storedHabits}
+          habits={habits}
+        />
+      )}
+
+      {isEditSessionModalOpen && selectedSession && (
+        <EditSessionModal
+          closeModal={closeEditSessionModal}
+          session={selectedSession}
+          habits={habits}
         />
       )}
     </div>

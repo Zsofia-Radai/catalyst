@@ -10,6 +10,7 @@ import styles from "./SessionBlock.module.css";
 type SessionProps = {
   session: Session;
   habits: Habit[];
+  onClick: () => void;
 };
 const HOUR_HEIGHT = 72;
 
@@ -27,7 +28,7 @@ const getSessionStyle = (session: Session, meta: HabitMeta) => {
   };
 };
 
-export function SessionBlock({ session, habits }: SessionProps) {
+export function SessionBlock({ session, habits, onClick }: SessionProps) {
   const habitData = getHabitData(habits, session.habitId);
   if (!habitData) return null;
   const meta = HABIT_CATEGORY_META[habitData.category];
@@ -38,7 +39,10 @@ export function SessionBlock({ session, habits }: SessionProps) {
       key={session.id}
       className={styles.sessionBlock}
       style={getSessionStyle(session, meta)}
-      onClick={(e) => e.stopPropagation()}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
     >
       <div className={styles.sessionIcon}>
         <Icon />

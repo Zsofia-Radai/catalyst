@@ -15,7 +15,24 @@ export function SessionsProvider({ children }: { children: React.ReactNode }) {
     setSessions((prev) => [...prev, session]);
   };
 
-  const value: SessionContextValue = { sessions, addSession };
+  const updateSession = (session: Session) => {
+    setSessions((prev) =>
+      prev.map((currentSession) =>
+        currentSession.id === session.id ? session : currentSession,
+      ),
+    );
+  };
+
+  const deleteSession = (sessionId: string) => {
+    setSessions((prev) => prev.filter((session) => session.id !== sessionId));
+  };
+
+  const value: SessionContextValue = {
+    sessions,
+    addSession,
+    updateSession,
+    deleteSession,
+  };
 
   return (
     <SessionsContext.Provider value={value}>
