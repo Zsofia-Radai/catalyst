@@ -1,43 +1,31 @@
-import { useEffect, useState } from "react";
-import layout from "../layout/AppLayout.module.css";
-import { Button } from "../ui/Button/Button";
-import { HabitForm } from "../components/HabitForm/HabitForm";
-import styles from "./HabitsPage.module.css";
-import { HABIT_CATEGORY_META, type Habit } from "../types/habit";
 import { CircleX } from "lucide-react";
+import { useState } from "react";
+import { HabitForm } from "../components/HabitForm/HabitForm";
+import { useHabits } from "../context/HabitsContext";
+import layout from "../layout/AppLayout.module.css";
+import { HABIT_CATEGORY_META, type Habit } from "../types/habit";
+import { Button } from "../ui/Button/Button";
+import styles from "./HabitsPage.module.css";
 
 export function HabitsPage() {
-  const [storedHabits, setSToredHabits] = useState(
-    JSON.parse(localStorage.getItem("habits") || "[]"),
-  );
+  const { habits, addHabit, deleteHabit } = useHabits();
+
   const [isFormOpen, setIsFormOpen] = useState(false);
 
-  useEffect(() => {
-    localStorage.setItem("habits", JSON.stringify(storedHabits));
-  }, [storedHabits]);
-
-  const addHabit = () => {
+  const createHabitClicked = () => {
     setIsFormOpen(!isFormOpen);
   };
 
   const handleHabitCreated = (habit: Habit) => {
     setIsFormOpen(false);
-    setSToredHabits((prev: Habit[]) => [...prev, habit]);
-  };
-
-  const deleteHabit = (id: string) => {
-    const updatedHabits = storedHabits.filter(
-      (habit: Habit) => habit.id !== id,
-    );
-    localStorage.setItem("habits", JSON.stringify(updatedHabits));
-    setSToredHabits(updatedHabits);
+    addHabit(habit);
   };
 
   return (
     <div className={layout.page}>
-      {!storedHabits && <div>No habits yet.</div>}
+      {!habits && <div>No habits yet.</div>}
       <div className={styles.habitsContainer}>
-        {storedHabits?.map((habit: Habit) => {
+        {habits?.map((habit: Habit) => {
           const meta = HABIT_CATEGORY_META[habit.category];
           const Icon = meta.icon;
           return (
@@ -60,7 +48,7 @@ export function HabitsPage() {
           );
         })}
       </div>
-      <Button type="button" variant="create" onClick={addHabit}>
+      <Button type="button" variant="create" onClick={createHabitClicked}>
         Create habit
       </Button>
 

@@ -1,19 +1,18 @@
+import { CircleX } from "lucide-react";
 import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import { HABIT_CATEGORY_META, type Habit } from "../../types/habit";
-import type { Session } from "../../types/session";
 import { Button } from "../../ui/Button/Button";
 import {
   formatHour,
   formatMinute,
-  HOURS,
   MINUTES,
+  MODAL_HOURS,
 } from "../../utils/dashboardUtils";
 import styles from "./SessionModal.module.css";
-import { CircleX } from "lucide-react";
 
 type SessionFormModalProps = {
   onCancel: () => void;
-  onSessionCreated: (session: Session) => void;
+  onSubmitForm: (data: Inputs) => void;
   startTime: number;
   habits: Habit[];
 };
@@ -27,24 +26,9 @@ type Inputs = {
   notes: string;
 };
 
-function createSession(data: Inputs): Session {
-  const startedAt = new Date();
-  const finishedAt = new Date();
-  startedAt.setHours(data.startHour, data.startMinute, 0, 0);
-  finishedAt.setHours(data.endHour, data.endMinute, 0, 0);
-
-  return {
-    id: crypto.randomUUID(),
-    habitId: data.habitId,
-    startedAt: startedAt,
-    finishedAt: finishedAt,
-    notes: data.notes,
-  };
-}
-
 export function SessionFormModal({
   onCancel,
-  onSessionCreated,
+  onSubmitForm,
   startTime,
   habits,
 }: SessionFormModalProps) {
@@ -60,11 +44,11 @@ export function SessionFormModal({
   });
 
   const selectedHabitId = useWatch({ control, name: "habitId" });
+  const startHour = useWatch({ control, name: "startHour" });
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     reset();
-    const session = createSession(data);
-    onSessionCreated(session);
+    onSubmitForm(data);
   };
 
   return (
@@ -102,7 +86,7 @@ export function SessionFormModal({
             <span>End</span>
             <div className={styles.time}>
               <select {...register("startHour")}>
-                {HOURS.map((hour) => (
+                {MODAL_HOURS.map((hour) => (
                   <option key={hour} value={hour}>
                     {formatHour(hour)}
                   </option>
@@ -119,8 +103,8 @@ export function SessionFormModal({
             </div>
             <div className={styles.time}>
               <select {...register("endHour")}>
-                {HOURS.map((hour) => (
-                  <option key={hour} value={hour}>
+                {MODAL_HOURS.map((hour) => (
+                  <option key={hour} value={hour} disabled={hour < startHour}>
                     {formatHour(hour)}
                   </option>
                 ))}

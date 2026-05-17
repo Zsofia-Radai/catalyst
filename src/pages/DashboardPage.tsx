@@ -1,40 +1,33 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SessionBlock } from "../components/SessionBlock/SessionBlock";
-import { SessionFormModal } from "../components/SessionModal/SessionFormModal";
+import { NewSessionForm } from "../components/SessionModal/NewSessionForm";
 import layout from "../layout/AppLayout.module.css";
 import { type Habit } from "../types/habit";
-import type { Session } from "../types/session";
 import { Button } from "../ui/Button/Button";
 import { EmptyState } from "../ui/EmptyState/EmptyState";
 import {
+  DAY_HOURS,
   formatCurrentDate,
   formatTime,
   getSessionForHour,
-  HOURS,
   isSameDay,
   NIGHT_HOURS,
 } from "../utils/dashboardUtils";
 import styles from "./DashboardPage.module.css";
+import { useSessions } from "../context/SessionsContext";
 
 export function DasboardPage() {
-  const [storedHabits, setStoredHabits] = useState<Habit[]>(() =>
+  const [storedHabits] = useState<Habit[]>(() =>
     JSON.parse(localStorage.getItem("habits") || "[]"),
   );
-  const [storedSessions, setStoredSessions] = useState<Session[]>(() =>
-    JSON.parse(localStorage.getItem("sessions") || "[]"),
-  );
+  const { sessions } = useSessions();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showNightSessions, setShowNightSessions] = useState(false);
   const [startTime, setStartTime] = useState(0);
   const currentDate = new Date();
-  const todaysSessions = storedSessions.filter((session) =>
+  const todaysSessions = sessions.filter((session) =>
     isSameDay(new Date(session.startedAt), currentDate),
   );
-
-  useEffect(() => {
-    localStorage.setItem("sessions", JSON.stringify(storedSessions));
-    localStorage.setItem("habits", JSON.stringify(storedHabits));
-  }, [storedSessions, todaysSessions, storedHabits]);
 
   const addSession = (hour: number) => {
     setStartTime(hour);
@@ -43,31 +36,6 @@ export function DasboardPage() {
 
   const cancelSessionModal = () => {
     setIsModalOpen(false);
-  };
-
-  function getSessionDurationHours(startedAt: Date, finishedAt: Date) {
-    const diffMs = finishedAt.getTime() - startedAt.getTime();
-    return diffMs / 1000 / 60 / 60;
-  }
-
-  const updateHabitLoggedHours = (habitId: string, hours: number) => {
-    setStoredHabits((prev) =>
-      prev.map((habit) =>
-        habit.id === habitId
-          ? { ...habit, loggedHours: (habit.loggedHours ?? 0) + hours }
-          : habit,
-      ),
-    );
-  };
-
-  const handleSessionCreated = (session: Session) => {
-    setStoredSessions((prev: Session[]) => [...prev, session]);
-    const duration = getSessionDurationHours(
-      session.startedAt,
-      session.finishedAt,
-    );
-    updateHabitLoggedHours(session.habitId, duration);
-    cancelSessionModal();
   };
 
   return (
@@ -85,7 +53,7 @@ export function DasboardPage() {
         </div>
       )}
       <div className={styles.timeline}>
-        {HOURS.map((hour) => {
+        {DAY_HOURS.map((hour) => {
           const sessions = getSessionForHour(todaysSessions, hour);
           return (
             <div
@@ -96,7 +64,11 @@ export function DasboardPage() {
               <span>{formatTime(hour)}</span>
               <div className={styles.hourContent}>
                 {sessions.map((session) => (
-                  <SessionBlock session={session} habits={storedHabits} />
+                  <SessionBlock
+                    key={session.id}
+                    session={session}
+                    habits={storedHabits}
+                  />
                 ))}
               </div>
             </div>
@@ -132,9 +104,8 @@ export function DasboardPage() {
       </section>
 
       {isModalOpen && (
-        <SessionFormModal
+        <NewSessionForm
           onCancel={cancelSessionModal}
-          onSessionCreated={handleSessionCreated}
           startTime={startTime}
           habits={storedHabits}
         />
