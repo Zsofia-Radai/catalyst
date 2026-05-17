@@ -1,3 +1,10 @@
+.sessionForm {
+  padding: 20px;
+  background: rgb(24 61 128 / 59%);
+  border-radius: 5px;
+  margin: 0 10px 10px;
+}
+
 .timeContainer {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -9,6 +16,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 5px;
+  margin: 10px;
 }
 
 .habitChip {
@@ -28,4 +36,22 @@
   display: flex;
   gap: 4px;
   align-items: center;
+}
+
+.notes {
+  display: grid;
+}
+
+.notes textarea {
+  width: 50%;
+  resize: vertical;
+}
+
+.error {
+  border: 2px solid #bd1105;
+}
+
+.errorMessage {
+  color: #bd1105;
+  grid-column: 2;
 }

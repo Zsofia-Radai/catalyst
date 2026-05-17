@@ -52,19 +52,44 @@ export function SessionForm({
     };
   };
 
-  const { register, setValue, handleSubmit, control, reset } =
-    useForm<SessionInputs>({ defaultValues: getDefaultValues() });
+  function isEndAfterStart(data: SessionInputs) {
+    const startTotalMinutes = data.startHour * 60 + data.startMinute;
+    const endTotalMinutes = data.endHour * 60 + data.endMinute;
+    return endTotalMinutes > startTotalMinutes;
+  }
+
+  const {
+    register,
+    setValue,
+    handleSubmit,
+    control,
+    reset,
+    setError,
+    formState: { errors },
+  } = useForm<SessionInputs>({ defaultValues: getDefaultValues() });
 
   const selectedHabitId = useWatch({ control, name: "habitId" });
   const startHour = useWatch({ control, name: "startHour" });
 
   const onSubmit: SubmitHandler<SessionInputs> = (data) => {
+    if (!isEndAfterStart(data)) {
+      setError("endHour", {
+        type: "manual",
+        message: "End time must be after start time.",
+      });
+      return;
+    }
     reset();
     onSubmitForm(data);
   };
 
   return (
-    <form id="session-form" onSubmit={handleSubmit(onSubmit)} noValidate>
+    <form
+      className={styles.sessionForm}
+      id="session-form"
+      onSubmit={handleSubmit(onSubmit)}
+      noValidate
+    >
       <div>Activity</div>
       <div className={styles.habits}>
         {habits?.map((habit) => {
@@ -108,7 +133,10 @@ export function SessionForm({
           </select>
         </div>
         <div className={styles.time}>
-          <select {...register("endHour")}>
+          <select
+            {...register("endHour")}
+            className={errors.endHour ? styles.error : ""}
+          >
             {MODAL_HOURS.map((hour) => (
               <option key={hour} value={hour} disabled={hour < startHour}>
                 {formatHour(hour)}
@@ -124,10 +152,16 @@ export function SessionForm({
             ))}
           </select>
         </div>
+        {errors.endHour && (
+          <div className={styles.errorMessage} role="alert">
+            {errors.endHour.message}
+          </div>
+        )}
       </div>
-      <div></div>
-      <label htmlFor="notes">Notes</label>
-      <textarea {...register("notes")} name="notes" id="notes"></textarea>
+      <div className={styles.notes}>
+        <label htmlFor="notes">Notes</label>
+        <textarea {...register("notes")} name="notes" id="notes"></textarea>
+      </div>
     </form>
   );
 }
