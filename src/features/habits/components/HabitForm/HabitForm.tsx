@@ -1,45 +1,34 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
-import styles from "./HabitForm.module.css";
+import { Button } from "../../../../ui/Button/Button";
 import {
   HABIT_CATEGORIES,
   type Habit,
-  type HabitCategory,
+  type HabitInputs,
 } from "../../types/habit";
-import { Button } from "../../../../ui/Button/Button";
+import styles from "./HabitForm.module.css";
 
 type HabitFormProps = {
-  onHabitCreated: (habit: Habit) => void;
+  onHabitSubmitted: (data: HabitInputs) => void;
+  habit?: Habit;
 };
 
-type Inputs = {
-  name: string;
-  category: HabitCategory;
-  goal: string;
-};
-
-function createHabit(data: Inputs): Habit {
-  return {
-    id: crypto.randomUUID(),
-    name: data.name,
-    category: data.category,
-    createdAt: Date.now(),
-    goal: data.goal,
-    loggedHours: 0,
-  };
-}
-
-export function HabitForm({ onHabitCreated }: HabitFormProps) {
+export function HabitForm({ onHabitSubmitted, habit }: HabitFormProps) {
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<Inputs>();
+  } = useForm<HabitInputs>({
+    defaultValues: {
+      name: habit?.name,
+      category: habit?.category,
+      goal: habit?.goal,
+    },
+  });
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    const habit = createHabit(data);
+  const onSubmit: SubmitHandler<HabitInputs> = (data) => {
+    onHabitSubmitted(data);
     reset();
-    onHabitCreated(habit);
   };
 
   return (

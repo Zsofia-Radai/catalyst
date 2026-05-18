@@ -5,6 +5,7 @@
   transition:
     transform 0.25s ease,
     opacity 0.25s ease;
+  width: 32%;
 }
 
 .habitFormOpen {

@@ -1,5 +1,5 @@
-import type { SessionInputs } from "../features/sessions/components/SessionModal/SessionForm";
-import type { Session } from "../features/sessions/types/session";
+import type { SessionInputs } from "../components/SessionModal/SessionForm";
+import type { Session } from "../types/session";
 
 export function createSession(data: SessionInputs): Session {
   const startedAt = new Date();

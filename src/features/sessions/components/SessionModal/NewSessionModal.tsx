@@ -6,7 +6,7 @@ import { Button } from "../../../../ui/Button/Button";
 import {
   createSession,
   getSessionDurationHours,
-} from "../../../../utils/SessionsUtils";
+} from "../../utils/sessionsUtils";
 import styles from "./NewSessionModal.module.css";
 import { SessionForm, type SessionInputs } from "./SessionForm";
 

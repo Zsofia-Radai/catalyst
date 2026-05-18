@@ -1,13 +1,15 @@
 import { useRef, useState } from "react";
+import { EditHabitModal } from "../features/habits/components/EditHabitModal/EditHabitModal";
 import { HabitCard } from "../features/habits/components/HabitCard/HabitCard";
 import { HabitForm } from "../features/habits/components/HabitForm/HabitForm";
 import { useHabits } from "../features/habits/context/HabitsContext";
-import { type Habit } from "../features/habits/types/habit";
+import { type Habit, type HabitInputs } from "../features/habits/types/habit";
 import { useClickOutside } from "../hooks/useClickOutside";
 import layout from "../layout/AppLayout.module.css";
 import { Button } from "../ui/Button/Button";
 import { DeleteConfirmModal } from "../ui/DeleteConfirmModal/DeleteConfirmModal";
 import styles from "./HabitsPage.module.css";
+import { createHabit } from "../features/habits/utils/habitsUtils";
 
 export function HabitsPage() {
   const { habits, addHabit } = useHabits();
@@ -15,6 +17,7 @@ export function HabitsPage() {
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [habitToDelete, setHabitToDelete] = useState<Habit | null>(null);
+  const [habitToEdit, setHabitToEdit] = useState<Habit | null>(null);
   const [menuOpenForHabit, setMenuOpenForHabit] = useState<string | null>(null);
 
   useClickOutside(habitsContainerRef, () => {
@@ -25,7 +28,8 @@ export function HabitsPage() {
     setIsFormOpen(!isFormOpen);
   };
 
-  const handleHabitCreated = (habit: Habit) => {
+  const handleHabitCreated = (data: HabitInputs) => {
+    const habit = createHabit(data);
     setIsFormOpen(false);
     addHabit(habit);
   };
@@ -33,6 +37,11 @@ export function HabitsPage() {
   const handleDeleteClicked = (habit: Habit) => {
     setMenuOpenForHabit(null);
     setHabitToDelete(habit);
+  };
+
+  const handleEditClicked = (habit: Habit) => {
+    setMenuOpenForHabit(null);
+    setHabitToEdit(habit);
   };
 
   const onDeleteCancel = () => {
@@ -49,9 +58,11 @@ export function HabitsPage() {
       <div className={styles.habitsContainer} ref={habitsContainerRef}>
         {habits?.map((habit: Habit) => (
           <HabitCard
+            key={habit.id}
             habit={habit}
             onMenuClicked={handleMenuClicked}
             onDeleteClicked={handleDeleteClicked}
+            onEditClicked={handleEditClicked}
             menuOpenForHabit={menuOpenForHabit}
           />
         ))}
@@ -67,12 +78,19 @@ export function HabitsPage() {
         ></DeleteConfirmModal>
       )}
 
+      {habitToEdit && (
+        <EditHabitModal
+          closeModal={() => setHabitToEdit(null)}
+          habit={habitToEdit}
+        />
+      )}
+
       <div
         className={`${styles.habitForm} ${
           isFormOpen ? styles.habitFormOpen : ""
         }`}
       >
-        <HabitForm onHabitCreated={handleHabitCreated} />
+        <HabitForm onHabitSubmitted={handleHabitCreated} />
       </div>
     </div>
   );

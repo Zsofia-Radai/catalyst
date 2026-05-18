@@ -15,6 +15,12 @@ export function HabitsProvider({ children }: { children: React.ReactNode }) {
     setHabits((prev) => [...prev, habit]);
   };
 
+  const updateHabit = (habit: Habit) => {
+    setHabits((prev) =>
+      prev.map((prevHabit) => (prevHabit.id === habit.id ? habit : prevHabit)),
+    );
+  };
+
   const deleteHabit = (habitId: string) => {
     setHabits((prev) => prev.filter((habit) => habit.id !== habitId));
   };
@@ -33,6 +39,7 @@ export function HabitsProvider({ children }: { children: React.ReactNode }) {
     habits,
     addHabit,
     deleteHabit,
+    updateHabit,
     updateHabitLoggedHours,
   };
   return (

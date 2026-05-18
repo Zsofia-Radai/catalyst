@@ -8,7 +8,7 @@ import { Button } from "../../../../ui/Button/Button";
 import {
   convertSessionInputToSession,
   convertSessionToSessionInput,
-} from "../../../../utils/SessionsUtils";
+} from "../../utils/sessionsUtils";
 
 type EditSessionModalProps = {
   closeModal: () => void;
@@ -37,7 +37,7 @@ export function EditSessionModal({
     <div className={styles.backdrop} onClick={closeModal}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
-          <div className={styles.title}>Add session</div>
+          <div className={styles.title}>Edit session</div>
           <CircleX className={styles.deleteIcon} onClick={closeModal} />
         </div>
         <SessionForm

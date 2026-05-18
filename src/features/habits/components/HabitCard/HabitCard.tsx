@@ -8,6 +8,7 @@ type HabitCardProps = {
   onMenuClicked: (habit: Habit) => void;
   menuOpenForHabit: string | null;
   onDeleteClicked: (habit: Habit) => void;
+  onEditClicked: (habit: Habit) => void;
 };
 
 export function HabitCard({
@@ -15,6 +16,7 @@ export function HabitCard({
   onMenuClicked,
   menuOpenForHabit,
   onDeleteClicked,
+  onEditClicked,
 }: HabitCardProps) {
   const meta = HABIT_CATEGORY_META[habit.category];
   const Icon = meta.icon;
@@ -42,7 +44,7 @@ export function HabitCard({
             menuOpenForHabit === habit.id ? styles.dropdownOpen : ""
           }`}
         >
-          <Button>Edit</Button>
+          <Button onClick={() => onEditClicked(habit)}>Edit</Button>
           <Button variant="delete" onClick={() => onDeleteClicked(habit)}>
             Delete
           </Button>

@@ -44,11 +44,14 @@ export const HABIT_CATEGORY_META: Record<HabitCategory, HabitMeta> = {
   social: { label: "Social", icon: Handshake, color: "#d01b1b" },
 };
 
-export type Habit = {
-  id: string;
+export type HabitInputs = {
   name: string;
   category: HabitCategory;
-  createdAt: number;
   goal?: string;
+};
+
+export type Habit = HabitInputs & {
+  id: string;
+  createdAt: number;
   loggedHours: number;
 };
