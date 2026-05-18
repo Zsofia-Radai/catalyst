@@ -12,13 +12,20 @@ import styles from "./HabitsPage.module.css";
 import { createHabit } from "../features/habits/utils/habitsUtils";
 
 export function HabitsPage() {
-  const { habits, addHabit } = useHabits();
+  const { habits, addHabit, archiveHabit } = useHabits();
   const habitsContainerRef = useRef<HTMLDivElement | null>(null);
-
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [habitToDelete, setHabitToDelete] = useState<Habit | null>(null);
   const [habitToEdit, setHabitToEdit] = useState<Habit | null>(null);
   const [menuOpenForHabit, setMenuOpenForHabit] = useState<string | null>(null);
+  const [showActive, setShowActive] = useState<boolean>(true);
+  const activeHabits = habits.filter((habit) => habit.archived === false);
+  const archivedHabits = habits.filter((habit) => habit.archived === true);
+
+  const visibleHabits = showActive ? activeHabits : archivedHabits;
+  const emptyMessage = showActive
+    ? "No active habits yet."
+    : "No archived habits yet.";
 
   useClickOutside(habitsContainerRef, () => {
     setMenuOpenForHabit(null);
@@ -44,6 +51,11 @@ export function HabitsPage() {
     setHabitToEdit(habit);
   };
 
+  const handleArchiveClicked = (habitId: string) => {
+    archiveHabit(habitId);
+    setMenuOpenForHabit(null);
+  };
+
   const onDeleteCancel = () => {
     setHabitToDelete(null);
   };
@@ -54,22 +66,39 @@ export function HabitsPage() {
 
   return (
     <div className={layout.page}>
-      {!habits && <div>No habits yet.</div>}
+      <div className={styles.header}>
+        <div
+          className={showActive ? styles.activeTab : styles.tab}
+          onClick={() => setShowActive(true)}
+        >
+          Active
+        </div>
+        <div
+          className={!showActive ? styles.activeTab : styles.tab}
+          onClick={() => setShowActive(false)}
+        >
+          Archived
+        </div>
+      </div>
+      {visibleHabits.length === 0 && <div>{emptyMessage}</div>}
       <div className={styles.habitsContainer} ref={habitsContainerRef}>
-        {habits?.map((habit: Habit) => (
+        {visibleHabits?.map((habit: Habit) => (
           <HabitCard
             key={habit.id}
             habit={habit}
             onMenuClicked={handleMenuClicked}
             onDeleteClicked={handleDeleteClicked}
             onEditClicked={handleEditClicked}
-            menuOpenForHabit={menuOpenForHabit}
+            onArchiveClicked={handleArchiveClicked}
+            isMenuOpen={menuOpenForHabit === habit.id}
           />
         ))}
       </div>
-      <Button type="button" variant="create" onClick={createHabitClicked}>
-        Create habit
-      </Button>
+      {showActive && (
+        <Button type="button" variant="create" onClick={createHabitClicked}>
+          Create habit
+        </Button>
+      )}
 
       {habitToDelete && (
         <DeleteConfirmModal

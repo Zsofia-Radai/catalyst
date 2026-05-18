@@ -2,21 +2,24 @@ import { Button } from "../../../../ui/Button/Button";
 import { HABIT_CATEGORY_META, type Habit } from "../../types/habit";
 import { Ellipsis } from "lucide-react";
 import styles from "./HabitCard.module.css";
+import { Pencil, Archive, Trash2 } from "lucide-react";
 
 type HabitCardProps = {
   habit: Habit;
+  isMenuOpen: boolean;
   onMenuClicked: (habit: Habit) => void;
-  menuOpenForHabit: string | null;
   onDeleteClicked: (habit: Habit) => void;
   onEditClicked: (habit: Habit) => void;
+  onArchiveClicked: (habitId: string) => void;
 };
 
 export function HabitCard({
   habit,
   onMenuClicked,
-  menuOpenForHabit,
+  isMenuOpen,
   onDeleteClicked,
   onEditClicked,
+  onArchiveClicked,
 }: HabitCardProps) {
   const meta = HABIT_CATEGORY_META[habit.category];
   const Icon = meta.icon;
@@ -38,15 +41,31 @@ export function HabitCard({
           className={styles.menuIcon}
           onClick={() => onMenuClicked(habit)}
         />
-
         <div
-          className={`${styles.dropdown} ${
-            menuOpenForHabit === habit.id ? styles.dropdownOpen : ""
-          }`}
+          className={`${styles.dropdown} ${isMenuOpen ? styles.dropdownOpen : ""}`}
         >
-          <Button onClick={() => onEditClicked(habit)}>Edit</Button>
-          <Button variant="delete" onClick={() => onDeleteClicked(habit)}>
-            Delete
+          <Button
+            className={styles.menuItem}
+            onClick={() => onEditClicked(habit)}
+          >
+            <Pencil size={16} />
+            <span>Edit</span>
+          </Button>
+
+          <Button
+            className={styles.menuItem}
+            onClick={() => onArchiveClicked(habit.id)}
+          >
+            <Archive size={16} />
+            <span>Archive</span>
+          </Button>
+
+          <Button
+            className={`${styles.menuItem} ${styles.dangerItem}`}
+            onClick={() => onDeleteClicked(habit)}
+          >
+            <Trash2 size={16} />
+            <span>Delete</span>
           </Button>
         </div>
       </div>

@@ -24,24 +24,63 @@
 
 .dropdown {
   position: absolute;
-  top: 13%;
-  left: 120%;
-  background: #6b45aee8;
-  padding: 8px;
+  top: calc(70%);
+  min-width: 150px;
+  padding: 6px;
+
+  background: rgba(20, 24, 28, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
 
   opacity: 0;
   transform: translateY(-6px) scale(0.98);
-
+  transform-origin: top right;
   pointer-events: none;
+  visibility: hidden;
 
   transition:
-    opacity 180ms ease,
-    transform 180ms ease;
+    opacity 160ms ease,
+    transform 160ms ease,
+    visibility 160ms ease;
 }
 
 .dropdownOpen {
   opacity: 1;
   transform: translateY(0) scale(1);
-
   pointer-events: auto;
+  visibility: visible;
+}
+
+.menuItem {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.88);
+
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.menuItem:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.menuItem svg {
+  opacity: 0.75;
+}
+
+.dangerItem {
+  color: #ff6b6b;
+}
+
+.dangerItem:hover {
+  background: rgba(255, 107, 107, 0.12);
 }

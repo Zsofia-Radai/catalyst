@@ -5,6 +5,7 @@ export type HabitsContextValue = {
   habits: Habit[];
   addHabit: (habit: Habit) => void;
   deleteHabit: (habitId: string) => void;
+  archiveHabit: (habitId: string) => void;
   updateHabit: (habit: Habit) => void;
   updateHabitLoggedHours: (habitId: string, hours: number) => void;
 };

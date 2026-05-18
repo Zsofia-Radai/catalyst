@@ -8,5 +8,6 @@ export function createHabit(data: HabitInputs): Habit {
     createdAt: Date.now(),
     goal: data.goal,
     loggedHours: 0,
+    archived: false,
   };
 }
