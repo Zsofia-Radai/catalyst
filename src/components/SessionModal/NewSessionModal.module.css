@@ -20,12 +20,19 @@
   cursor: pointer;
 }
 
+.title {
+  font-weight: 800;
+  font-size: 1.3rem;
+}
+
 .header {
   display: flex;
   justify-content: space-between;
   align-content: center;
+  margin: 10px;
 }
 
 .saveButton {
   float: right;
+  margin: 10px;
 }

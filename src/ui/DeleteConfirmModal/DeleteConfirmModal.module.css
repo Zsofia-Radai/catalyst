@@ -5,30 +5,26 @@
   display: grid;
   place-items: center;
   padding: 20px;
-  background: rgba(0, 0, 0, 0.58);
+  background: rgb(0 0 0 / 25%);
   backdrop-filter: blur(2px);
 }
 
 .modal {
   background: #008073;
-  /*   width: min(400px, calc(100% - 32px)); */
   padding: 20px;
   border-radius: 5px;
 }
 
-.deleteIcon {
-  cursor: pointer;
+.habit {
+  color: white;
 }
 
-.title {
-  font-weight: 800;
-  font-size: 1.3rem;
+.message {
+  margin: 0 10px 20px;
+  text-align: center;
 }
 
-.header,
-.actions {
+.footer {
   display: flex;
   justify-content: space-between;
-  align-content: center;
-  margin: 10px;
 }

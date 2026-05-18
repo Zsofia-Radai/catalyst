@@ -37,7 +37,7 @@ export function EditSessionModal({
     <div className={styles.backdrop} onClick={closeModal}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
-          <h2>Add session</h2>
+          <div className={styles.title}>Add session</div>
           <CircleX className={styles.deleteIcon} onClick={closeModal} />
         </div>
         <SessionForm

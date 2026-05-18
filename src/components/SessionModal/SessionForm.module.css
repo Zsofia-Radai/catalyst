@@ -8,7 +8,7 @@
 .timeContainer {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  margin: 20px;
+  margin: 10px;
   gap: 0 30px;
 }
 
@@ -40,6 +40,7 @@
 
 .notes {
   display: grid;
+  margin: 10px;
 }
 
 .notes textarea {
