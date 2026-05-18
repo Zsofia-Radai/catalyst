@@ -1,5 +1,5 @@
-import type { Habit } from "../types/habit";
-import type { Session } from "../types/session";
+import type { Habit } from "../features/habits/types/habit";
+import type { Session } from "../features/sessions/types/session";
 
 export const FULL_DAY_HOURS = Array.from({ length: 24 }, (_, index) => index);
 export const DAY_HOURS = FULL_DAY_HOURS.filter((hour) => hour >= 8);

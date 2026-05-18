@@ -1,12 +1,12 @@
 import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
-import { HABIT_CATEGORY_META, type Habit } from "../../types/habit";
-import { Button } from "../../ui/Button/Button";
+import { HABIT_CATEGORY_META, type Habit } from "../../../habits/types/habit";
+import { Button } from "../../../../ui/Button/Button";
 import {
   formatHour,
   formatMinute,
   MINUTES,
   MODAL_HOURS,
-} from "../../utils/dashboardUtils";
+} from "../../../../utils/dashboardUtils";
 import styles from "./SessionForm.module.css";
 
 type SessionFormProps = {

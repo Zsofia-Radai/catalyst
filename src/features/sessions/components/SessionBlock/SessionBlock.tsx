@@ -1,10 +1,13 @@
+import type { Session } from "../../types/session";
+import {
+  formatSessionTime,
+  getHabitData,
+} from "../../../../utils/dashboardUtils";
 import {
   HABIT_CATEGORY_META,
   type Habit,
   type HabitMeta,
-} from "../../types/habit";
-import type { Session } from "../../types/session";
-import { formatSessionTime, getHabitData } from "../../utils/dashboardUtils";
+} from "../../../habits/types/habit";
 import styles from "./SessionBlock.module.css";
 
 type SessionProps = {

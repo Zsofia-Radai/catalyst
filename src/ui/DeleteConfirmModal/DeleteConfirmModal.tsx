@@ -1,5 +1,5 @@
-import { useHabits } from "../../context/HabitsContext";
-import type { Habit } from "../../types/habit";
+import { useHabits } from "../../features/habits/context/HabitsContext";
+import type { Habit } from "../../features/habits/types/habit";
 import { Button } from "../Button/Button";
 import styles from "./DeleteConfirmModal.module.css";
 

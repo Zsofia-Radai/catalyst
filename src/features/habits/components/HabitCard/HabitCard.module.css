@@ -1,0 +1,47 @@
+.habitCard {
+  background: var(--card-color);
+  border-radius: 5px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr 5fr 0fr;
+}
+
+.habitName {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.menuIcon {
+  cursor: pointer;
+}
+
+.menuWrapper {
+  position: relative;
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease;
+}
+
+.dropdown {
+  position: absolute;
+  top: 13%;
+  left: 120%;
+  background: #6b45aee8;
+  padding: 8px;
+
+  opacity: 0;
+  transform: translateY(-6px) scale(0.98);
+
+  pointer-events: none;
+
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.dropdownOpen {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+
+  pointer-events: auto;
+}

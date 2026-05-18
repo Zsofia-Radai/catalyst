@@ -1,14 +1,14 @@
 import { SessionForm, type SessionInputs } from "./SessionForm";
 import styles from "./EditSessionModal.module.css";
 import { CircleX } from "lucide-react";
-import type { Habit } from "../../types/habit";
+import type { Habit } from "../../../habits/types/habit";
 import type { Session } from "../../types/session";
 import { useSessions } from "../../context/SessionsContext";
-import { Button } from "../../ui/Button/Button";
+import { Button } from "../../../../ui/Button/Button";
 import {
   convertSessionInputToSession,
   convertSessionToSessionInput,
-} from "../../utils/SessionsUtils";
+} from "../../../../utils/SessionsUtils";
 
 type EditSessionModalProps = {
   closeModal: () => void;

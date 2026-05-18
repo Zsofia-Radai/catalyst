@@ -1,13 +1,13 @@
-import { Ellipsis } from "lucide-react";
 import { useRef, useState } from "react";
-import { HabitForm } from "../components/HabitForm/HabitForm";
-import { useHabits } from "../context/HabitsContext";
+import { HabitCard } from "../features/habits/components/HabitCard/HabitCard";
+import { HabitForm } from "../features/habits/components/HabitForm/HabitForm";
+import { useHabits } from "../features/habits/context/HabitsContext";
+import { type Habit } from "../features/habits/types/habit";
 import { useClickOutside } from "../hooks/useClickOutside";
 import layout from "../layout/AppLayout.module.css";
-import { HABIT_CATEGORY_META, type Habit } from "../types/habit";
 import { Button } from "../ui/Button/Button";
-import styles from "./HabitsPage.module.css";
 import { DeleteConfirmModal } from "../ui/DeleteConfirmModal/DeleteConfirmModal";
+import styles from "./HabitsPage.module.css";
 
 export function HabitsPage() {
   const { habits, addHabit } = useHabits();
@@ -15,12 +15,10 @@ export function HabitsPage() {
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [habitToDelete, setHabitToDelete] = useState<Habit | null>(null);
-  const [isMenuOpenForHabit, setIsmenuOpenForHabit] = useState<string | null>(
-    null,
-  );
+  const [menuOpenForHabit, setMenuOpenForHabit] = useState<string | null>(null);
 
   useClickOutside(habitsContainerRef, () => {
-    setIsmenuOpenForHabit(null);
+    setMenuOpenForHabit(null);
   });
 
   const createHabitClicked = () => {
@@ -33,7 +31,7 @@ export function HabitsPage() {
   };
 
   const handleDeleteClicked = (habit: Habit) => {
-    setIsmenuOpenForHabit(null);
+    setMenuOpenForHabit(null);
     setHabitToDelete(habit);
   };
 
@@ -41,52 +39,22 @@ export function HabitsPage() {
     setHabitToDelete(null);
   };
 
+  const handleMenuClicked = (habit: Habit) => {
+    setMenuOpenForHabit((prev) => (prev === habit.id ? null : habit.id));
+  };
+
   return (
     <div className={layout.page}>
       {!habits && <div>No habits yet.</div>}
       <div className={styles.habitsContainer} ref={habitsContainerRef}>
-        {habits?.map((habit: Habit) => {
-          const meta = HABIT_CATEGORY_META[habit.category];
-          const Icon = meta.icon;
-          return (
-            <article
-              key={habit.id}
-              className={styles.habitCard}
-              style={{ "--card-color": meta.color } as React.CSSProperties}
-            >
-              <Icon />
-              <div>
-                <div className={styles.habitName}>{habit.name}</div>
-                <div>{habit.goal}</div>
-                <div>{habit.loggedHours ?? 0} hrs total</div>
-              </div>
-              <div className={styles.menuWrapper}>
-                <Ellipsis
-                  className={styles.menuIcon}
-                  onClick={() =>
-                    setIsmenuOpenForHabit((prev) =>
-                      prev === habit.id ? null : habit.id,
-                    )
-                  }
-                />
-
-                <div
-                  className={`${styles.dropdown} ${
-                    isMenuOpenForHabit === habit.id ? styles.dropdownOpen : ""
-                  }`}
-                >
-                  <Button>Edit</Button>
-                  <Button
-                    variant="delete"
-                    onClick={() => handleDeleteClicked(habit)}
-                  >
-                    Delete
-                  </Button>
-                </div>
-              </div>
-            </article>
-          );
-        })}
+        {habits?.map((habit: Habit) => (
+          <HabitCard
+            habit={habit}
+            onMenuClicked={handleMenuClicked}
+            onDeleteClicked={handleDeleteClicked}
+            menuOpenForHabit={menuOpenForHabit}
+          />
+        ))}
       </div>
       <Button type="button" variant="create" onClick={createHabitClicked}>
         Create habit

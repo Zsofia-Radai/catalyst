@@ -1,11 +1,11 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
+import styles from "./HabitForm.module.css";
 import {
   HABIT_CATEGORIES,
   type Habit,
   type HabitCategory,
 } from "../../types/habit";
-import { Button } from "../../ui/Button/Button";
-import styles from "./HabitForm.module.css";
+import { Button } from "../../../../ui/Button/Button";
 
 type HabitFormProps = {
   onHabitCreated: (habit: Habit) => void;

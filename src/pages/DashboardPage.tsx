@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { SessionBlock } from "../components/SessionBlock/SessionBlock";
-import { EditSessionModal } from "../components/SessionModal/EditSessionModal";
-import { NewSessionModal } from "../components/SessionModal/NewSessionModal";
-import { useHabits } from "../context/HabitsContext";
-import { useSessions } from "../context/SessionsContext";
+import { SessionBlock } from "../features/sessions/components/SessionBlock/SessionBlock";
+import { EditSessionModal } from "../features/sessions/components/SessionModal/EditSessionModal";
+import { NewSessionModal } from "../features/sessions/components/SessionModal/NewSessionModal";
+import { useHabits } from "../features/habits/context/HabitsContext";
 import layout from "../layout/AppLayout.module.css";
-import type { Session } from "../types/session";
+import type { Session } from "../features/sessions/types/session";
 import { Button } from "../ui/Button/Button";
 import { EmptyState } from "../ui/EmptyState/EmptyState";
 import {
@@ -17,6 +16,7 @@ import {
   NIGHT_HOURS,
 } from "../utils/dashboardUtils";
 import styles from "./DashboardPage.module.css";
+import { useSessions } from "../features/sessions/context/SessionsContext";
 
 export function DasboardPage() {
   const { habits } = useHabits();

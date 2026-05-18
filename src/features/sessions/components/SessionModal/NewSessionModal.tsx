@@ -1,12 +1,12 @@
 import { CircleX } from "lucide-react";
-import { useHabits } from "../../context/HabitsContext";
+import { useHabits } from "../../../habits/context/HabitsContext";
 import { useSessions } from "../../context/SessionsContext";
-import type { Habit } from "../../types/habit";
-import { Button } from "../../ui/Button/Button";
+import type { Habit } from "../../../habits/types/habit";
+import { Button } from "../../../../ui/Button/Button";
 import {
   createSession,
   getSessionDurationHours,
-} from "../../utils/SessionsUtils";
+} from "../../../../utils/SessionsUtils";
 import styles from "./NewSessionModal.module.css";
 import { SessionForm, type SessionInputs } from "./SessionForm";
 
