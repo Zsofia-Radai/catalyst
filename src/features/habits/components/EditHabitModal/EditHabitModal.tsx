@@ -24,7 +24,7 @@ export function EditHabitModal({ habit, closeModal }: EditHabitModalProps) {
   };
 
   return (
-    <div className={styles.backdrop}>
+    <div className={styles.backdrop} onClick={() => closeModal()}>
       <div className={styles.modal}>
         <div className={styles.header}>
           <div className={styles.title}>Edit habit: {habit.name}</div>

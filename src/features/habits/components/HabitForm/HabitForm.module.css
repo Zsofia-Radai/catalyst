@@ -3,9 +3,10 @@
   grid-template-columns: 1fr 5fr;
   gap: 10px;
   text-align: end;
-  background: #6b45aee8;
+  background: var(--panel);
   padding: 25px;
   margin: 20px 0px;
+  color: var(--text);
 }
 
 .habitForm input,
@@ -24,7 +25,7 @@ input {
 }
 
 .errorMessage {
-  color: #19ff00;
+  color: var(--danger);
 }
 
 .habitForm input:focus,

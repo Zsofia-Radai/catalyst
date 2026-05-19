@@ -10,9 +10,10 @@
 }
 
 .modal {
-  background: #008073;
+  background: var(--modal);
   padding: 20px;
   border-radius: 5px;
+  color: var(--text);
 }
 
 .header {

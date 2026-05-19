@@ -3,12 +3,15 @@ import "./Catalyst.css";
 import { router } from "./router";
 import { SessionsProvider } from "./features/sessions/context/SessionsProvider";
 import { HabitsProvider } from "./features/habits/context/HabitsProvider";
+import { ToastProvider } from "./context/ToastContext";
 
 function Catalyst() {
   return (
     <HabitsProvider>
       <SessionsProvider>
-        <RouterProvider router={router} />
+        <ToastProvider>
+          <RouterProvider router={router} />
+        </ToastProvider>
       </SessionsProvider>
     </HabitsProvider>
   );

@@ -6,6 +6,7 @@ import type { SessionInputs } from "../../types/session";
 import { createSession } from "../../utils/sessionsUtils";
 import styles from "./NewSessionModal.module.css";
 import { SessionForm } from "./SessionForm";
+import { useToast } from "../../../../context/ToastContext";
 
 type NewSessionModalProps = {
   closeModal: () => void;
@@ -19,9 +20,11 @@ export function NewSessionModal({
   habits,
 }: NewSessionModalProps) {
   const { addSession } = useSessions();
+  const { showToast } = useToast();
 
   const handleSessionCreated = (data: SessionInputs) => {
     const session = createSession(data);
+    showToast("Session created!", "save");
     addSession(session);
     closeModal();
   };

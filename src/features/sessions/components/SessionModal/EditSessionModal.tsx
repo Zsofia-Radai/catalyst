@@ -9,6 +9,7 @@ import {
   convertSessionInputToSession,
   convertSessionToSessionInput,
 } from "../../utils/sessionsUtils";
+import { useToast } from "../../../../context/ToastContext";
 
 type EditSessionModalProps = {
   closeModal: () => void;
@@ -22,14 +23,17 @@ export function EditSessionModal({
   habits,
 }: EditSessionModalProps) {
   const { updateSession, deleteSession } = useSessions();
+  const { showToast } = useToast();
 
   const handleSessionSave = (sessionData: SessionInputs) => {
     updateSession(convertSessionInputToSession(sessionData, session));
+    showToast("Session saved!", "save");
     closeModal();
   };
 
   const handleSessionDelete = () => {
     deleteSession(session.id);
+    showToast("Session deleted!", "delete");
     closeModal();
   };
 

@@ -14,10 +14,12 @@ import {
   createHabit,
 } from "../features/habits/utils/habitsUtils";
 import { useSessions } from "../features/sessions/context/SessionsContext";
+import { useToast } from "../context/ToastContext";
 
 export function HabitsPage() {
   const { habits, addHabit, archiveHabit, restoreHabit } = useHabits();
   const { sessions } = useSessions();
+  const { showToast } = useToast();
   const habitsContainerRef = useRef<HTMLDivElement | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [habitToDelete, setHabitToDelete] = useState<Habit | null>(null);
@@ -48,6 +50,7 @@ export function HabitsPage() {
     const habit = createHabit(data);
     setIsFormOpen(false);
     addHabit(habit);
+    showToast("Habit created!", "save");
   };
 
   const handleDeleteClicked = (habit: Habit) => {
