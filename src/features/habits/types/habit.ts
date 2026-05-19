@@ -35,13 +35,13 @@ export type HabitMeta = {
 };
 
 export const HABIT_CATEGORY_META: Record<HabitCategory, HabitMeta> = {
-  mind: { label: "Mind", icon: Brain, color: "#03A9F4" },
+  mind: { label: "Mind", icon: Brain, color: "#0ea5e9" },
   body: { label: "Body", icon: Dumbbell, color: "#26b62c" },
-  hobby: { label: "Hobby", icon: Palette, color: "#FFC107" },
+  hobby: { label: "Hobby", icon: Palette, color: "#eab308" },
   chore: { label: "Chore", icon: House, color: "#c42a5e" },
-  career: { label: "Career", icon: BriefcaseBusiness, color: "#6b43b2" },
+  career: { label: "Career", icon: BriefcaseBusiness, color: "#8b5cf6" },
   finance: { label: "Finance", icon: Wallet, color: "#dd572d" },
-  social: { label: "Social", icon: Handshake, color: "#d01b1b" },
+  social: { label: "Social", icon: Handshake, color: "#d51c1c" },
 };
 
 export type HabitInputs = {

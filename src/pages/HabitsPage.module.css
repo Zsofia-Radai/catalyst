@@ -1,15 +1,16 @@
 .header {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  background: #ab8ac1;
+  background: #767279b3;
   padding: 10px;
   border-radius: 5px;
   text-align: center;
   align-items: center;
+  color: white;
 }
 
 .activeTab {
-  background: #d3e7f8;
+  background: #242425;
   padding: 5px;
   border-radius: 5px;
 }
@@ -21,8 +22,9 @@
 .tab {
   cursor: pointer;
   transition:
-    transform 0.25s ease,
-    opacity 0.25s ease;
+    background-color 0.2s ease,
+    color 1.2s ease,
+    transform 0.2s ease;
 }
 
 .habitForm {

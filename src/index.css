@@ -1,3 +1,19 @@
+:root {
+  --bg: #0f172a;
+  --modal: #111827;
+  --panel: #1f2937;
+  --panel-soft: #273449;
+
+  --text: #f3f4f6;
+  --muted: #9ca3af;
+  --line: #374151;
+
+  --accent: #22c55e;
+  --accent-hover: #16a34a;
+
+  --danger: #ef4444;
+}
+
 body {
-  background: #2287a1;
+  background: #0a8c5bba;
 }

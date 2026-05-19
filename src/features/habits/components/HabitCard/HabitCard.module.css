@@ -24,7 +24,6 @@
 
 .dropdown {
   position: absolute;
-  top: calc(70%);
   min-width: 150px;
   padding: 6px;
 

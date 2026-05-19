@@ -4,7 +4,6 @@
   right: 12px;
   border-radius: 12px;
   background: var(--card-color);
-  border: 1px solid var(--accent);
   display: grid;
   grid-template-columns: 40px minmax(80px, 100px) 1fr;
   grid-template-rows: auto auto;
@@ -34,5 +33,4 @@
 .sessionTime {
   grid-column: 2 / 4;
   font-size: 0.9rem;
-  color: var(--muted);
 }
