@@ -1,8 +1,7 @@
+import { Modal } from "../../../../ui/Modal/Modal";
 import { useHabits } from "../../context/HabitsContext";
 import type { Habit, HabitInputs } from "../../types/habit";
 import { HabitForm } from "../HabitForm/HabitForm";
-import styles from "./EditHabitModal.module.css";
-import { CircleX } from "lucide-react";
 
 type EditHabitModalProps = {
   habit: Habit;
@@ -24,14 +23,8 @@ export function EditHabitModal({ habit, closeModal }: EditHabitModalProps) {
   };
 
   return (
-    <div className={styles.backdrop} onClick={() => closeModal()}>
-      <div className={styles.modal}>
-        <div className={styles.header}>
-          <div className={styles.title}>Edit habit: {habit.name}</div>
-          <CircleX className={styles.closeIcon} onClick={closeModal} />
-        </div>
-        <HabitForm habit={habit} onHabitSubmitted={handleUpdateHabit} />
-      </div>
-    </div>
+    <Modal title={`Edit habit: ${habit.name}`} onClose={closeModal}>
+      <HabitForm habit={habit} onHabitSubmitted={handleUpdateHabit} />
+    </Modal>
   );
 }

@@ -1,12 +1,12 @@
-import { CircleX } from "lucide-react";
+import { useToast } from "../../../../context/ToastContext";
 import { Button } from "../../../../ui/Button/Button";
+import { Modal } from "../../../../ui/Modal/Modal";
 import type { Habit } from "../../../habits/types/habit";
 import { useSessions } from "../../context/SessionsContext";
 import type { SessionInputs } from "../../types/session";
 import { createSession } from "../../utils/sessionsUtils";
 import styles from "./NewSessionModal.module.css";
 import { SessionForm } from "./SessionForm";
-import { useToast } from "../../../../context/ToastContext";
 
 type NewSessionModalProps = {
   closeModal: () => void;
@@ -30,26 +30,20 @@ export function NewSessionModal({
   };
 
   return (
-    <div className={styles.backdrop} onClick={closeModal}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <div className={styles.header}>
-          <div className={styles.title}>Add session</div>
-          <CircleX className={styles.deleteIcon} onClick={closeModal} />
-        </div>
-        <SessionForm
-          onSubmitForm={handleSessionCreated}
-          startTime={startTime}
-          habits={habits}
-        />
-        <Button
-          type="submit"
-          variant="create"
-          form="session-form"
-          className={styles.saveButton}
-        >
-          Save session
-        </Button>
-      </div>
-    </div>
+    <Modal title="Add session" onClose={closeModal}>
+      <SessionForm
+        onSubmitForm={handleSessionCreated}
+        startTime={startTime}
+        habits={habits}
+      />
+      <Button
+        type="submit"
+        variant="create"
+        form="session-form"
+        className={styles.saveButton}
+      >
+        Save session
+      </Button>
+    </Modal>
   );
 }

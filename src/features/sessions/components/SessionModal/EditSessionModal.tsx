@@ -1,15 +1,15 @@
-import { SessionForm } from "./SessionForm";
-import styles from "./EditSessionModal.module.css";
-import { CircleX } from "lucide-react";
-import type { Habit } from "../../../habits/types/habit";
-import type { Session, SessionInputs } from "../../types/session";
-import { useSessions } from "../../context/SessionsContext";
+import { useToast } from "../../../../context/ToastContext";
 import { Button } from "../../../../ui/Button/Button";
+import { Modal } from "../../../../ui/Modal/Modal";
+import type { Habit } from "../../../habits/types/habit";
+import { useSessions } from "../../context/SessionsContext";
+import type { Session, SessionInputs } from "../../types/session";
 import {
   convertSessionInputToSession,
   convertSessionToSessionInput,
 } from "../../utils/sessionsUtils";
-import { useToast } from "../../../../context/ToastContext";
+import styles from "./EditSessionModal.module.css";
+import { SessionForm } from "./SessionForm";
 
 type EditSessionModalProps = {
   closeModal: () => void;
@@ -38,30 +38,24 @@ export function EditSessionModal({
   };
 
   return (
-    <div className={styles.backdrop} onClick={closeModal}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <div className={styles.header}>
-          <div className={styles.title}>Edit session</div>
-          <CircleX className={styles.deleteIcon} onClick={closeModal} />
-        </div>
-        <SessionForm
-          onSubmitForm={handleSessionSave}
-          editedSession={convertSessionToSessionInput(session)}
-          habits={habits}
-        />
-        <div className={styles.actions}>
-          <Button
-            type="button"
-            variant="delete"
-            onClick={() => handleSessionDelete()}
-          >
-            Delete session
-          </Button>
-          <Button type="submit" variant="create" form="session-form">
-            Save session
-          </Button>
-        </div>
+    <Modal title="Edit session" onClose={closeModal}>
+      <SessionForm
+        onSubmitForm={handleSessionSave}
+        editedSession={convertSessionToSessionInput(session)}
+        habits={habits}
+      />
+      <div className={styles.actions}>
+        <Button
+          type="button"
+          variant="delete"
+          onClick={() => handleSessionDelete()}
+        >
+          Delete session
+        </Button>
+        <Button type="submit" variant="create" form="session-form">
+          Save session
+        </Button>
       </div>
-    </div>
+    </Modal>
   );
 }

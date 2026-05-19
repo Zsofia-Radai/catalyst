@@ -9,3 +9,8 @@
 .delete {
   background: var(--danger);
 }
+
+.secondary {
+  background: var(--muted);
+  color: var(--text);
+}

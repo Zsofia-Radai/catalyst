@@ -32,45 +32,52 @@ export function HabitForm({ onHabitSubmitted, habit }: HabitFormProps) {
   };
 
   return (
-    <form
-      className={styles.habitForm}
-      onSubmit={handleSubmit(onSubmit)}
-      noValidate
-    >
-      <label htmlFor="habit-name">Habit name</label>
-      <div>
-        <input
-          className={styles.habitNameInput}
-          id="habit-name"
-          placeholder="Habit name"
-          {...register("name", { required: true })}
-        />
-        {errors.name?.type === "required" && (
-          <span className={styles.errorMessage} role="alert">
-            Habit name is required
-          </span>
-        )}
-      </div>
+    <>
+      <form
+        id="habit-form"
+        className={styles.habitForm}
+        onSubmit={handleSubmit(onSubmit)}
+        noValidate
+      >
+        <label htmlFor="habit-name">Habit name</label>
+        <div>
+          <input
+            className={styles.habitNameInput}
+            id="habit-name"
+            placeholder="Habit name"
+            {...register("name", { required: true })}
+          />
+          {errors.name?.type === "required" && (
+            <span className={styles.errorMessage} role="alert">
+              Habit name is required
+            </span>
+          )}
+        </div>
 
-      <label htmlFor="habit-category">Category</label>
-      <select id="habit-category" {...register("category")}>
-        {HABIT_CATEGORIES.map((habit, index) => (
-          <option key={index} value={HABIT_CATEGORIES[index]}>
-            {habit}
-          </option>
-        ))}
-      </select>
+        <label htmlFor="habit-category">Category</label>
+        <select id="habit-category" {...register("category")}>
+          {HABIT_CATEGORIES.map((habit, index) => (
+            <option key={index} value={HABIT_CATEGORIES[index]}>
+              {habit}
+            </option>
+          ))}
+        </select>
 
-      <label htmlFor="habit-goal">Goal</label>
-      <textarea
-        placeholder="goal"
-        id="habit-goal"
-        {...register("goal")}
-      ></textarea>
-
-      <Button type="submit" variant="create" className={styles.submitButton}>
+        <label htmlFor="habit-goal">Goal</label>
+        <textarea
+          placeholder="goal"
+          id="habit-goal"
+          {...register("goal")}
+        ></textarea>
+      </form>
+      <Button
+        form="habit-form"
+        type="submit"
+        variant="create"
+        className={styles.submitButton}
+      >
         Save habit
       </Button>
-    </form>
+    </>
   );
 }
