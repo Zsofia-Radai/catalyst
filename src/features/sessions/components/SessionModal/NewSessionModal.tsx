@@ -37,8 +37,8 @@ export function NewSessionModal({
         habits={habits}
       />
       <Button
+        variant="save"
         type="submit"
-        variant="create"
         form="session-form"
         className={styles.saveButton}
       >

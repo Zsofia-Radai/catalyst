@@ -14,3 +14,11 @@
   background: var(--muted);
   color: var(--text);
 }
+
+.save {
+  background: var(--accent);
+}
+
+.save:hover {
+  background: var(--accent-hover);
+}

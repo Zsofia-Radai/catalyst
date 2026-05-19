@@ -13,7 +13,7 @@ import { DeleteConfirmModal } from "../ui/DeleteConfirmModal/DeleteConfirmModal"
 import styles from "./HabitsPage.module.css";
 
 export function HabitsPage() {
-  const { habits, archiveHabit, restoreHabit } = useHabits();
+  const { habits, archiveHabit, restoreHabit, deleteHabit } = useHabits();
   const { sessions } = useSessions();
   const habitsContainerRef = useRef<HTMLDivElement | null>(null);
   const [newHabitModalOpen, setNewHabitModalOpen] = useState(false);
@@ -44,6 +44,12 @@ export function HabitsPage() {
   const handleDeleteClicked = (habit: Habit) => {
     setMenuOpenForHabit(null);
     setHabitToDelete(habit);
+  };
+
+  const handleDeleteHabit = () => {
+    if (!habitToDelete) return;
+    deleteHabit(habitToDelete.id);
+    setHabitToDelete(null);
   };
 
   const handleEditClicked = (habit: Habit) => {
@@ -116,7 +122,10 @@ export function HabitsPage() {
       {habitToDelete && (
         <DeleteConfirmModal
           onCancel={onDeleteCancel}
-          habit={habitToDelete}
+          objectToDelete={habitToDelete.name}
+          onDelete={handleDeleteHabit}
+          title="Are you sure you want to delete this habit?"
+          details="This action will permanently delete this habit."
         ></DeleteConfirmModal>
       )}
 

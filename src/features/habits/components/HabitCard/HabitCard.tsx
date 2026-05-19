@@ -46,14 +46,6 @@ export function HabitCard({
         <div
           className={`${styles.dropdown} ${isMenuOpen ? styles.dropdownOpen : ""}`}
         >
-          <Button
-            className={styles.menuItem}
-            onClick={() => onEditClicked(habit)}
-          >
-            <Pencil size={16} />
-            <span>Edit</span>
-          </Button>
-
           {habit.archived && (
             <Button
               className={styles.menuItem}
@@ -66,6 +58,13 @@ export function HabitCard({
 
           {!habit.archived && (
             <>
+              <Button
+                className={styles.menuItem}
+                onClick={() => onEditClicked(habit)}
+              >
+                <Pencil size={16} />
+                <span>Edit</span>
+              </Button>
               <Button
                 className={styles.menuItem}
                 onClick={() => onArchiveClicked(habit.id)}

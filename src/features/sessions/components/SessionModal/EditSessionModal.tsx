@@ -52,7 +52,7 @@ export function EditSessionModal({
         >
           Delete session
         </Button>
-        <Button type="submit" variant="create" form="session-form">
+        <Button variant="save" type="submit" form="session-form">
           Save session
         </Button>
       </div>

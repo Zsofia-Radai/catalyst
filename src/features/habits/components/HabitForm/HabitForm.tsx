@@ -73,7 +73,7 @@ export function HabitForm({ onHabitSubmitted, habit }: HabitFormProps) {
       <Button
         form="habit-form"
         type="submit"
-        variant="create"
+        variant="save"
         className={styles.submitButton}
       >
         Save habit

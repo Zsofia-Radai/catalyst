@@ -91,7 +91,6 @@ export function SessionForm({
             <Button
               key={habit.id}
               type="button"
-              variant=""
               className={`${styles.habitChip} ${
                 selectedHabitId === habit.id ? styles.selected : ""
               }`}

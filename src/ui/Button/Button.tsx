@@ -1,9 +1,11 @@
 import type { ButtonHTMLAttributes } from "react";
 import styles from "./Button.module.css";
 
+type ButtonVariant = "save" | "delete" | "secondary";
+
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: React.ReactNode;
-  variant?: string;
+  variant?: ButtonVariant;
 };
 
 export function Button({
