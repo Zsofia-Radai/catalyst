@@ -2,7 +2,7 @@ import { Button } from "../../../../ui/Button/Button";
 import { HABIT_CATEGORY_META, type Habit } from "../../types/habit";
 import { Ellipsis } from "lucide-react";
 import styles from "./HabitCard.module.css";
-import { Pencil, Archive, Trash2 } from "lucide-react";
+import { Pencil, Archive, Trash2, ArchiveRestore } from "lucide-react";
 
 type HabitCardProps = {
   habit: Habit;
@@ -11,6 +11,7 @@ type HabitCardProps = {
   onDeleteClicked: (habit: Habit) => void;
   onEditClicked: (habit: Habit) => void;
   onArchiveClicked: (habitId: string) => void;
+  onRestoreClicked: (habitId: string) => void;
 };
 
 export function HabitCard({
@@ -20,6 +21,7 @@ export function HabitCard({
   onDeleteClicked,
   onEditClicked,
   onArchiveClicked,
+  onRestoreClicked,
 }: HabitCardProps) {
   const meta = HABIT_CATEGORY_META[habit.category];
   const Icon = meta.icon;
@@ -52,21 +54,35 @@ export function HabitCard({
             <span>Edit</span>
           </Button>
 
-          <Button
-            className={styles.menuItem}
-            onClick={() => onArchiveClicked(habit.id)}
-          >
-            <Archive size={16} />
-            <span>Archive</span>
-          </Button>
+          {habit.archived && (
+            <Button
+              className={styles.menuItem}
+              onClick={() => onRestoreClicked(habit.id)}
+            >
+              <ArchiveRestore size={16} />
+              <span>Restore</span>
+            </Button>
+          )}
 
-          <Button
-            className={`${styles.menuItem} ${styles.dangerItem}`}
-            onClick={() => onDeleteClicked(habit)}
-          >
-            <Trash2 size={16} />
-            <span>Delete</span>
-          </Button>
+          {!habit.archived && (
+            <>
+              <Button
+                className={styles.menuItem}
+                onClick={() => onArchiveClicked(habit.id)}
+              >
+                <Archive size={16} />
+                <span>Archive</span>
+              </Button>
+
+              <Button
+                className={`${styles.menuItem} ${styles.dangerItem}`}
+                onClick={() => onDeleteClicked(habit)}
+              >
+                <Trash2 size={16} />
+                <span>Delete</span>
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </article>

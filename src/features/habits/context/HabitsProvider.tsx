@@ -7,6 +7,9 @@ export function HabitsProvider({ children }: { children: React.ReactNode }) {
     JSON.parse(localStorage.getItem("habits") || "[]"),
   );
 
+  const activeHabits = habits.filter((habit) => habit.archived === false);
+  const archivedHabits = habits.filter((habit) => habit.archived === true);
+
   useEffect(() => {
     localStorage.setItem("habits", JSON.stringify(habits));
   }, [habits]);
@@ -33,23 +36,25 @@ export function HabitsProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
-  const updateHabitLoggedHours = (habitId: string, hours: number) => {
+  const restoreHabit = (habitId: string) => {
     setHabits((prev) =>
-      prev.map((habit) =>
-        habit.id === habitId
-          ? { ...habit, loggedHours: (habit.loggedHours ?? 0) + hours }
-          : habit,
+      prev.map((prevHabit) =>
+        prevHabit.id === habitId
+          ? { ...prevHabit, archived: false }
+          : prevHabit,
       ),
     );
   };
 
   const value: HabitsContextValue = {
     habits,
+    activeHabits,
+    archivedHabits,
     addHabit,
     deleteHabit,
     updateHabit,
     archiveHabit,
-    updateHabitLoggedHours,
+    restoreHabit,
   };
   return (
     <HabitsContext.Provider value={value}>{children}</HabitsContext.Provider>

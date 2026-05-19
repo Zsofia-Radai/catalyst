@@ -1,3 +1,4 @@
+import type { Session } from "../../sessions/types/session";
 import type { Habit, HabitInputs } from "../types/habit";
 
 export function createHabit(data: HabitInputs): Habit {
@@ -10,4 +11,20 @@ export function createHabit(data: HabitInputs): Habit {
     loggedHours: 0,
     archived: false,
   };
+}
+
+export function calculateHabitLoggedHours(
+  habitId: string,
+  sessions: Session[],
+) {
+  return sessions
+    .filter((session) => session.habitId === habitId)
+    .reduce((total, session) => {
+      const started = new Date(session.startedAt).getTime();
+      const finished = new Date(session.finishedAt).getTime();
+
+      const durationInHours = (finished - started) / 1000 / 60 / 60;
+
+      return total + durationInHours;
+    }, 0);
 }

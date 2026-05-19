@@ -9,20 +9,29 @@ import layout from "../layout/AppLayout.module.css";
 import { Button } from "../ui/Button/Button";
 import { DeleteConfirmModal } from "../ui/DeleteConfirmModal/DeleteConfirmModal";
 import styles from "./HabitsPage.module.css";
-import { createHabit } from "../features/habits/utils/habitsUtils";
+import {
+  calculateHabitLoggedHours,
+  createHabit,
+} from "../features/habits/utils/habitsUtils";
+import { useSessions } from "../features/sessions/context/SessionsContext";
 
 export function HabitsPage() {
-  const { habits, addHabit, archiveHabit } = useHabits();
+  const { habits, addHabit, archiveHabit, restoreHabit } = useHabits();
+  const { sessions } = useSessions();
   const habitsContainerRef = useRef<HTMLDivElement | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [habitToDelete, setHabitToDelete] = useState<Habit | null>(null);
   const [habitToEdit, setHabitToEdit] = useState<Habit | null>(null);
   const [menuOpenForHabit, setMenuOpenForHabit] = useState<string | null>(null);
   const [showActive, setShowActive] = useState<boolean>(true);
-  const activeHabits = habits.filter((habit) => habit.archived === false);
-  const archivedHabits = habits.filter((habit) => habit.archived === true);
+  const habitsWithLoggedHours = habits.map((habit) => ({
+    ...habit,
+    loggedHours: calculateHabitLoggedHours(habit.id, sessions),
+  }));
 
-  const visibleHabits = showActive ? activeHabits : archivedHabits;
+  const visibleHabits = habitsWithLoggedHours.filter((habit) =>
+    showActive ? !habit.archived : habit.archived,
+  );
   const emptyMessage = showActive
     ? "No active habits yet."
     : "No archived habits yet.";
@@ -49,6 +58,11 @@ export function HabitsPage() {
   const handleEditClicked = (habit: Habit) => {
     setMenuOpenForHabit(null);
     setHabitToEdit(habit);
+  };
+
+  const handleRestoreClicked = (habitId: string) => {
+    restoreHabit(habitId);
+    setMenuOpenForHabit(null);
   };
 
   const handleArchiveClicked = (habitId: string) => {
@@ -80,7 +94,9 @@ export function HabitsPage() {
           Archived
         </div>
       </div>
-      {visibleHabits.length === 0 && <div>{emptyMessage}</div>}
+      {visibleHabits.length === 0 && (
+        <div className={styles.emptyState}>{emptyMessage}</div>
+      )}
       <div className={styles.habitsContainer} ref={habitsContainerRef}>
         {visibleHabits?.map((habit: Habit) => (
           <HabitCard
@@ -90,6 +106,7 @@ export function HabitsPage() {
             onDeleteClicked={handleDeleteClicked}
             onEditClicked={handleEditClicked}
             onArchiveClicked={handleArchiveClicked}
+            onRestoreClicked={handleRestoreClicked}
             isMenuOpen={menuOpenForHabit === habit.id}
           />
         ))}

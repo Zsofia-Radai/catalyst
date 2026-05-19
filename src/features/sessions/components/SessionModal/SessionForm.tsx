@@ -8,21 +8,13 @@ import {
   MODAL_HOURS,
 } from "../../../../utils/dashboardUtils";
 import styles from "./SessionForm.module.css";
+import type { SessionInputs } from "../../types/session";
 
 type SessionFormProps = {
   onSubmitForm: (data: SessionInputs) => void;
   habits: Habit[];
   startTime?: number;
   editedSession?: SessionInputs;
-};
-
-export type SessionInputs = {
-  habitId: string;
-  startHour: number;
-  startMinute: number;
-  endHour: number;
-  endMinute: number;
-  notes: string;
 };
 
 export function SessionForm({
@@ -105,12 +97,18 @@ export function SessionForm({
               }`}
               style={{ "--card-color": meta.color } as React.CSSProperties}
               onClick={() => setValue("habitId", habit.id)}
+              {...register("habitId", { required: true })}
             >
               <Icon size={20} />
               <div>{habit.name}</div>
             </Button>
           );
         })}
+        {errors.habitId && (
+          <span className={styles.errorMessage} role="alert">
+            Habit is required
+          </span>
+        )}
       </div>
       <div className={styles.timeContainer}>
         <span>Start</span>
@@ -153,7 +151,10 @@ export function SessionForm({
           </select>
         </div>
         {errors.endHour && (
-          <div className={styles.errorMessage} role="alert">
+          <div
+            className={`${styles.errorMessage} ${styles.hourError}`}
+            role="alert"
+          >
             {errors.endHour.message}
           </div>
         )}

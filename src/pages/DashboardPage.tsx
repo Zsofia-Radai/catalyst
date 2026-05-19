@@ -19,7 +19,7 @@ import styles from "./DashboardPage.module.css";
 import { useSessions } from "../features/sessions/context/SessionsContext";
 
 export function DasboardPage() {
-  const { habits } = useHabits();
+  const { activeHabits } = useHabits();
   const { sessions } = useSessions();
   const [isNewSessionModalOpen, setIsNewSessionModalOpen] = useState(false);
   const [isEditSessionModalOpen, setIsEditSessionModalOpen] = useState(false);
@@ -54,7 +54,7 @@ export function DasboardPage() {
   return (
     <div className={layout.page}>
       <div>{formatCurrentDate(currentDate)}</div>
-      {!habits && (
+      {!activeHabits && (
         <div>
           <div>No tracked sessions for today yet.</div>
           <EmptyState
@@ -81,7 +81,7 @@ export function DasboardPage() {
                     onClick={() => handleSessionBlockClicked(session.id)}
                     key={session.id}
                     session={session}
-                    habits={habits}
+                    habits={activeHabits}
                   />
                 ))}
               </div>
@@ -121,7 +121,7 @@ export function DasboardPage() {
         <NewSessionModal
           closeModal={closeNewSessionModal}
           startTime={startTime}
-          habits={habits}
+          habits={activeHabits}
         />
       )}
 
@@ -129,7 +129,7 @@ export function DasboardPage() {
         <EditSessionModal
           closeModal={closeEditSessionModal}
           session={selectedSession}
-          habits={habits}
+          habits={activeHabits}
         />
       )}
     </div>

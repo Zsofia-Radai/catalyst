@@ -1,14 +1,11 @@
 import { CircleX } from "lucide-react";
-import { useHabits } from "../../../habits/context/HabitsContext";
-import { useSessions } from "../../context/SessionsContext";
-import type { Habit } from "../../../habits/types/habit";
 import { Button } from "../../../../ui/Button/Button";
-import {
-  createSession,
-  getSessionDurationHours,
-} from "../../utils/sessionsUtils";
+import type { Habit } from "../../../habits/types/habit";
+import { useSessions } from "../../context/SessionsContext";
+import type { SessionInputs } from "../../types/session";
+import { createSession } from "../../utils/sessionsUtils";
 import styles from "./NewSessionModal.module.css";
-import { SessionForm, type SessionInputs } from "./SessionForm";
+import { SessionForm } from "./SessionForm";
 
 type NewSessionModalProps = {
   closeModal: () => void;
@@ -22,15 +19,9 @@ export function NewSessionModal({
   habits,
 }: NewSessionModalProps) {
   const { addSession } = useSessions();
-  const { updateHabitLoggedHours } = useHabits();
 
   const handleSessionCreated = (data: SessionInputs) => {
     const session = createSession(data);
-    const duration = getSessionDurationHours(
-      session.startedAt,
-      session.finishedAt,
-    );
-    updateHabitLoggedHours(session.habitId, duration);
     addSession(session);
     closeModal();
   };
