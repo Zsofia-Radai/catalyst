@@ -36,19 +36,17 @@ export function DasboardPage() {
     setIsNewSessionModalOpen(true);
   };
 
+  const openSessionEditor = (session: Session) => {
+    setSelectedSession(session);
+    setIsEditSessionModalOpen(true);
+  };
+
   const closeNewSessionModal = () => {
     setIsNewSessionModalOpen(false);
   };
 
   const closeEditSessionModal = () => {
     setIsEditSessionModalOpen(false);
-  };
-
-  const handleSessionBlockClicked = (sessionId: string) => {
-    const session = sessions.find((session) => session.id === sessionId);
-    if (!session) return;
-    setSelectedSession(session);
-    setIsEditSessionModalOpen(true);
   };
 
   return (
@@ -67,7 +65,7 @@ export function DasboardPage() {
       )}
       <div className={styles.timeline}>
         {DAY_HOURS.map((hour) => {
-          const sessions = getSessionForHour(todaysSessions, hour);
+          const hourSessions = getSessionForHour(todaysSessions, hour);
           return (
             <div
               key={hour}
@@ -76,9 +74,9 @@ export function DasboardPage() {
             >
               <span>{formatTime(hour)}</span>
               <div className={styles.hourContent}>
-                {sessions.map((session) => (
+                {hourSessions.map((session) => (
                   <SessionBlock
-                    onClick={() => handleSessionBlockClicked(session.id)}
+                    onClick={() => openSessionEditor(session)}
                     key={session.id}
                     session={session}
                     habits={activeHabits}

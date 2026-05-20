@@ -1,5 +1,6 @@
 .sessionBlock {
   position: absolute;
+  z-index: 1;
   left: 0;
   right: 12px;
   border-radius: 12px;
