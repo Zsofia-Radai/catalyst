@@ -22,7 +22,11 @@ const getSessionStyle = (session: Session, meta: HabitMeta) => {
   const end = new Date(session.finishedAt);
 
   const startMinutes = start.getMinutes();
-  const durationMinutes = (end.getTime() - start.getTime()) / 1000 / 60;
+  let durationMinutes = (end.getTime() - start.getTime()) / 1000 / 60;
+
+  if (durationMinutes < 0) {
+    durationMinutes += 24 * 60;
+  }
 
   return {
     top: `${(startMinutes / 60) * HOUR_HEIGHT}px`,

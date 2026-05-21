@@ -1,5 +1,4 @@
 import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
-import { HABIT_CATEGORY_META, type Habit } from "../../../habits/types/habit";
 import { Button } from "../../../../ui/Button/Button";
 import {
   formatHour,
@@ -7,8 +6,10 @@ import {
   MINUTES,
   MODAL_HOURS,
 } from "../../../../utils/dashboardUtils";
-import styles from "./SessionForm.module.css";
+import { HABIT_CATEGORY_META, type Habit } from "../../../habits/types/habit";
 import type { SessionInputs } from "../../types/session";
+import styles from "./SessionForm.module.css";
+import { isEndAfterStart } from "../../utils/sessionsUtils";
 
 type SessionFormProps = {
   onSubmitForm: (data: SessionInputs) => void;
@@ -37,18 +38,12 @@ export function SessionForm({
     return {
       startHour: startTime ?? 0,
       startMinute: 0,
-      endHour: (startTime ?? 0) + 1,
+      endHour: startTime === 23 ? 0 : (startTime ?? 0) + 1,
       endMinute: 0,
       habitId: "",
       notes: "",
     };
   };
-
-  function isEndAfterStart(data: SessionInputs) {
-    const startTotalMinutes = data.startHour * 60 + data.startMinute;
-    const endTotalMinutes = data.endHour * 60 + data.endMinute;
-    return endTotalMinutes > startTotalMinutes;
-  }
 
   const {
     register,
@@ -61,13 +56,13 @@ export function SessionForm({
   } = useForm<SessionInputs>({ defaultValues: getDefaultValues() });
 
   const selectedHabitId = useWatch({ control, name: "habitId" });
-  const startHour = useWatch({ control, name: "startHour" });
 
   const onSubmit: SubmitHandler<SessionInputs> = (data) => {
     if (!isEndAfterStart(data)) {
       setError("endHour", {
         type: "manual",
-        message: "End time must be after start time.",
+        message:
+          "End time must be later than start time. Sessions can't continue into the next day.",
       });
       return;
     }
@@ -113,7 +108,10 @@ export function SessionForm({
         <span>Start</span>
         <span>End</span>
         <div className={styles.time}>
-          <select {...register("startHour")}>
+          <select
+            {...register("startHour")}
+            className={errors.endHour ? styles.error : ""}
+          >
             {MODAL_HOURS.map((hour) => (
               <option key={hour} value={hour}>
                 {formatHour(hour)}
@@ -135,7 +133,7 @@ export function SessionForm({
             className={errors.endHour ? styles.error : ""}
           >
             {MODAL_HOURS.map((hour) => (
-              <option key={hour} value={hour} disabled={hour < startHour}>
+              <option key={hour} value={hour}>
                 {formatHour(hour)}
               </option>
             ))}
@@ -149,15 +147,12 @@ export function SessionForm({
             ))}
           </select>
         </div>
-        {errors.endHour && (
-          <div
-            className={`${styles.errorMessage} ${styles.hourError}`}
-            role="alert"
-          >
-            {errors.endHour.message}
-          </div>
-        )}
       </div>
+      {errors.endHour && (
+        <div className={styles.errorMessage} role="alert">
+          {errors.endHour.message}
+        </div>
+      )}
       <div className={styles.notes}>
         <label htmlFor="notes">Notes</label>
         <textarea {...register("notes")} name="notes" id="notes"></textarea>

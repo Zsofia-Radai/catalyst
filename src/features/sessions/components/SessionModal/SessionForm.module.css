@@ -54,8 +54,5 @@
 
 .errorMessage {
   color: #bd1105;
-}
-
-.hourError {
-  grid-column: 2;
+  margin: -5px 10px 0;
 }
