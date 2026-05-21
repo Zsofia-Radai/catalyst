@@ -11,19 +11,21 @@ import { SessionForm } from "./SessionForm";
 type NewSessionModalProps = {
   closeModal: () => void;
   startTime: number;
+  day: Date;
   habits: Habit[];
 };
 
 export function NewSessionModal({
   closeModal,
   startTime,
+  day,
   habits,
 }: NewSessionModalProps) {
   const { addSession } = useSessions();
   const { showToast } = useToast();
 
   const handleSessionCreated = (data: SessionInputs) => {
-    const session = createSession(data);
+    const session = createSession(data, day);
     showToast("Session created!", "save");
     addSession(session);
     closeModal();
