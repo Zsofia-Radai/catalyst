@@ -1,7 +1,6 @@
 .sessionBlock {
   position: absolute;
   z-index: 1;
-  left: 0;
   border-radius: 12px;
   background: var(--card-color);
   display: grid;
@@ -24,7 +23,7 @@
 }
 
 .sessionNote {
-  color: var(--muted);
+  color: var(--line);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -34,6 +33,7 @@
 .sessionTime {
   grid-column: 2 / 4;
   font-size: 0.9rem;
+  color: var(--muted);
 }
 
 .actions {

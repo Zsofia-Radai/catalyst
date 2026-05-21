@@ -15,7 +15,7 @@
 
 .hourRow {
   display: grid;
-  grid-template-columns: 56px 1fr;
+  grid-template-columns: 45px 1fr;
   min-height: 72px;
   position: relative;
   border-top: 1px solid rgb(0 0 0 / 21%);
@@ -24,7 +24,7 @@
 .timeline {
   background: #f2f5f491;
   border-radius: 5px;
-  padding: 20px;
+  padding: 5px 15px;
   margin: 20px 0;
   cursor: pointer;
   position: relative;
