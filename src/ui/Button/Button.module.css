@@ -11,7 +11,7 @@
 }
 
 .secondary {
-  background: var(--muted);
+  background: var(--line);
   color: var(--text);
 }
 
@@ -21,4 +21,10 @@
 
 .save:hover {
   background: var(--accent-hover);
+}
+
+.icon {
+  background: transparent;
+  padding: 0;
+  border: none;
 }

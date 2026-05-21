@@ -1,9 +1,10 @@
+import { isSameDay } from "date-fns";
 import { useState } from "react";
+import { useHabits } from "../features/habits/context/HabitsContext";
 import { SessionBlock } from "../features/sessions/components/SessionBlock/SessionBlock";
 import { EditSessionModal } from "../features/sessions/components/SessionModal/EditSessionModal";
 import { NewSessionModal } from "../features/sessions/components/SessionModal/NewSessionModal";
-import { useHabits } from "../features/habits/context/HabitsContext";
-import layout from "../layout/AppLayout.module.css";
+import { useSessions } from "../features/sessions/context/SessionsContext";
 import type { Session } from "../features/sessions/types/session";
 import { Button } from "../ui/Button/Button";
 import { EmptyState } from "../ui/EmptyState/EmptyState";
@@ -12,11 +13,12 @@ import {
   formatCurrentDate,
   formatTime,
   getSessionForHour,
-  isSameDay,
+  getSessionsForToday,
+  isPastDay,
   NIGHT_HOURS,
+  WEEK_DATES,
 } from "../utils/dashboardUtils";
 import styles from "./DashboardPage.module.css";
-import { useSessions } from "../features/sessions/context/SessionsContext";
 
 export function DasboardPage() {
   const { activeHabits } = useHabits();
@@ -24,20 +26,21 @@ export function DasboardPage() {
   const [isNewSessionModalOpen, setIsNewSessionModalOpen] = useState(false);
   const [isEditSessionModalOpen, setIsEditSessionModalOpen] = useState(false);
   const [showNightSessions, setShowNightSessions] = useState(false);
-  const [startTime, setStartTime] = useState(0);
+  const [newSessionstartTime, setNewSessionStartTime] = useState(0);
+  const [newSessionDate, setNewSessionDate] = useState(new Date());
+  const [selectedSessionDate, setSelectedSessionDate] = useState(new Date());
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
   const currentDate = new Date();
-  const todaysSessions = sessions.filter((session) =>
-    isSameDay(new Date(session.startedAt), currentDate),
-  );
 
-  const addSession = (hour: number) => {
-    setStartTime(hour);
+  const addSession = (hour: number, day: Date) => {
+    setNewSessionStartTime(hour);
+    setNewSessionDate(day);
     setIsNewSessionModalOpen(true);
   };
 
-  const openSessionEditor = (session: Session) => {
+  const openSessionEditor = (session: Session, day: Date) => {
     setSelectedSession(session);
+    setSelectedSessionDate(day);
     setIsEditSessionModalOpen(true);
   };
 
@@ -50,9 +53,8 @@ export function DasboardPage() {
   };
 
   return (
-    <div className={layout.page}>
-      <div>{formatCurrentDate(currentDate)}</div>
-      {!activeHabits && (
+    <div className={styles.weekPlanner}>
+      {activeHabits.length === 0 && (
         <div>
           <div>No tracked sessions for today yet.</div>
           <EmptyState
@@ -63,30 +65,50 @@ export function DasboardPage() {
           />
         </div>
       )}
-      <div className={styles.timeline}>
-        {DAY_HOURS.map((hour) => {
-          const hourSessions = getSessionForHour(todaysSessions, hour);
-          return (
+      {WEEK_DATES.map((day) => {
+        const isPast = isPastDay(day);
+        return (
+          <div key={day.getDate()}>
             <div
-              key={hour}
-              className={styles.hourRow}
-              onClick={() => addSession(hour)}
+              className={`${styles.header} ${isSameDay(currentDate, day) ? styles.currentDayHeader : ""}`}
             >
-              <span>{formatTime(hour)}</span>
-              <div className={styles.hourContent}>
-                {hourSessions.map((session) => (
-                  <SessionBlock
-                    onClick={() => openSessionEditor(session)}
-                    key={session.id}
-                    session={session}
-                    habits={activeHabits}
-                  />
-                ))}
-              </div>
+              {formatCurrentDate(day)}
             </div>
-          );
-        })}
-      </div>
+            <div
+              className={`${styles.timeline} 
+                ${isSameDay(currentDate, day) ? styles.currentDay : ""} 
+                ${isPast ? styles.pastDay : ""}
+              `}
+            >
+              {DAY_HOURS.map((hour) => {
+                const hourSessions = getSessionForHour(
+                  getSessionsForToday(sessions, day),
+                  hour,
+                );
+                return (
+                  <div
+                    key={hour}
+                    className={styles.hourRow}
+                    onClick={() => addSession(hour, day)}
+                  >
+                    <span>{formatTime(hour)}</span>
+                    <div className={styles.hourContent}>
+                      {hourSessions.map((session) => (
+                        <SessionBlock
+                          onClick={() => openSessionEditor(session, day)}
+                          key={session.id}
+                          session={session}
+                          habits={activeHabits}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
 
       <section className={styles.nightSessions}>
         <Button
@@ -118,7 +140,8 @@ export function DasboardPage() {
       {isNewSessionModalOpen && (
         <NewSessionModal
           closeModal={closeNewSessionModal}
-          startTime={startTime}
+          startTime={newSessionstartTime}
+          day={newSessionDate}
           habits={activeHabits}
         />
       )}
@@ -127,6 +150,7 @@ export function DasboardPage() {
         <EditSessionModal
           closeModal={closeEditSessionModal}
           session={selectedSession}
+          day={selectedSessionDate}
           habits={activeHabits}
         />
       )}

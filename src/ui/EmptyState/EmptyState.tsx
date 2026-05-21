@@ -19,7 +19,7 @@ export function EmptyState({
       <div>{title}</div>
       <div>{description}</div>
       <Link to={actionTo}>
-        <Button type="button" variant="create">
+        <Button type="button" variant="save">
           {actionLabel}
         </Button>
       </Link>

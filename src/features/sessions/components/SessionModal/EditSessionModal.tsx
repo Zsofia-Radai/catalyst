@@ -15,18 +15,20 @@ type EditSessionModalProps = {
   closeModal: () => void;
   session: Session;
   habits: Habit[];
+  day: Date;
 };
 
 export function EditSessionModal({
   closeModal,
   session,
+  day,
   habits,
 }: EditSessionModalProps) {
   const { updateSession, deleteSession } = useSessions();
   const { showToast } = useToast();
 
   const handleSessionSave = (sessionData: SessionInputs) => {
-    updateSession(convertSessionInputToSession(sessionData, session));
+    updateSession(convertSessionInputToSession(sessionData, day, session));
     showToast("Session saved!", "save");
     closeModal();
   };

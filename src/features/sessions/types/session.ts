@@ -4,6 +4,7 @@ export type Session = {
   startedAt: Date;
   finishedAt: Date;
   notes: string;
+  completed: boolean;
 };
 
 export type SessionInputs = {

@@ -19,6 +19,7 @@ export function calculateHabitLoggedHours(
 ) {
   return sessions
     .filter((session) => session.habitId === habitId)
+    .filter((session) => session.completed)
     .reduce((total, session) => {
       const started = new Date(session.startedAt).getTime();
       const finished = new Date(session.finishedAt).getTime();

@@ -1,10 +1,7 @@
 import type { Session, SessionInputs } from "../types/session";
 
-export function createSession(data: SessionInputs): Session {
-  const startedAt = new Date();
-  const finishedAt = new Date();
-  startedAt.setHours(data.startHour, data.startMinute, 0, 0);
-  finishedAt.setHours(data.endHour, data.endMinute, 0, 0);
+export function createSession(data: SessionInputs, day: Date): Session {
+  const { startedAt, finishedAt } = buildSessionDates(data, day);
 
   return {
     id: crypto.randomUUID(),
@@ -12,6 +9,7 @@ export function createSession(data: SessionInputs): Session {
     startedAt: startedAt,
     finishedAt: finishedAt,
     notes: data.notes,
+    completed: false,
   };
 }
 
@@ -31,20 +29,35 @@ export function convertSessionToSessionInput(session: Session) {
   };
 }
 
-export function convertSessionInputToSession(
-  data: SessionInputs,
-  existingSession: Session,
-): Session {
-  const startedAt = new Date();
-  const finishedAt = new Date();
+function buildSessionDates(data: SessionInputs, day: Date) {
+  const startedAt = new Date(day);
+  const finishedAt = new Date(day);
+
   startedAt.setHours(data.startHour, data.startMinute, 0, 0);
   finishedAt.setHours(data.endHour, data.endMinute, 0, 0);
 
+  return { startedAt, finishedAt };
+}
+
+export function convertSessionInputToSession(
+  data: SessionInputs,
+  day: Date,
+  existingSession: Session,
+): Session {
+  const { startedAt, finishedAt } = buildSessionDates(data, day);
+
   return {
-    id: existingSession.id,
+    ...existingSession,
     habitId: data.habitId,
     startedAt: startedAt,
     finishedAt: finishedAt,
     notes: data.notes,
   };
+}
+
+export function isEndAfterStart(data: SessionInputs) {
+  const startTotal = data.startHour * 60 + data.startMinute;
+  const endTotal = data.endHour * 60 + data.endMinute;
+  if (endTotal === 0) return true;
+  return endTotal > startTotal;
 }
