@@ -1,3 +1,4 @@
+import { isSameDay } from "date-fns";
 import { useState } from "react";
 import { useHabits } from "../features/habits/context/HabitsContext";
 import { SessionBlock } from "../features/sessions/components/SessionBlock/SessionBlock";
@@ -13,11 +14,11 @@ import {
   formatTime,
   getSessionForHour,
   getSessionsForToday,
+  isPastDay,
   NIGHT_HOURS,
   WEEK_DATES,
 } from "../utils/dashboardUtils";
 import styles from "./DashboardPage.module.css";
-import { isSameDay } from "date-fns";
 
 export function DasboardPage() {
   const { activeHabits } = useHabits();
@@ -53,7 +54,7 @@ export function DasboardPage() {
 
   return (
     <div className={styles.weekPlanner}>
-      {!activeHabits && (
+      {activeHabits.length === 0 && (
         <div>
           <div>No tracked sessions for today yet.</div>
           <EmptyState
@@ -65,11 +66,19 @@ export function DasboardPage() {
         </div>
       )}
       {WEEK_DATES.map((day) => {
+        const isPast = isPastDay(day);
         return (
           <div key={day.getDate()}>
-            <div className={styles.header}>{formatCurrentDate(day)}</div>
             <div
-              className={`${styles.timeline} ${isSameDay(currentDate, day) ? styles.currentDay : ""}`}
+              className={`${styles.header} ${isSameDay(currentDate, day) ? styles.currentDayHeader : ""}`}
+            >
+              {formatCurrentDate(day)}
+            </div>
+            <div
+              className={`${styles.timeline} 
+                ${isSameDay(currentDate, day) ? styles.currentDay : ""} 
+                ${isPast ? styles.pastDay : ""}
+              `}
             >
               {DAY_HOURS.map((hour) => {
                 const hourSessions = getSessionForHour(

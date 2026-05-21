@@ -22,3 +22,9 @@
 .save:hover {
   background: var(--accent-hover);
 }
+
+.icon {
+  background: transparent;
+  padding: 0;
+  border: none;
+}

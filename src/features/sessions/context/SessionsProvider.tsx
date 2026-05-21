@@ -27,11 +27,25 @@ export function SessionsProvider({ children }: { children: React.ReactNode }) {
     setSessions((prev) => prev.filter((session) => session.id !== sessionId));
   };
 
+  const toggleSessionCompleted = (sessionId: string) => {
+    setSessions((prev) =>
+      prev.map((session) =>
+        session.id === sessionId
+          ? {
+              ...session,
+              completed: !session.completed,
+            }
+          : session,
+      ),
+    );
+  };
+
   const value: SessionContextValue = {
     sessions,
     addSession,
     updateSession,
     deleteSession,
+    toggleSessionCompleted,
   };
 
   return (

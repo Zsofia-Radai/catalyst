@@ -9,6 +9,7 @@ export function createSession(data: SessionInputs, day: Date): Session {
     startedAt: startedAt,
     finishedAt: finishedAt,
     notes: data.notes,
+    completed: false,
   };
 }
 

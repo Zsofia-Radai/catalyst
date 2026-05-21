@@ -1,4 +1,5 @@
-import type { Session } from "../../types/session";
+import { Check, Pencil } from "lucide-react";
+import { Button } from "../../../../ui/Button/Button";
 import {
   formatSessionTime,
   getHabitData,
@@ -8,6 +9,8 @@ import {
   type Habit,
   type HabitMeta,
 } from "../../../habits/types/habit";
+import { useSessions } from "../../context/SessionsContext";
+import type { Session } from "../../types/session";
 import styles from "./SessionBlock.module.css";
 
 type SessionProps = {
@@ -37,6 +40,7 @@ const getSessionStyle = (session: Session, meta: HabitMeta) => {
 
 export function SessionBlock({ session, habits, onClick }: SessionProps) {
   const habitData = getHabitData(habits, session.habitId);
+  const { toggleSessionCompleted } = useSessions();
   if (!habitData) return null;
   const meta = HABIT_CATEGORY_META[habitData.category];
   const Icon = meta.icon;
@@ -44,13 +48,39 @@ export function SessionBlock({ session, habits, onClick }: SessionProps) {
   return (
     <div
       key={session.id}
-      className={styles.sessionBlock}
+      className={`${styles.sessionBlock} ${
+        session.completed ? styles.completed : ""
+      }`}
       style={getSessionStyle(session, meta)}
       onClick={(e) => {
         e.stopPropagation();
-        onClick();
       }}
     >
+      <div className={styles.actions}>
+        <Button
+          aria-label="complete-session-toggle"
+          variant="icon"
+          style={{ color: "var(--text)" }}
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleSessionCompleted(session.id);
+          }}
+        >
+          <Check size={18} />
+        </Button>
+
+        <Button
+          aria-label="edit-session"
+          variant="icon"
+          style={{ color: "var(--text)" }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onClick();
+          }}
+        >
+          <Pencil size={18} />
+        </Button>
+      </div>
       <div className={styles.sessionIcon}>
         <Icon />
       </div>
@@ -63,6 +93,12 @@ export function SessionBlock({ session, habits, onClick }: SessionProps) {
         {formatSessionTime(session.startedAt)} -{" "}
         {formatSessionTime(session.finishedAt)}
       </span>
+
+      {session.completed && (
+        <div className={styles.completedBadge}>
+          <Check size={16} />
+        </div>
+      )}
     </div>
   );
 }

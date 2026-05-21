@@ -1,6 +1,12 @@
 import type { Habit } from "../features/habits/types/habit";
 import type { Session } from "../features/sessions/types/session";
-import { startOfWeek, addDays, isSameDay } from "date-fns";
+import {
+  startOfWeek,
+  addDays,
+  isSameDay,
+  isBefore,
+  startOfDay,
+} from "date-fns";
 
 export const FULL_DAY_HOURS = Array.from({ length: 24 }, (_, index) => index);
 export const DAY_HOURS = FULL_DAY_HOURS.filter((hour) => hour >= 8);
@@ -62,4 +68,8 @@ export function getSessionForHour(sessions: Session[], hour: number) {
 
 export function getSessionsForToday(sessions: Session[], date: Date) {
   return sessions.filter((session) => isSameDay(session.startedAt, date));
+}
+
+export function isPastDay(date: Date) {
+  return isBefore(startOfDay(date), startOfDay(new Date()));
 }

@@ -3,6 +3,7 @@
   background: #273449;
   padding: 10px;
   color: var(--text);
+  border-radius: 5px;
 }
 
 .weekPlanner {
@@ -32,6 +33,14 @@
 
 .currentDay {
   border: 2px solid blue;
+}
+
+.currentDayHeader {
+  background: blue;
+}
+
+.pastDay {
+  opacity: 0.5;
 }
 
 .hourContent {
