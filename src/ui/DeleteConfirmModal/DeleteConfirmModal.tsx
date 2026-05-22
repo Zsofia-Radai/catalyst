@@ -18,7 +18,7 @@ export function DeleteConfirmModal({
   onCancel,
 }: DeleteConfirmModalProps) {
   return (
-    <Modal title={title} onClose={onCancel}>
+    <Modal title={title} onClose={onCancel} deleteModal={true}>
       <div className={styles.modalBody}>
         <div className={styles.name}>{objectToDelete}</div>
         <div>{details}</div>

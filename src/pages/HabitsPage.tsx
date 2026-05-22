@@ -11,10 +11,13 @@ import layout from "../layout/AppLayout.module.css";
 import { Button } from "../ui/Button/Button";
 import { DeleteConfirmModal } from "../ui/DeleteConfirmModal/DeleteConfirmModal";
 import styles from "./HabitsPage.module.css";
+import { useToast } from "../context/ToastContext";
+import { EmptyState } from "../ui/EmptyState/EmptyState";
 
 export function HabitsPage() {
   const { habits, archiveHabit, restoreHabit, deleteHabit } = useHabits();
-  const { sessions } = useSessions();
+  const { sessions, deleteSession } = useSessions();
+  const { showToast } = useToast();
   const habitsContainerRef = useRef<HTMLDivElement | null>(null);
   const [newHabitModalOpen, setNewHabitModalOpen] = useState(false);
   const [habitToDelete, setHabitToDelete] = useState<Habit | null>(null);
@@ -49,6 +52,12 @@ export function HabitsPage() {
   const handleDeleteHabit = () => {
     if (!habitToDelete) return;
     deleteHabit(habitToDelete.id);
+    sessions.map((session) => {
+      if (session.habitId === habitToDelete.id) {
+        deleteSession(session.id);
+      }
+    });
+    showToast("Habit deleted!", "delete");
     setHabitToDelete(null);
   };
 
@@ -101,8 +110,15 @@ export function HabitsPage() {
           Create habit
         </Button>
       </div>
-      {visibleHabits.length === 0 && (
-        <div className={styles.emptyState}>{emptyMessage}</div>
+      {visibleHabits.length === 0 && showActive && (
+        <EmptyState
+          title={emptyMessage}
+          actionLabel="Create habit"
+          action={createHabitClicked}
+        />
+      )}
+      {visibleHabits.length === 0 && !showActive && (
+        <EmptyState title={emptyMessage} />
       )}
       <div className={styles.habitsContainer} ref={habitsContainerRef}>
         {visibleHabits?.map((habit: Habit) => (
@@ -125,7 +141,7 @@ export function HabitsPage() {
           objectToDelete={habitToDelete.name}
           onDelete={handleDeleteHabit}
           title="Are you sure you want to delete this habit?"
-          details="This action will permanently delete this habit."
+          details="This action will permanently delete this habit and the associated sessions."
         ></DeleteConfirmModal>
       )}
 

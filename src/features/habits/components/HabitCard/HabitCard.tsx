@@ -40,6 +40,7 @@ export function HabitCard({
       </div>
       <div className={styles.menuWrapper}>
         <Ellipsis
+          aria-label="Open habit menu"
           className={styles.menuIcon}
           onClick={() => onMenuClicked(habit)}
         />
@@ -48,6 +49,7 @@ export function HabitCard({
         >
           {habit.archived && (
             <Button
+              aria-label="Restore habit"
               className={styles.menuItem}
               onClick={() => onRestoreClicked(habit.id)}
             >
@@ -59,6 +61,7 @@ export function HabitCard({
           {!habit.archived && (
             <>
               <Button
+                aria-label="Edit habit"
                 className={styles.menuItem}
                 onClick={() => onEditClicked(habit)}
               >
@@ -66,22 +69,23 @@ export function HabitCard({
                 <span>Edit</span>
               </Button>
               <Button
+                aria-label="Archive habit"
                 className={styles.menuItem}
                 onClick={() => onArchiveClicked(habit.id)}
               >
                 <Archive size={16} />
                 <span>Archive</span>
               </Button>
-
-              <Button
-                className={`${styles.menuItem} ${styles.dangerItem}`}
-                onClick={() => onDeleteClicked(habit)}
-              >
-                <Trash2 size={16} />
-                <span>Delete</span>
-              </Button>
             </>
           )}
+          <Button
+            aria-label="Delete habit"
+            className={`${styles.menuItem} ${styles.dangerItem}`}
+            onClick={() => onDeleteClicked(habit)}
+          >
+            <Trash2 size={16} />
+            <span>Delete</span>
+          </Button>
         </div>
       </div>
     </article>

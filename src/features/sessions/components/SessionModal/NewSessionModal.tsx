@@ -1,3 +1,4 @@
+import { isPast } from "date-fns";
 import { useToast } from "../../../../context/ToastContext";
 import { Button } from "../../../../ui/Button/Button";
 import { Modal } from "../../../../ui/Modal/Modal";
@@ -25,7 +26,10 @@ export function NewSessionModal({
   const { showToast } = useToast();
 
   const handleSessionCreated = (data: SessionInputs) => {
-    const session = createSession(data, day);
+    let session = createSession(data, day);
+    if (isPast(session.finishedAt)) {
+      session = { ...session, completed: true };
+    }
     showToast("Session created!", "save");
     addSession(session);
     closeModal();

@@ -72,3 +72,9 @@
 .nightDrawerInner {
   padding-top: 12px;
 }
+
+@media (max-width: 600px) {
+  .weekPlanner {
+    display: block;
+  }
+}

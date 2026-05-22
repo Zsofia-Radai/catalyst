@@ -1,5 +1,6 @@
 import { createContext, useContext } from "react";
 import type { Habit } from "../types/habit";
+import type { Session } from "../../sessions/types/session";
 
 export type HabitsContextValue = {
   habits: Habit[];
@@ -10,6 +11,7 @@ export type HabitsContextValue = {
   restoreHabit: (habitId: string) => void;
   archiveHabit: (habitId: string) => void;
   updateHabit: (habit: Habit) => void;
+  habitsWithLoggedHours: (sessions: Session[]) => Habit[];
 };
 
 export const HabitsContext = createContext<HabitsContextValue | null>(null);

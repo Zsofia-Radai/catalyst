@@ -1,5 +1,6 @@
 import { isSameDay } from "date-fns";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useHabits } from "../features/habits/context/HabitsContext";
 import { SessionBlock } from "../features/sessions/components/SessionBlock/SessionBlock";
 import { EditSessionModal } from "../features/sessions/components/SessionModal/EditSessionModal";
@@ -23,6 +24,7 @@ import styles from "./DashboardPage.module.css";
 export function DasboardPage() {
   const { activeHabits } = useHabits();
   const { sessions } = useSessions();
+  const navigate = useNavigate();
   const [isNewSessionModalOpen, setIsNewSessionModalOpen] = useState(false);
   const [isEditSessionModalOpen, setIsEditSessionModalOpen] = useState(false);
   const [showNightSessions, setShowNightSessions] = useState(false);
@@ -53,89 +55,93 @@ export function DasboardPage() {
   };
 
   return (
-    <div className={styles.weekPlanner}>
-      {activeHabits.length === 0 && (
-        <div>
-          <div>No tracked sessions for today yet.</div>
+    <div>
+      {activeHabits.length === 0 ? (
+        <div className={styles.emptyState}>
           <EmptyState
-            title="No habits yet."
+            title="No active habits yet."
             description="Create your first habit to start tracking sessions."
             actionLabel="Go to habits page"
-            actionTo="/habits"
+            action={() => navigate("/habits")}
           />
         </div>
-      )}
-      {WEEK_DATES.map((day) => {
-        const isPast = isPastDay(day);
-        return (
-          <div key={day.getDate()}>
-            <div
-              className={`${styles.header} ${isSameDay(currentDate, day) ? styles.currentDayHeader : ""}`}
-            >
-              {formatCurrentDate(day)}
-            </div>
-            <div
-              className={`${styles.timeline} 
-                ${isSameDay(currentDate, day) ? styles.currentDay : ""} 
-                ${isPast ? styles.pastDay : ""}
-              `}
-            >
-              {DAY_HOURS.map((hour) => {
-                const hourSessions = getSessionForHour(
-                  getSessionsForToday(sessions, day),
-                  hour,
-                );
-                return (
-                  <div
-                    key={hour}
-                    className={styles.hourRow}
-                    onClick={() => addSession(hour, day)}
-                  >
-                    <span>{formatTime(hour)}</span>
-                    <div className={styles.hourContent}>
-                      {hourSessions.map((session) => (
-                        <SessionBlock
-                          onClick={() => openSessionEditor(session, day)}
-                          key={session.id}
-                          session={session}
-                          habits={activeHabits}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        );
-      })}
-
-      <section className={styles.nightSessions}>
-        <Button
-          type="button"
-          onClick={() => setShowNightSessions((prev) => !prev)}
-        >
-          Show night sessions
-        </Button>
-
-        <div
-          className={`${styles.nightDrawer} ${
-            showNightSessions ? styles.open : ""
-          }`}
-        >
-          <div className={styles.nightDrawerInner}>
-            <div className={styles.timeline}>
-              {NIGHT_HOURS.map((hour) => {
-                return (
-                  <div key={hour} className={styles.hourRow}>
-                    <span>{formatTime(hour)}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+      ) : (
+        <div className={styles.weekPlanner}>
+          {WEEK_DATES.map((day) => {
+            const isPast = isPastDay(day);
+            return (
+              <div key={day.getDate()}>
+                <div
+                  className={`${styles.header} ${isSameDay(currentDate, day) ? styles.currentDayHeader : ""}`}
+                >
+                  {formatCurrentDate(day)}
+                </div>
+                <div
+                  className={`${styles.timeline} 
+                    ${isSameDay(currentDate, day) ? styles.currentDay : ""} 
+                    ${isPast ? styles.pastDay : ""}
+                  `}
+                >
+                  {DAY_HOURS.map((hour) => {
+                    const hourSessions = getSessionForHour(
+                      getSessionsForToday(sessions, day),
+                      hour,
+                    );
+                    return (
+                      <div
+                        key={hour}
+                        className={styles.hourRow}
+                        onClick={() => addSession(hour, day)}
+                      >
+                        <span>{formatTime(hour)}</span>
+                        <div className={styles.hourContent}>
+                          {hourSessions.map((session) => (
+                            <SessionBlock
+                              onClick={() => openSessionEditor(session, day)}
+                              key={session.id}
+                              session={session}
+                              habits={activeHabits}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
         </div>
-      </section>
+      )}
+
+      {activeHabits.length !== 0 && (
+        <section className={styles.nightSessions}>
+          <Button
+            type="button"
+            onClick={() => setShowNightSessions((prev) => !prev)}
+          >
+            Show night sessions
+          </Button>
+
+          <div
+            className={`${styles.nightDrawer} ${
+              showNightSessions ? styles.open : ""
+            }`}
+          >
+            <div className={styles.nightDrawerInner}>
+              <div className={styles.timeline}>
+                {NIGHT_HOURS.map((hour) => {
+                  return (
+                    <div key={hour} className={styles.hourRow}>
+                      <span>{formatTime(hour)}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {isNewSessionModalOpen && (
         <NewSessionModal

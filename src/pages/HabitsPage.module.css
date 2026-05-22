@@ -11,10 +11,6 @@
   border-radius: 5px;
 }
 
-.emptyState {
-  padding: 20px 0;
-}
-
 .tabs {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -40,6 +36,10 @@
   flex-shrink: 0;
 }
 
+.createButton:hover {
+  background: var(--bg);
+}
+
 .habitForm {
   transform: translateY(-12px);
   opacity: 0;
@@ -61,4 +61,11 @@
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   gap: 10px;
   margin: 10px 0;
+}
+
+@media (max-width: 600px) {
+  .habitsContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
 }

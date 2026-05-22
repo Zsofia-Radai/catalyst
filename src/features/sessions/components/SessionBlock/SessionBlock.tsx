@@ -58,7 +58,7 @@ export function SessionBlock({ session, habits, onClick }: SessionProps) {
     >
       <div className={styles.actions}>
         <Button
-          aria-label="complete-session-toggle"
+          aria-label="Complete session toggle"
           variant="icon"
           style={{ color: "var(--text)" }}
           onClick={(e) => {
@@ -70,7 +70,7 @@ export function SessionBlock({ session, habits, onClick }: SessionProps) {
         </Button>
 
         <Button
-          aria-label="edit-session"
+          aria-label="Edit session"
           variant="icon"
           style={{ color: "var(--text)" }}
           onClick={(e) => {

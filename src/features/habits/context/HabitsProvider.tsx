@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { HabitsContext, type HabitsContextValue } from "./HabitsContext";
 import type { Habit } from "../types/habit";
+import { calculateHabitLoggedHours } from "../utils/habitsUtils";
+import type { Session } from "../../sessions/types/session";
 
 export function HabitsProvider({ children }: { children: React.ReactNode }) {
   const [habits, setHabits] = useState<Habit[]>(() =>
@@ -46,6 +48,12 @@ export function HabitsProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
+  const habitsWithLoggedHours = (sessions: Session[]) =>
+    habits.map((habit) => ({
+      ...habit,
+      loggedHours: calculateHabitLoggedHours(habit.id, sessions),
+    }));
+
   const value: HabitsContextValue = {
     habits,
     activeHabits,
@@ -55,6 +63,7 @@ export function HabitsProvider({ children }: { children: React.ReactNode }) {
     updateHabit,
     archiveHabit,
     restoreHabit,
+    habitsWithLoggedHours,
   };
   return (
     <HabitsContext.Provider value={value}>{children}</HabitsContext.Provider>
