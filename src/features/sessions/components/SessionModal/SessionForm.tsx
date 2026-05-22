@@ -98,18 +98,18 @@ export function SessionForm({
             </Button>
           );
         })}
-        {errors.habitId && (
-          <span className={styles.errorMessage} role="alert">
-            Habit is required
-          </span>
-        )}
       </div>
+      {errors.habitId && (
+        <span className={styles.errorMessage} role="alert">
+          Habit is required
+        </span>
+      )}
       <div className={styles.timeContainer}>
         <span>Start</span>
         <span>End</span>
         <div className={styles.time}>
           <select
-            {...register("startHour")}
+            {...register("startHour", { valueAsNumber: true })}
             className={errors.endHour ? styles.error : ""}
           >
             {MODAL_HOURS.map((hour) => (
@@ -119,7 +119,7 @@ export function SessionForm({
             ))}
           </select>
           <div>:</div>
-          <select {...register("startMinute")}>
+          <select {...register("startMinute", { valueAsNumber: true })}>
             {MINUTES.map((minute) => (
               <option key={minute} value={minute}>
                 {formatMinute(minute)}
@@ -129,7 +129,7 @@ export function SessionForm({
         </div>
         <div className={styles.time}>
           <select
-            {...register("endHour")}
+            {...register("endHour", { valueAsNumber: true })}
             className={errors.endHour ? styles.error : ""}
           >
             {MODAL_HOURS.map((hour) => (
@@ -139,7 +139,7 @@ export function SessionForm({
             ))}
           </select>
           <div>:</div>
-          <select {...register("endMinute")}>
+          <select {...register("endMinute", { valueAsNumber: true })}>
             {MINUTES.map((minute) => (
               <option key={minute} value={minute}>
                 {formatMinute(minute)}
