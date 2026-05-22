@@ -2,6 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useHabits } from "../features/habits/context/HabitsContext";
 import { DayPlanner } from "../features/sessions/components/Planner/DayPlanner/DayPlanner";
+import {
+  PLANNER_VIEW_TABS,
+  PLANNER_VIEW_TYPES,
+  type PlannerViewType,
+} from "../features/sessions/components/Planner/plannerUtils";
 import { WeekPlanner } from "../features/sessions/components/Planner/WeekPlanner/WeekPlanner";
 import { EditSessionModal } from "../features/sessions/components/SessionModal/EditSessionModal";
 import { NewSessionModal } from "../features/sessions/components/SessionModal/NewSessionModal";
@@ -9,13 +14,9 @@ import { useSessions } from "../features/sessions/context/SessionsContext";
 import type { Session } from "../features/sessions/types/session";
 import layout from "../layout/AppLayout.module.css";
 import { EmptyState } from "../ui/EmptyState/EmptyState";
+import { Tabs } from "../ui/Tabs/Tabs";
 import { formatCurrentDate } from "../utils/dashboardUtils";
 import styles from "./DashboardPage.module.css";
-import { Tabs } from "../ui/Tabs/Tabs";
-import {
-  DAY_VIEW_HOUR_HEIGHT,
-  WEEK_VIEW_HOUR_HEIGHT,
-} from "../features/sessions/components/Planner/plannerUtils";
 
 export function DasboardPage() {
   const { activeHabits } = useHabits();
@@ -25,7 +26,9 @@ export function DasboardPage() {
   const [isEditSessionModalOpen, setIsEditSessionModalOpen] = useState(false);
   const [newSessionstartTime, setNewSessionStartTime] = useState(0);
   const [newSessionDate, setNewSessionDate] = useState(new Date());
-  const [plannerView, setPlannerView] = useState<PlannerViewType>("week");
+  const [plannerView, setPlannerView] = useState<PlannerViewType>(
+    PLANNER_VIEW_TYPES.WEEK,
+  );
   const [selectedSessionDate, setSelectedSessionDate] = useState(new Date());
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
   const currentDate = new Date();
@@ -50,19 +53,6 @@ export function DasboardPage() {
     setIsEditSessionModalOpen(false);
   };
 
-  type PlannerViewType = "day" | "week";
-
-  const PLANNER_VIEW_TABS: { label: string; value: PlannerViewType }[] = [
-    {
-      label: "Day plan",
-      value: "day",
-    },
-    {
-      label: "Week plan",
-      value: "week",
-    },
-  ];
-
   return (
     <div className={layout.page}>
       {activeHabits.length === 0 ? (
@@ -82,9 +72,9 @@ export function DasboardPage() {
             onChange={setPlannerView}
           />
 
-          {plannerView === "week" ? (
+          {plannerView === PLANNER_VIEW_TYPES.WEEK ? (
             <WeekPlanner
-              hourHeight={WEEK_VIEW_HOUR_HEIGHT}
+              plannerViewType={PLANNER_VIEW_TYPES.WEEK}
               sessions={sessions}
               habits={activeHabits}
               onAddSession={addSession}
@@ -96,7 +86,7 @@ export function DasboardPage() {
                 {formatCurrentDate(currentDate)}
               </div>
               <DayPlanner
-                hourHeight={DAY_VIEW_HOUR_HEIGHT}
+                plannerViewType={PLANNER_VIEW_TYPES.DAY}
                 day={currentDate}
                 sessions={sessions}
                 habits={activeHabits}

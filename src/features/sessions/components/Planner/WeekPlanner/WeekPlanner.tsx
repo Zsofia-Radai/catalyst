@@ -8,11 +8,12 @@ import { DayPlanner } from "../DayPlanner/DayPlanner";
 import type { Session } from "../../../types/session";
 import type { Habit } from "../../../../habits/types/habit";
 import styles from "./WeekPlanner.module.css";
+import type { PlannerViewType } from "../plannerUtils";
 
 type WeekPlannerProps = {
   sessions: Session[];
   habits: Habit[];
-  hourHeight: number;
+  plannerViewType: PlannerViewType;
   onAddSession: (hour: number, day: Date) => void;
   openSessionEditor: (session: Session, day: Date) => void;
 };
@@ -20,7 +21,7 @@ type WeekPlannerProps = {
 export function WeekPlanner({
   sessions,
   habits,
-  hourHeight,
+  plannerViewType,
   onAddSession,
   openSessionEditor,
 }: WeekPlannerProps) {
@@ -42,7 +43,7 @@ export function WeekPlanner({
               className={`${isSameDay(currentDate, day) ? styles.currentDay : ""} ${
                 isPast ? styles.pastDay : ""
               }`}
-              hourHeight={hourHeight}
+              plannerViewType={plannerViewType}
               day={day}
               sessions={sessions}
               habits={habits}

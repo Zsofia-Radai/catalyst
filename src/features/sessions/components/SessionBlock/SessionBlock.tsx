@@ -7,20 +7,25 @@ import {
 import { HABIT_CATEGORY_META, type Habit } from "../../../habits/types/habit";
 import { useSessions } from "../../context/SessionsContext";
 import type { Session } from "../../types/session";
-import { getSessionStyle } from "../Planner/plannerUtils";
+import {
+  getSessionStyle,
+  HOUR_HEIGHTS,
+  PLANNER_VIEW_TYPES,
+  type PlannerViewType,
+} from "../Planner/plannerUtils";
 import styles from "./SessionBlock.module.css";
 
 type SessionProps = {
   session: Session;
   habits: Habit[];
-  hourHeight: number;
+  plannerViewType: PlannerViewType;
   onClick: () => void;
 };
 
 export function SessionBlock({
   session,
   habits,
-  hourHeight,
+  plannerViewType,
   onClick,
 }: SessionProps) {
   const habitData = getHabitData(habits, session.habitId);
@@ -28,6 +33,8 @@ export function SessionBlock({
   if (!habitData) return null;
   const meta = HABIT_CATEGORY_META[habitData.category];
   const Icon = meta.icon;
+  const hourHeight = HOUR_HEIGHTS[plannerViewType];
+  const badgeSize = plannerViewType === PLANNER_VIEW_TYPES.DAY ? 20 : 16;
 
   return (
     <div
@@ -78,7 +85,7 @@ export function SessionBlock({
 
       {session.completed && (
         <div className={styles.completedBadge}>
-          <Check size={16} />
+          <Check size={badgeSize} />
         </div>
       )}
     </div>

@@ -34,9 +34,10 @@ export function HabitsPage() {
     habitView === "active" ? !habit.archived : habit.archived,
   );
 
-  const emptyMessage = habitView
-    ? "No active habits yet."
-    : "No archived habits yet.";
+  const emptyMessage =
+    habitView === "active"
+      ? "No active habits yet."
+      : "No archived habits yet.";
 
   useClickOutside(habitsContainerRef, () => {
     setMenuOpenForHabit(null);

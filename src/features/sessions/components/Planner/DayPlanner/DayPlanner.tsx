@@ -7,6 +7,7 @@ import {
 import type { Habit } from "../../../../habits/types/habit";
 import type { Session } from "../../../types/session";
 import { SessionBlock } from "../../SessionBlock/SessionBlock";
+import { HOUR_HEIGHTS, type PlannerViewType } from "../plannerUtils";
 import styles from "./DayPlanner.module.css";
 
 type DayPlannerProps = {
@@ -14,7 +15,7 @@ type DayPlannerProps = {
   day: Date;
   sessions: Session[];
   habits: Habit[];
-  hourHeight: number;
+  plannerViewType: PlannerViewType;
   onAddSession: (hour: number, day: Date) => void;
   openSessionEditor: (session: Session, day: Date) => void;
 };
@@ -24,10 +25,12 @@ export function DayPlanner({
   day,
   sessions,
   habits,
-  hourHeight,
+  plannerViewType,
   onAddSession,
   openSessionEditor,
 }: DayPlannerProps) {
+  const hourHeight = HOUR_HEIGHTS[plannerViewType];
+
   return (
     <div className={`${styles.timeline} ${className ?? ""}`}>
       {DAY_HOURS.map((hour) => {
@@ -46,7 +49,7 @@ export function DayPlanner({
             <div className={styles.hourContent}>
               {hourSessions.map((session) => (
                 <SessionBlock
-                  hourHeight={hourHeight}
+                  plannerViewType={plannerViewType}
                   onClick={() => openSessionEditor(session, day)}
                   key={session.id}
                   session={session}
