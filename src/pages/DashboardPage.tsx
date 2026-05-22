@@ -8,16 +8,10 @@ import { NewSessionModal } from "../features/sessions/components/SessionModal/Ne
 import { useSessions } from "../features/sessions/context/SessionsContext";
 import type { Session } from "../features/sessions/types/session";
 import layout from "../layout/AppLayout.module.css";
-import { Button } from "../ui/Button/Button";
 import { EmptyState } from "../ui/EmptyState/EmptyState";
-import {
-  formatCurrentDate,
-  formatTime,
-  NIGHT_HOURS,
-} from "../utils/dashboardUtils";
+import { formatCurrentDate } from "../utils/dashboardUtils";
 import styles from "./DashboardPage.module.css";
-
-type PlannerViewType = "day" | "week";
+import { Tabs } from "../ui/Tabs/Tabs";
 
 export function DasboardPage() {
   const { activeHabits } = useHabits();
@@ -25,7 +19,6 @@ export function DasboardPage() {
   const navigate = useNavigate();
   const [isNewSessionModalOpen, setIsNewSessionModalOpen] = useState(false);
   const [isEditSessionModalOpen, setIsEditSessionModalOpen] = useState(false);
-  const [showNightSessions, setShowNightSessions] = useState(false);
   const [newSessionstartTime, setNewSessionStartTime] = useState(0);
   const [newSessionDate, setNewSessionDate] = useState(new Date());
   const [plannerView, setPlannerView] = useState<PlannerViewType>("week");
@@ -53,6 +46,19 @@ export function DasboardPage() {
     setIsEditSessionModalOpen(false);
   };
 
+  type PlannerViewType = "day" | "week";
+  
+  const PLANNER_VIEW_TABS: { label: string; value: PlannerViewType }[] = [
+    {
+      label: "Day plan",
+      value: "day",
+    },
+    {
+      label: "Week plan",
+      value: "week",
+    },
+  ];
+
   return (
     <div className={layout.page}>
       {activeHabits.length === 0 ? (
@@ -66,20 +72,7 @@ export function DasboardPage() {
         </div>
       ) : (
         <>
-          <div className={styles.tabs}>
-            <div
-              className={plannerView === "day" ? styles.activeTab : styles.tab}
-              onClick={() => setPlannerView("day")}
-            >
-              Day plan
-            </div>
-            <div
-              className={plannerView === "week" ? styles.activeTab : styles.tab}
-              onClick={() => setPlannerView("week")}
-            >
-              Week plan
-            </div>
-          </div>
+          <Tabs tabs={PLANNER_VIEW_TABS} value={plannerView} onChange={setPlannerView} />
 
           {plannerView === "week" ? (
             <WeekPlanner
@@ -103,35 +96,6 @@ export function DasboardPage() {
             </div>
           )}
         </>
-      )}
-
-      {activeHabits.length !== 0 && (
-        <section className={styles.nightSessions}>
-          <Button
-            type="button"
-            onClick={() => setShowNightSessions((prev) => !prev)}
-          >
-            Show night sessions
-          </Button>
-
-          <div
-            className={`${styles.nightDrawer} ${
-              showNightSessions ? styles.open : ""
-            }`}
-          >
-            <div className={styles.nightDrawerInner}>
-              <div className={styles.timeline}>
-                {NIGHT_HOURS.map((hour) => {
-                  return (
-                    <div key={hour} className={styles.hourRow}>
-                      <span>{formatTime(hour)}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </section>
       )}
 
       {isNewSessionModalOpen && (
