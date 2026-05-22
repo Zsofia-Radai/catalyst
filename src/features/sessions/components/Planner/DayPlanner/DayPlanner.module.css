@@ -1,0 +1,21 @@
+.timeline {
+  background: #f2f5f491;
+  border-radius: 5px;
+  padding: 5px 15px;
+  cursor: pointer;
+  position: relative;
+  border: 2px solid transparent;
+}
+
+.hourRow {
+  display: grid;
+  grid-template-columns: 45px 1fr;
+  min-height: 72px;
+  position: relative;
+  border-top: 1px solid rgb(0 0 0 / 21%);
+}
+
+.hourContent {
+  position: relative;
+  min-height: 72px;
+}

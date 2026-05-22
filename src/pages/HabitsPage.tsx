@@ -13,6 +13,7 @@ import { DeleteConfirmModal } from "../ui/DeleteConfirmModal/DeleteConfirmModal"
 import styles from "./HabitsPage.module.css";
 import { useToast } from "../context/ToastContext";
 import { EmptyState } from "../ui/EmptyState/EmptyState";
+import { Tabs } from "../ui/Tabs/Tabs";
 
 export function HabitsPage() {
   const { habits, archiveHabit, restoreHabit, deleteHabit } = useHabits();
@@ -23,16 +24,17 @@ export function HabitsPage() {
   const [habitToDelete, setHabitToDelete] = useState<Habit | null>(null);
   const [habitToEdit, setHabitToEdit] = useState<Habit | null>(null);
   const [menuOpenForHabit, setMenuOpenForHabit] = useState<string | null>(null);
-  const [showActive, setShowActive] = useState<boolean>(true);
+  const [habitView, setHabitView] = useState<HabitViewType>("active");
   const habitsWithLoggedHours = habits.map((habit) => ({
     ...habit,
     loggedHours: calculateHabitLoggedHours(habit.id, sessions),
   }));
 
   const visibleHabits = habitsWithLoggedHours.filter((habit) =>
-    showActive ? !habit.archived : habit.archived,
+    habitView === "active" ? !habit.archived : habit.archived,
   );
-  const emptyMessage = showActive
+
+  const emptyMessage = habitView
     ? "No active habits yet."
     : "No archived habits yet.";
 
@@ -84,23 +86,26 @@ export function HabitsPage() {
     setMenuOpenForHabit((prev) => (prev === habit.id ? null : habit.id));
   };
 
+  type HabitViewType = "active" | "archived";
+  const HABIT_VIEW_TABS: { label: string; value: HabitViewType }[] = [
+    {
+      label: "Active",
+      value: "active",
+    },
+    {
+      label: "Archived",
+      value: "archived",
+    },
+  ];
+
   return (
     <div className={layout.page}>
       <div className={styles.header}>
-        <div className={styles.tabs}>
-          <div
-            className={showActive ? styles.activeTab : styles.tab}
-            onClick={() => setShowActive(true)}
-          >
-            Active
-          </div>
-          <div
-            className={!showActive ? styles.activeTab : styles.tab}
-            onClick={() => setShowActive(false)}
-          >
-            Archived
-          </div>
-        </div>
+        <Tabs
+          tabs={HABIT_VIEW_TABS}
+          value={habitView}
+          onChange={setHabitView}
+        />
         <Button
           type="button"
           variant="secondary"
@@ -110,14 +115,14 @@ export function HabitsPage() {
           Create habit
         </Button>
       </div>
-      {visibleHabits.length === 0 && showActive && (
+      {visibleHabits.length === 0 && habitView === "active" && (
         <EmptyState
           title={emptyMessage}
           actionLabel="Create habit"
           action={createHabitClicked}
         />
       )}
-      {visibleHabits.length === 0 && !showActive && (
+      {visibleHabits.length === 0 && habitView === "archived" && (
         <EmptyState title={emptyMessage} />
       )}
       <div className={styles.habitsContainer} ref={habitsContainerRef}>

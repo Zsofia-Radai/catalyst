@@ -53,7 +53,7 @@
 
 .actions {
   opacity: 0;
-  z-index: 2;
+  z-index: 3;
   position: absolute;
   background: var(--line);
   top: 8px;
@@ -88,5 +88,5 @@
   display: grid;
   place-items: center;
   background: var(--accent);
-  z-index: 4;
+  z-index: 2;
 }
