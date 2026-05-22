@@ -81,14 +81,12 @@ export function SessionBlock({ session, habits, onClick }: SessionProps) {
           <Pencil size={18} />
         </Button>
       </div>
+
       <div className={styles.sessionIcon}>
-        <Icon />
+        <Icon size={20} />
       </div>
-
-      <strong className={styles.habitName}>{habitData.name}</strong>
-
+      <span className={styles.habitName}>{habitData.name}</span>
       <span className={styles.sessionNote}>{session.notes}</span>
-
       <span className={styles.sessionTime}>
         {formatSessionTime(session.startedAt)} -{" "}
         {formatSessionTime(session.finishedAt)}
