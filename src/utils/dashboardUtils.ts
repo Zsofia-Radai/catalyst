@@ -48,7 +48,7 @@ export const formatMinute = (minute: number) => {
   return minute;
 };
 
-export function formatCurrentDate(date: Date) {
+export function formatDate(date: Date) {
   return date.toLocaleDateString("en-US", {
     weekday: "short",
     month: "short",

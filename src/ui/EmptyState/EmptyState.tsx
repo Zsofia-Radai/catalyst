@@ -19,7 +19,12 @@ export function EmptyState({
       <div>{title}</div>
       <div>{description}</div>
       {action && (
-        <Button onClick={action} className={styles.actionButton} type="button">
+        <Button
+          onClick={action}
+          className={styles.actionButton}
+          type="button"
+          variant="secondary"
+        >
           {actionLabel}
         </Button>
       )}

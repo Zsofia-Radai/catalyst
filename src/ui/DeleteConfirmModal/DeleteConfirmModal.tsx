@@ -3,9 +3,9 @@ import { Modal } from "../Modal/Modal";
 import styles from "./DeleteConfirmModal.module.css";
 
 type DeleteConfirmModalProps = {
-  objectToDelete: string;
+  objectToDelete?: string;
   title: string;
-  details: string;
+  details?: string;
   onDelete: () => void;
   onCancel: () => void;
 };
