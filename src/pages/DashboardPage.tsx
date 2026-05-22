@@ -12,6 +12,10 @@ import { EmptyState } from "../ui/EmptyState/EmptyState";
 import { formatCurrentDate } from "../utils/dashboardUtils";
 import styles from "./DashboardPage.module.css";
 import { Tabs } from "../ui/Tabs/Tabs";
+import {
+  DAY_VIEW_HOUR_HEIGHT,
+  WEEK_VIEW_HOUR_HEIGHT,
+} from "../features/sessions/components/Planner/plannerUtils";
 
 export function DasboardPage() {
   const { activeHabits } = useHabits();
@@ -47,7 +51,7 @@ export function DasboardPage() {
   };
 
   type PlannerViewType = "day" | "week";
-  
+
   const PLANNER_VIEW_TABS: { label: string; value: PlannerViewType }[] = [
     {
       label: "Day plan",
@@ -72,10 +76,15 @@ export function DasboardPage() {
         </div>
       ) : (
         <>
-          <Tabs tabs={PLANNER_VIEW_TABS} value={plannerView} onChange={setPlannerView} />
+          <Tabs
+            tabs={PLANNER_VIEW_TABS}
+            value={plannerView}
+            onChange={setPlannerView}
+          />
 
           {plannerView === "week" ? (
             <WeekPlanner
+              hourHeight={WEEK_VIEW_HOUR_HEIGHT}
               sessions={sessions}
               habits={activeHabits}
               onAddSession={addSession}
@@ -87,6 +96,7 @@ export function DasboardPage() {
                 {formatCurrentDate(currentDate)}
               </div>
               <DayPlanner
+                hourHeight={DAY_VIEW_HOUR_HEIGHT}
                 day={currentDate}
                 sessions={sessions}
                 habits={activeHabits}

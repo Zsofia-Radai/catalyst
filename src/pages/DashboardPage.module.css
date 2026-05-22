@@ -40,36 +40,3 @@
 .nightDrawerInner {
   padding-top: 12px;
 }
-
-/* .activeTab {
-  background: #242425;
-  padding: 10px;
-  border-radius: 5px;
-}
-
-.tabs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  width: min(500px, 100%);
-  background: #767279b3;
-  padding: 5px;
-  border-radius: 5px;
-  text-align: center;
-  align-items: center;
-  color: white;
-}
-
-.tab {
-  cursor: pointer;
-  padding: 10px;
-  transition:
-    background-color 0.2s ease,
-    color 1.2s ease,
-    transform 0.2s ease;
-} */
-
-@media (max-width: 600px) {
-  .weekPlanner {
-    display: block;
-  }
-}

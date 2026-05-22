@@ -4,41 +4,25 @@ import {
   formatSessionTime,
   getHabitData,
 } from "../../../../utils/dashboardUtils";
-import {
-  HABIT_CATEGORY_META,
-  type Habit,
-  type HabitMeta,
-} from "../../../habits/types/habit";
+import { HABIT_CATEGORY_META, type Habit } from "../../../habits/types/habit";
 import { useSessions } from "../../context/SessionsContext";
 import type { Session } from "../../types/session";
+import { getSessionStyle } from "../Planner/plannerUtils";
 import styles from "./SessionBlock.module.css";
 
 type SessionProps = {
   session: Session;
   habits: Habit[];
+  hourHeight: number;
   onClick: () => void;
 };
-const HOUR_HEIGHT = 72;
 
-const getSessionStyle = (session: Session, meta: HabitMeta) => {
-  const start = new Date(session.startedAt);
-  const end = new Date(session.finishedAt);
-
-  const startMinutes = start.getMinutes();
-  let durationMinutes = (end.getTime() - start.getTime()) / 1000 / 60;
-
-  if (durationMinutes < 0) {
-    durationMinutes += 24 * 60;
-  }
-
-  return {
-    top: `${(startMinutes / 60) * HOUR_HEIGHT}px`,
-    height: `${(durationMinutes / 60) * HOUR_HEIGHT}px`,
-    "--card-color": meta.color,
-  };
-};
-
-export function SessionBlock({ session, habits, onClick }: SessionProps) {
+export function SessionBlock({
+  session,
+  habits,
+  hourHeight,
+  onClick,
+}: SessionProps) {
   const habitData = getHabitData(habits, session.habitId);
   const { toggleSessionCompleted } = useSessions();
   if (!habitData) return null;
@@ -51,7 +35,7 @@ export function SessionBlock({ session, habits, onClick }: SessionProps) {
       className={`${styles.sessionBlock} ${
         session.completed ? styles.completed : ""
       }`}
-      style={getSessionStyle(session, meta)}
+      style={getSessionStyle(session, meta, hourHeight)}
       onClick={(e) => {
         e.stopPropagation();
       }}

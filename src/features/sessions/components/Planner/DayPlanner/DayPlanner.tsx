@@ -14,6 +14,7 @@ type DayPlannerProps = {
   day: Date;
   sessions: Session[];
   habits: Habit[];
+  hourHeight: number;
   onAddSession: (hour: number, day: Date) => void;
   openSessionEditor: (session: Session, day: Date) => void;
 };
@@ -23,6 +24,7 @@ export function DayPlanner({
   day,
   sessions,
   habits,
+  hourHeight,
   onAddSession,
   openSessionEditor,
 }: DayPlannerProps) {
@@ -37,12 +39,14 @@ export function DayPlanner({
           <div
             key={hour}
             className={styles.hourRow}
+            style={{ minHeight: hourHeight }}
             onClick={() => onAddSession(hour, day)}
           >
             <span>{formatTime(hour)}</span>
             <div className={styles.hourContent}>
               {hourSessions.map((session) => (
                 <SessionBlock
+                  hourHeight={hourHeight}
                   onClick={() => openSessionEditor(session, day)}
                   key={session.id}
                   session={session}
