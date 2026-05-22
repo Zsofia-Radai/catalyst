@@ -1,25 +1,23 @@
-import { isSameDay } from "date-fns";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useHabits } from "../features/habits/context/HabitsContext";
-import { SessionBlock } from "../features/sessions/components/SessionBlock/SessionBlock";
+import { DayPlanner } from "../features/sessions/components/Planner/DayPlanner/DayPlanner";
+import { WeekPlanner } from "../features/sessions/components/Planner/WeekPlanner/WeekPlanner";
 import { EditSessionModal } from "../features/sessions/components/SessionModal/EditSessionModal";
 import { NewSessionModal } from "../features/sessions/components/SessionModal/NewSessionModal";
 import { useSessions } from "../features/sessions/context/SessionsContext";
 import type { Session } from "../features/sessions/types/session";
+import layout from "../layout/AppLayout.module.css";
 import { Button } from "../ui/Button/Button";
 import { EmptyState } from "../ui/EmptyState/EmptyState";
 import {
-  DAY_HOURS,
   formatCurrentDate,
   formatTime,
-  getSessionForHour,
-  getSessionsForToday,
-  isPastDay,
   NIGHT_HOURS,
-  WEEK_DATES,
 } from "../utils/dashboardUtils";
 import styles from "./DashboardPage.module.css";
+
+type PlannerViewType = "day" | "week";
 
 export function DasboardPage() {
   const { activeHabits } = useHabits();
@@ -30,6 +28,7 @@ export function DasboardPage() {
   const [showNightSessions, setShowNightSessions] = useState(false);
   const [newSessionstartTime, setNewSessionStartTime] = useState(0);
   const [newSessionDate, setNewSessionDate] = useState(new Date());
+  const [plannerView, setPlannerView] = useState<PlannerViewType>("week");
   const [selectedSessionDate, setSelectedSessionDate] = useState(new Date());
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
   const currentDate = new Date();
@@ -55,7 +54,7 @@ export function DasboardPage() {
   };
 
   return (
-    <div>
+    <div className={layout.page}>
       {activeHabits.length === 0 ? (
         <div className={styles.emptyState}>
           <EmptyState
@@ -66,52 +65,44 @@ export function DasboardPage() {
           />
         </div>
       ) : (
-        <div className={styles.weekPlanner}>
-          {WEEK_DATES.map((day) => {
-            const isPast = isPastDay(day);
-            return (
-              <div key={day.getDate()}>
-                <div
-                  className={`${styles.header} ${isSameDay(currentDate, day) ? styles.currentDayHeader : ""}`}
-                >
-                  {formatCurrentDate(day)}
-                </div>
-                <div
-                  className={`${styles.timeline} 
-                    ${isSameDay(currentDate, day) ? styles.currentDay : ""} 
-                    ${isPast ? styles.pastDay : ""}
-                  `}
-                >
-                  {DAY_HOURS.map((hour) => {
-                    const hourSessions = getSessionForHour(
-                      getSessionsForToday(sessions, day),
-                      hour,
-                    );
-                    return (
-                      <div
-                        key={hour}
-                        className={styles.hourRow}
-                        onClick={() => addSession(hour, day)}
-                      >
-                        <span>{formatTime(hour)}</span>
-                        <div className={styles.hourContent}>
-                          {hourSessions.map((session) => (
-                            <SessionBlock
-                              onClick={() => openSessionEditor(session, day)}
-                              key={session.id}
-                              session={session}
-                              habits={activeHabits}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+        <>
+          <div className={styles.tabs}>
+            <div
+              className={plannerView === "day" ? styles.activeTab : styles.tab}
+              onClick={() => setPlannerView("day")}
+            >
+              Day plan
+            </div>
+            <div
+              className={plannerView === "week" ? styles.activeTab : styles.tab}
+              onClick={() => setPlannerView("week")}
+            >
+              Week plan
+            </div>
+          </div>
+
+          {plannerView === "week" ? (
+            <WeekPlanner
+              sessions={sessions}
+              habits={activeHabits}
+              onAddSession={addSession}
+              openSessionEditor={openSessionEditor}
+            />
+          ) : (
+            <div className={styles.dayPlan}>
+              <div className={styles.dayHeader}>
+                {formatCurrentDate(currentDate)}
               </div>
-            );
-          })}
-        </div>
+              <DayPlanner
+                day={currentDate}
+                sessions={sessions}
+                habits={activeHabits}
+                onAddSession={addSession}
+                openSessionEditor={openSessionEditor}
+              />
+            </div>
+          )}
+        </>
       )}
 
       {activeHabits.length !== 0 && (
