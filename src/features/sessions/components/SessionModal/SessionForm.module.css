@@ -26,6 +26,8 @@
   display: grid;
   grid-template-columns: 1fr 12fr;
   border: 2px solid transparent;
+  gap: 10px;
+  text-align: start;
   align-items: center;
 }
 

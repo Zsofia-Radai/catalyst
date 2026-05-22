@@ -32,12 +32,6 @@ export function HabitCard({
       className={styles.habitCard}
       style={{ "--card-color": meta.color } as React.CSSProperties}
     >
-      <Icon />
-      <div>
-        <div className={styles.habitName}>{habit.name}</div>
-        <div>{habit.goal}</div>
-        <div>{habit.loggedHours ?? 0} hrs total</div>
-      </div>
       <div className={styles.menuWrapper}>
         <Ellipsis
           aria-label="Open habit menu"
@@ -86,6 +80,16 @@ export function HabitCard({
             <Trash2 size={16} />
             <span>Delete</span>
           </Button>
+        </div>
+      </div>
+      <div className={styles.habit}>
+        <Icon size={23} />
+        <div className={styles.habitName}>{habit.name}</div>
+        <div className={styles.habitGoal}>
+          {habit.goal ? `Goal: ${habit.goal}` : null}
+        </div>
+        <div className={styles.loggedHours}>
+          {habit.loggedHours ?? 0} hrs total
         </div>
       </div>
     </article>
