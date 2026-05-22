@@ -1,6 +1,6 @@
 import { isSameDay } from "date-fns";
 import {
-  formatCurrentDate,
+  formatDate,
   isPastDay,
   WEEK_DATES,
 } from "../../../../../utils/dashboardUtils";
@@ -36,7 +36,7 @@ export function WeekPlanner({
             <div
               className={`${styles.header} ${isSameDay(currentDate, day) ? styles.currentDayHeader : ""}`}
             >
-              {formatCurrentDate(day)}
+              {formatDate(day)}
             </div>
 
             <DayPlanner

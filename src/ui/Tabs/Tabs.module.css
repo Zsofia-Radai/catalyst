@@ -1,5 +1,5 @@
 .activeTab {
-  background: #242425;
+  background: var(--primary);
   padding: 10px;
   border-radius: 5px;
 }
@@ -9,7 +9,7 @@
   grid-template-columns: 1fr 1fr;
   width: min(500px, 100%);
   height: min(35px);
-  background: #767279b3;
+  background: var(--secondary);
   padding: 5px;
   border-radius: 5px;
 }

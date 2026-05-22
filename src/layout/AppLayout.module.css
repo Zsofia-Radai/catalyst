@@ -30,3 +30,9 @@
     padding: 5px;
   }
 }
+
+.title {
+  font-size: var(--font-lg);
+  margin: 5px 0;
+  font-weight: var(--fw-semibold);
+}

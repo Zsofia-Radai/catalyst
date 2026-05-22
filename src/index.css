@@ -4,6 +4,9 @@
   --panel: #1f2937;
   --panel-soft: #273449;
 
+  --secondary: #767279b3;
+  --primary: #242425;
+
   --text: #f3f4f6;
   --muted: #cdd4df;
   --line: #374151;
@@ -14,6 +17,19 @@
   --danger: #ef4444;
 
   --current: #3535a8;
+
+  --font-family: Inter, sans-serif;
+
+  --font-xs: 0.75rem;
+  --font-sm: 0.875rem;
+  --font-md: 1rem;
+  --font-lg: 1.25rem;
+  --font-xl: 1.5rem;
+
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
 }
 
 body {

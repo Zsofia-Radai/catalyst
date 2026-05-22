@@ -26,6 +26,14 @@ export function AppLayout() {
           className={({ isActive }) =>
             isActive ? `${layout.tab} ${layout.activeTab}` : layout.tab
           }
+          to="/sessions"
+        >
+          Sessions
+        </NavLink>
+        <NavLink
+          className={({ isActive }) =>
+            isActive ? `${layout.tab} ${layout.activeTab}` : layout.tab
+          }
           to="/analytics"
         >
           Analytics

@@ -15,7 +15,7 @@ import type { Session } from "../features/sessions/types/session";
 import layout from "../layout/AppLayout.module.css";
 import { EmptyState } from "../ui/EmptyState/EmptyState";
 import { Tabs } from "../ui/Tabs/Tabs";
-import { formatCurrentDate } from "../utils/dashboardUtils";
+import { formatDate } from "../utils/dashboardUtils";
 import styles from "./DashboardPage.module.css";
 
 export function DasboardPage() {
@@ -82,9 +82,7 @@ export function DasboardPage() {
             />
           ) : (
             <div className={styles.dayPlan}>
-              <div className={styles.dayHeader}>
-                {formatCurrentDate(currentDate)}
-              </div>
+              <div className={styles.dayHeader}>{formatDate(currentDate)}</div>
               <DayPlanner
                 plannerViewType={PLANNER_VIEW_TYPES.DAY}
                 day={currentDate}
