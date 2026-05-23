@@ -48,7 +48,7 @@ export function SessionsPage() {
           action={() => navigate("/")}
         />
       )}
-      <div>
+      <div className={styles.sessionContainer}>
         <div className={styles.header}>
           <div className={layout.title}>Latest completed sessions</div>
           <div>Showing your 20 most recent completed sessions.</div>

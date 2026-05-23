@@ -22,6 +22,9 @@ export const WEEK_DATES = Array.from({ length: 7 }, (_, index) =>
   addDays(weekStart, index),
 );
 
+export const getWeekDates = (weekStart: Date) =>
+  Array.from({ length: 7 }, (_, index) => addDays(weekStart, index));
+
 export function formatWeekDay(date: Date) {
   return date.toLocaleDateString("en-US", {
     weekday: "short",
