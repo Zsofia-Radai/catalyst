@@ -1,5 +1,5 @@
 .timeline {
-  background: #f2f5f491;
+  background: #86d9bea8;
   border-radius: 5px;
   padding: 5px 15px;
   cursor: pointer;
@@ -18,4 +18,68 @@
 .hourContent {
   position: relative;
   min-height: 72px;
+}
+
+.dayPlanner {
+  position: relative;
+  margin: 25px 0;
+}
+
+.arrowLeft,
+.arrowRight {
+  position: absolute;
+  cursor: pointer;
+  color: var(--highlight);
+  top: 7px;
+}
+
+.arrowRight {
+  left: calc(100% + 5px);
+}
+
+.arrowLeft {
+  right: calc(100% + 5px);
+}
+
+.arrowLeft:hover,
+.arrowRight:hover {
+  color: var(--text);
+}
+
+.header {
+  text-align: center;
+  background: #273449;
+  padding: 10px;
+  color: var(--text);
+  border-radius: 5px;
+  margin: 10px 0;
+}
+
+.currentDate {
+  background: var(--bg);
+  text-align: center;
+  color: var(--text);
+  align-content: center;
+}
+
+.currentDayHeader {
+  background: var(--current);
+}
+
+.currentDay {
+  border: 2px solid var(--current);
+}
+
+.pastDay {
+  opacity: 0.5;
+}
+
+@media (max-width: 600px) {
+  .arrowRight {
+    left: calc(100% - 25px);
+  }
+
+  .arrowLeft {
+    left: 5px;
+  }
 }
