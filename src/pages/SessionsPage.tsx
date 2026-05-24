@@ -10,7 +10,7 @@ import {
   getHabitData,
 } from "../utils/dashboardUtils";
 import styles from "./SessionsPage.module.css";
-import { Trash } from "lucide-react";
+import { Calendar, Clock4, NotebookPen, Trash } from "lucide-react";
 import { Button } from "../ui/Button/Button";
 import { useState } from "react";
 import { DeleteConfirmModal } from "../ui/DeleteConfirmModal/DeleteConfirmModal";
@@ -61,9 +61,39 @@ export function SessionsPage() {
           return (
             <div
               key={session.id}
-              className={styles.sessionBlock}
-              style={{ background: meta.color }}
+              className={styles.sessionCard}
+              style={{ "--habit-color": habit.color } as React.CSSProperties}
             >
+              <div className={styles.sessionHeader}>
+                <div className={styles.dateTime}>
+                  <div className={styles.metaRow}>
+                    <Calendar size={20} />
+                    <span>{formatDate(new Date(session.startedAt))}</span>
+                  </div>
+
+                  <div className={styles.metaRow}>
+                    <Clock4 size={20} />
+                    <span>
+                      {formatSessionTime(session.startedAt)} -{" "}
+                      {formatSessionTime(session.finishedAt)}
+                    </span>
+                  </div>
+                </div>
+
+                <div className={styles.habitInfo}>
+                  <Icon className={styles.categoryIcon} size={28} />
+                  <span className={styles.habitName}>{habit?.name}</span>
+                  <span className={styles.habitCategory}>{meta.label}</span>
+                </div>
+              </div>
+
+              <div className={styles.notesContainer}>
+                <div className={styles.notes}>
+                  <NotebookPen size={18} />
+                  <p>{session.notes}</p>
+                </div>
+              </div>
+
               <div className={styles.actions}>
                 <Button
                   aria-label="Delete session"
@@ -77,18 +107,6 @@ export function SessionsPage() {
                   <Trash size={16} />
                 </Button>
               </div>
-
-              <div className={styles.date}>
-                {formatDate(new Date(session.startedAt))}
-              </div>
-              <span className={styles.sessionTime}>
-                {formatSessionTime(session.startedAt)} -{" "}
-                {formatSessionTime(session.finishedAt)}
-              </span>
-
-              <Icon size={20} />
-              <div>{habit?.name}</div>
-              <div>{session.notes}</div>
             </div>
           );
         })}

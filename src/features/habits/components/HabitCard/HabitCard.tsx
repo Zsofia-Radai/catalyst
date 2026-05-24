@@ -30,7 +30,7 @@ export function HabitCard({
     <article
       key={habit.id}
       className={styles.habitCard}
-      style={{ "--card-color": meta.color } as React.CSSProperties}
+      style={{ "--card-color": habit.color } as React.CSSProperties}
     >
       <div className={styles.menuWrapper}>
         <Ellipsis

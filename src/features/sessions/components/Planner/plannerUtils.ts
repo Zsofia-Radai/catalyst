@@ -1,4 +1,4 @@
-import type { HabitMeta } from "../../../habits/types/habit";
+import type { Habit } from "../../../habits/types/habit";
 import type { Session } from "../../types/session";
 
 export const DAY_VIEW_HOUR_HEIGHT = 108;
@@ -30,7 +30,7 @@ export const PLANNER_VIEW_TABS: { label: string; value: PlannerViewType }[] = [
 
 export const getSessionStyle = (
   session: Session,
-  meta: HabitMeta,
+  habit: Habit,
   hourHeight: number,
 ) => {
   const start = new Date(session.startedAt);
@@ -46,6 +46,6 @@ export const getSessionStyle = (
   return {
     top: `${(startMinutes / 60) * hourHeight}px`,
     height: `${(durationMinutes / 60) * hourHeight}px`,
-    "--card-color": meta.color,
+    "--card-color": habit.color,
   };
 };

@@ -28,10 +28,10 @@ export function SessionBlock({
   plannerViewType,
   onClick,
 }: SessionProps) {
-  const habitData = getHabitData(habits, session.habitId);
+  const habit = getHabitData(habits, session.habitId);
   const { toggleSessionCompleted } = useSessions();
-  if (!habitData) return null;
-  const meta = HABIT_CATEGORY_META[habitData.category];
+  if (!habit) return null;
+  const meta = HABIT_CATEGORY_META[habit.category];
   const Icon = meta.icon;
   const hourHeight = HOUR_HEIGHTS[plannerViewType];
   const badgeSize = plannerViewType === PLANNER_VIEW_TYPES.DAY ? 20 : 16;
@@ -42,7 +42,7 @@ export function SessionBlock({
       className={`${styles.sessionBlock} ${
         session.completed ? styles.completed : ""
       }`}
-      style={getSessionStyle(session, meta, hourHeight)}
+      style={getSessionStyle(session, habit, hourHeight)}
       onClick={(e) => {
         e.stopPropagation();
       }}
@@ -76,7 +76,7 @@ export function SessionBlock({
       <div className={styles.sessionIcon}>
         <Icon size={20} />
       </div>
-      <span className={styles.habitName}>{habitData.name}</span>
+      <span className={styles.habitName}>{habit.name}</span>
       <span className={styles.sessionNote}>{session.notes}</span>
       <span className={styles.sessionTime}>
         {formatSessionTime(session.startedAt)} -{" "}
