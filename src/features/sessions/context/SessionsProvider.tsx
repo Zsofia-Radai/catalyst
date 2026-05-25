@@ -15,6 +15,10 @@ export function SessionsProvider({ children }: { children: React.ReactNode }) {
     setSessions((prev) => [...prev, session]);
   };
 
+  const addSessions = (sessions: Session[]) => {
+    setSessions((prev) => [...prev, ...sessions]);
+  };
+
   const updateSession = (session: Session) => {
     setSessions((prev) =>
       prev.map((currentSession) =>
@@ -43,6 +47,7 @@ export function SessionsProvider({ children }: { children: React.ReactNode }) {
   const value: SessionContextValue = {
     sessions,
     addSession,
+    addSessions,
     updateSession,
     deleteSession,
     toggleSessionCompleted,

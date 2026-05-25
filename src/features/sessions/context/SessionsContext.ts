@@ -4,6 +4,7 @@ import type { Session } from "../types/session";
 export type SessionContextValue = {
   sessions: Session[];
   addSession: (session: Session) => void;
+  addSessions: (sessions: Session[]) => void;
   updateSession: (session: Session) => void;
   deleteSession: (sessionId: string) => void;
   toggleSessionCompleted: (sessionId: string) => void;

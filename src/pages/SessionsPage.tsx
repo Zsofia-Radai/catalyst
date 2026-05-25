@@ -40,19 +40,19 @@ export function SessionsPage() {
 
   return (
     <div className={layout.page}>
-      {latestSessions.length === 0 && (
-        <EmptyState
-          title="No completed session yet."
-          description="Complete a session from the planner."
-          actionLabel="Got to planner"
-          action={() => navigate("/")}
-        />
-      )}
       <div className={styles.sessionContainer}>
         <div className={styles.header}>
           <div className={layout.title}>Latest completed sessions</div>
           <div>Showing your 20 most recent completed sessions.</div>
         </div>
+        {latestSessions.length === 0 && (
+          <EmptyState
+            title="No completed session yet."
+            description="Complete a session from the planner."
+            actionLabel="Got to planner"
+            action={() => navigate("/")}
+          />
+        )}
         {latestSessions.map((session) => {
           const habit = getHabitData(habits, session.habitId);
           if (!habit) return null;
