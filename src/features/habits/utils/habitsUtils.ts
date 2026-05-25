@@ -2,6 +2,7 @@ import type { Session } from "../../sessions/types/session";
 import type { Habit, HabitInputs } from "../types/habit";
 
 export function createHabit(data: HabitInputs): Habit {
+  console.log(data);
   return {
     id: crypto.randomUUID(),
     name: data.name,
@@ -10,6 +11,7 @@ export function createHabit(data: HabitInputs): Habit {
     goal: data.goal,
     loggedHours: 0,
     archived: false,
+    color: data.color,
   };
 }
 

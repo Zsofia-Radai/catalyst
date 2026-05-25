@@ -10,6 +10,7 @@
   grid-template-columns: 1fr 1fr;
   margin: 10px;
   gap: 0 30px;
+  width: fit-content;
 }
 
 .habits {

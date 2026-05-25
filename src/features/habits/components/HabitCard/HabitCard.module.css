@@ -4,6 +4,7 @@
   padding: 20px;
   position: relative;
   align-content: center;
+  overflow: visible;
 }
 
 .habit {
@@ -11,7 +12,8 @@
   grid-template-columns: 1fr 8fr;
   grid-template-rows: auto auto auto;
   align-items: center;
-  row-gap: 4px;
+  row-gap: 2px;
+  column-gap: 10px;
 }
 
 .habitGoal {
@@ -58,6 +60,7 @@
   transform-origin: top right;
   pointer-events: none;
   visibility: hidden;
+  right: inherit;
 
   transition:
     opacity 160ms ease,

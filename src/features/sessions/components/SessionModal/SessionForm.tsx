@@ -89,7 +89,7 @@ export function SessionForm({
               className={`${styles.habitChip} ${
                 selectedHabitId === habit.id ? styles.selected : ""
               }`}
-              style={{ "--card-color": meta.color } as React.CSSProperties}
+              style={{ "--card-color": habit.color } as React.CSSProperties}
               onClick={() => setValue("habitId", habit.id)}
               {...register("habitId", { required: true })}
             >
