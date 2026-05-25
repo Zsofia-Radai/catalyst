@@ -4,3 +4,19 @@
   align-content: center;
   margin: 10px;
 }
+
+.footer {
+  display: flex;
+  justify-content: space-evenly;
+  margin: 1rem;
+}
+
+.container {
+  margin: 1rem;
+}
+
+.confirmMessage {
+  display: flex;
+  gap: 6px;
+  margin: 1rem 0;
+}

@@ -125,3 +125,16 @@ export function isEndAfterStart(data: SessionInputs) {
   if (endTotal === 0) return true;
   return endTotal > startTotal;
 }
+
+export function copyTimeToDate(targetDate: Date, sourceDate: Date) {
+  const result = new Date(targetDate);
+
+  result.setHours(
+    sourceDate.getHours(),
+    sourceDate.getMinutes(),
+    sourceDate.getSeconds(),
+    sourceDate.getMilliseconds(),
+  );
+
+  return result;
+}

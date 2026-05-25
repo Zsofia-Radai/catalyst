@@ -6,7 +6,9 @@ export type SessionContextValue = {
   addSession: (session: Session) => void;
   addSessions: (sessions: Session[]) => void;
   updateSession: (session: Session) => void;
+  updateSessionSeries: (session: Session) => void;
   deleteSession: (sessionId: string) => void;
+  deleteSessionSeries: (seriesId: string) => void;
   toggleSessionCompleted: (sessionId: string) => void;
 };
 

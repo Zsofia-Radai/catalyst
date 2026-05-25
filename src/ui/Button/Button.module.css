@@ -15,6 +15,10 @@
   color: var(--text);
 }
 
+.neutral {
+  background: var(--muted);
+}
+
 .save {
   background: var(--accent);
 }

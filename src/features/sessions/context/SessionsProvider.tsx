@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Session } from "../types/session";
 import { SessionsContext, type SessionContextValue } from "./SessionsContext";
+import { copyTimeToDate } from "../utils/sessionsUtils";
 
 export function SessionsProvider({ children }: { children: React.ReactNode }) {
   const [sessions, setSessions] = useState<Session[]>(() =>
@@ -27,8 +28,37 @@ export function SessionsProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
+  const updateSessionSeries = (updatedSession: Session) => {
+    setSessions((prev) =>
+      prev.map((currentSession) =>
+        currentSession.seriesId === updatedSession.seriesId
+          ? {
+              ...currentSession,
+              habitId: updatedSession.habitId,
+              notes: updatedSession.notes,
+              recurrence: updatedSession.recurrence,
+              startedAt: copyTimeToDate(
+                currentSession.startedAt,
+                updatedSession.startedAt,
+              ),
+              finishedAt: copyTimeToDate(
+                currentSession.finishedAt,
+                updatedSession.finishedAt,
+              ),
+            }
+          : currentSession,
+      ),
+    );
+  };
+
   const deleteSession = (sessionId: string) => {
     setSessions((prev) => prev.filter((session) => session.id !== sessionId));
+  };
+
+  const deleteSessionSeries = (seriesId: string) => {
+    setSessions((prev) =>
+      prev.filter((session) => session.seriesId !== seriesId),
+    );
   };
 
   const toggleSessionCompleted = (sessionId: string) => {
@@ -49,7 +79,9 @@ export function SessionsProvider({ children }: { children: React.ReactNode }) {
     addSession,
     addSessions,
     updateSession,
+    updateSessionSeries,
     deleteSession,
+    deleteSessionSeries,
     toggleSessionCompleted,
   };
 

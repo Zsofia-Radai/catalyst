@@ -204,9 +204,11 @@ export function SessionForm({
             <Repeat size={18} />
             <div>
               <div className={styles.sectionTitle}>Repeat</div>
-              <div className={styles.description}>
-                Make this a recurring session
-              </div>
+              {frequency === RECURRENCE_FREQUENCIES.NONE && (
+                <div className={styles.description}>
+                  Make this a recurring session
+                </div>
+              )}
             </div>
             {frequency !== RECURRENCE_FREQUENCIES.NONE && (
               <div className={styles.recurringBadge}>
