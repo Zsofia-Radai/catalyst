@@ -60,6 +60,7 @@
   transform-origin: top right;
   pointer-events: none;
   visibility: hidden;
+  right: inherit;
 
   transition:
     opacity 160ms ease,
