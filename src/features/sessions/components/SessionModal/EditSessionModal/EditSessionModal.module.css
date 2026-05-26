@@ -1,0 +1,28 @@
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  margin: 10px;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-evenly;
+  margin: 1rem;
+}
+
+.container {
+  margin: 1rem;
+}
+
+.messageContainer {
+  background: var(--panel);
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.confirmMessage {
+  display: flex;
+  gap: 6px;
+  margin: 0 0 1rem;
+}

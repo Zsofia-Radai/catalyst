@@ -1,16 +1,19 @@
 import { isPast } from "date-fns";
-import { useToast } from "../../../../context/ToastContext";
-import { Button } from "../../../../ui/Button/Button";
-import { Modal } from "../../../../ui/Modal/Modal";
-import type { Habit } from "../../../habits/types/habit";
-import { useSessions } from "../../context/SessionsContext";
+import { useToast } from "../../../../../context/ToastContext";
+import { Button } from "../../../../../ui/Button/Button";
+import { Modal } from "../../../../../ui/Modal/Modal";
+import type { Habit } from "../../../../habits/types/habit";
+import { useSessions } from "../../../context/SessionsContext";
 import {
   RECURRENCE_FREQUENCIES,
   type SessionInputs,
-} from "../../types/session";
-import { createSession, createSessionSeries } from "../../utils/sessionsUtils";
+} from "../../../types/session";
+import {
+  createSession,
+  createSessionSeries,
+} from "../../../utils/sessionsUtils";
 import styles from "./NewSessionModal.module.css";
-import { SessionForm } from "./SessionForm";
+import { SessionForm } from "../SessionForm";
 
 type NewSessionModalProps = {
   closeModal: () => void;
