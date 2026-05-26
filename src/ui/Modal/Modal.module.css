@@ -13,8 +13,9 @@
   background: var(--modal);
   color: var(--text);
   padding: 20px;
-  border-radius: 5px;
+  border-radius: 8px;
   min-width: 460px;
+  max-width: 1000px;
 }
 
 .deleteIcon {

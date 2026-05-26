@@ -3,9 +3,9 @@ import { Modal } from "../Modal/Modal";
 import styles from "./DeleteConfirmModal.module.css";
 
 type DeleteConfirmModalProps = {
-  objectToDelete: string;
+  objectToDelete?: string;
   title: string;
-  details: string;
+  details?: string;
   onDelete: () => void;
   onCancel: () => void;
 };
@@ -18,7 +18,7 @@ export function DeleteConfirmModal({
   onCancel,
 }: DeleteConfirmModalProps) {
   return (
-    <Modal title={title} onClose={onCancel}>
+    <Modal title={title} onClose={onCancel} deleteModal={true}>
       <div className={styles.modalBody}>
         <div className={styles.name}>{objectToDelete}</div>
         <div>{details}</div>

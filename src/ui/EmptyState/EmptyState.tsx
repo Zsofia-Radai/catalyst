@@ -1,28 +1,33 @@
-import { Link } from "react-router-dom";
 import { Button } from "../Button/Button";
+import styles from "./EmptyState.module.css";
 
 type EmptyStateProps = {
   title: string;
-  description: string;
-  actionLabel: string;
-  actionTo: string;
+  description?: string;
+  actionLabel?: string;
+  action?: () => void;
 };
 
 export function EmptyState({
   title,
   description,
   actionLabel,
-  actionTo,
+  action,
 }: EmptyStateProps) {
   return (
-    <div>
+    <div className={styles.container}>
       <div>{title}</div>
       <div>{description}</div>
-      <Link to={actionTo}>
-        <Button type="button" variant="save">
+      {action && (
+        <Button
+          onClick={action}
+          className={styles.actionButton}
+          type="button"
+          variant="secondary"
+        >
           {actionLabel}
         </Button>
-      </Link>
+      )}
     </div>
   );
 }

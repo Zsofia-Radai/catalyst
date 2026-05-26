@@ -1,0 +1,33 @@
+.activeTab {
+  background: var(--primary);
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: min(500px, 100%);
+  height: min(35px);
+  background: var(--secondary);
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.tabs button {
+  padding: 5px;
+  border-radius: 5px;
+  text-align: center;
+  align-items: center;
+  color: white;
+}
+
+.tab {
+  cursor: pointer;
+  padding: 10px;
+  background: none;
+  transition:
+    background-color 0.2s ease,
+    color 1.2s ease,
+    transform 0.2s ease;
+}

@@ -1,5 +1,8 @@
-.actionButton {
-  margin: 10px 0;
+.page {
+  min-height: 30vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
 }
 
 .container {
@@ -10,4 +13,10 @@
   border-radius: 10px;
   margin: 10px;
   text-align: center;
+}
+
+.message {
+  display: grid;
+  margin: 20px;
+  gap: 15px;
 }

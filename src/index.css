@@ -4,16 +4,50 @@
   --panel: #1f2937;
   --panel-soft: #273449;
 
+  --secondary: #767279b3;
+  --primary: #242425;
+
   --text: #f3f4f6;
   --muted: #cdd4df;
   --line: #374151;
+
+  --input: #808fa6;
 
   --accent: #22c55e;
   --accent-hover: #16a34a;
 
   --danger: #ef4444;
+
+  --current: #3535a8;
+  --highlight: #172647;
+
+  --font-family: Inter, sans-serif;
+
+  --font-xs: 0.75rem;
+  --font-sm: 0.875rem;
+  --font-md: 1rem;
+  --font-lg: 1.25rem;
+  --font-xl: 1.5rem;
+
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
 }
 
 body {
-  background: #0a8c5bba;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(59, 130, 246, 0.18),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(168, 85, 247, 0.14),
+      transparent 40%
+    ),
+    linear-gradient(180deg, #0a8e9f 0%, #111827 100%);
+
+  background-attachment: fixed;
 }

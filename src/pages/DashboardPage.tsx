@@ -1,33 +1,33 @@
-import { isSameDay } from "date-fns";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useHabits } from "../features/habits/context/HabitsContext";
-import { SessionBlock } from "../features/sessions/components/SessionBlock/SessionBlock";
-import { EditSessionModal } from "../features/sessions/components/SessionModal/EditSessionModal";
-import { NewSessionModal } from "../features/sessions/components/SessionModal/NewSessionModal";
+import { DayPlanner } from "../features/sessions/components/Planner/DayPlanner/DayPlanner";
+import {
+  PLANNER_VIEW_TABS,
+  PLANNER_VIEW_TYPES,
+  type PlannerViewType,
+} from "../features/sessions/components/Planner/plannerUtils";
+import { WeekPlanner } from "../features/sessions/components/Planner/WeekPlanner/WeekPlanner";
+import { EditSessionModal } from "../features/sessions/components/SessionModal/EditSessionModal/EditSessionModal";
+import { NewSessionModal } from "../features/sessions/components/SessionModal/NewSessionModal/NewSessionModal";
 import { useSessions } from "../features/sessions/context/SessionsContext";
 import type { Session } from "../features/sessions/types/session";
-import { Button } from "../ui/Button/Button";
+import layout from "../layout/AppLayout.module.css";
 import { EmptyState } from "../ui/EmptyState/EmptyState";
-import {
-  DAY_HOURS,
-  formatCurrentDate,
-  formatTime,
-  getSessionForHour,
-  getSessionsForToday,
-  isPastDay,
-  NIGHT_HOURS,
-  WEEK_DATES,
-} from "../utils/dashboardUtils";
+import { Tabs } from "../ui/Tabs/Tabs";
 import styles from "./DashboardPage.module.css";
 
 export function DasboardPage() {
   const { activeHabits } = useHabits();
   const { sessions } = useSessions();
+  const navigate = useNavigate();
   const [isNewSessionModalOpen, setIsNewSessionModalOpen] = useState(false);
   const [isEditSessionModalOpen, setIsEditSessionModalOpen] = useState(false);
-  const [showNightSessions, setShowNightSessions] = useState(false);
   const [newSessionstartTime, setNewSessionStartTime] = useState(0);
   const [newSessionDate, setNewSessionDate] = useState(new Date());
+  const [plannerView, setPlannerView] = useState<PlannerViewType>(
+    PLANNER_VIEW_TYPES.WEEK,
+  );
   const [selectedSessionDate, setSelectedSessionDate] = useState(new Date());
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
   const currentDate = new Date();
@@ -53,89 +53,46 @@ export function DasboardPage() {
   };
 
   return (
-    <div className={styles.weekPlanner}>
-      {activeHabits.length === 0 && (
-        <div>
-          <div>No tracked sessions for today yet.</div>
+    <div className={layout.page}>
+      {activeHabits.length === 0 ? (
+        <div className={styles.emptyState}>
           <EmptyState
-            title="No habits yet."
+            title="No active habits yet."
             description="Create your first habit to start tracking sessions."
             actionLabel="Go to habits page"
-            actionTo="/habits"
+            action={() => navigate("/habits")}
           />
         </div>
+      ) : (
+        <>
+          <Tabs
+            tabs={PLANNER_VIEW_TABS}
+            value={plannerView}
+            onChange={setPlannerView}
+          />
+
+          {plannerView === PLANNER_VIEW_TYPES.WEEK ? (
+            <WeekPlanner
+              plannerViewType={PLANNER_VIEW_TYPES.WEEK}
+              sessions={sessions}
+              habits={activeHabits}
+              onAddSession={addSession}
+              openSessionEditor={openSessionEditor}
+            />
+          ) : (
+            <div className={styles.dayPlan}>
+              <DayPlanner
+                plannerViewType={PLANNER_VIEW_TYPES.DAY}
+                day={currentDate}
+                sessions={sessions}
+                habits={activeHabits}
+                onAddSession={addSession}
+                openSessionEditor={openSessionEditor}
+              />
+            </div>
+          )}
+        </>
       )}
-      {WEEK_DATES.map((day) => {
-        const isPast = isPastDay(day);
-        return (
-          <div key={day.getDate()}>
-            <div
-              className={`${styles.header} ${isSameDay(currentDate, day) ? styles.currentDayHeader : ""}`}
-            >
-              {formatCurrentDate(day)}
-            </div>
-            <div
-              className={`${styles.timeline} 
-                ${isSameDay(currentDate, day) ? styles.currentDay : ""} 
-                ${isPast ? styles.pastDay : ""}
-              `}
-            >
-              {DAY_HOURS.map((hour) => {
-                const hourSessions = getSessionForHour(
-                  getSessionsForToday(sessions, day),
-                  hour,
-                );
-                return (
-                  <div
-                    key={hour}
-                    className={styles.hourRow}
-                    onClick={() => addSession(hour, day)}
-                  >
-                    <span>{formatTime(hour)}</span>
-                    <div className={styles.hourContent}>
-                      {hourSessions.map((session) => (
-                        <SessionBlock
-                          onClick={() => openSessionEditor(session, day)}
-                          key={session.id}
-                          session={session}
-                          habits={activeHabits}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        );
-      })}
-
-      <section className={styles.nightSessions}>
-        <Button
-          type="button"
-          onClick={() => setShowNightSessions((prev) => !prev)}
-        >
-          Show night sessions
-        </Button>
-
-        <div
-          className={`${styles.nightDrawer} ${
-            showNightSessions ? styles.open : ""
-          }`}
-        >
-          <div className={styles.nightDrawerInner}>
-            <div className={styles.timeline}>
-              {NIGHT_HOURS.map((hour) => {
-                return (
-                  <div key={hour} className={styles.hourRow}>
-                    <span>{formatTime(hour)}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </section>
 
       {isNewSessionModalOpen && (
         <NewSessionModal

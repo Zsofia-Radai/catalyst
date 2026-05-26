@@ -1,49 +1,40 @@
-import { Check, Pencil } from "lucide-react";
+import { Check, Pencil, Repeat } from "lucide-react";
 import { Button } from "../../../../ui/Button/Button";
 import {
   formatSessionTime,
   getHabitData,
 } from "../../../../utils/dashboardUtils";
-import {
-  HABIT_CATEGORY_META,
-  type Habit,
-  type HabitMeta,
-} from "../../../habits/types/habit";
+import { HABIT_CATEGORY_META, type Habit } from "../../../habits/types/habit";
 import { useSessions } from "../../context/SessionsContext";
-import type { Session } from "../../types/session";
+import { RECURRENCE_FREQUENCIES, type Session } from "../../types/session";
+import {
+  getSessionStyle,
+  HOUR_HEIGHTS,
+  PLANNER_VIEW_TYPES,
+  type PlannerViewType,
+} from "../Planner/plannerUtils";
 import styles from "./SessionBlock.module.css";
 
 type SessionProps = {
   session: Session;
   habits: Habit[];
+  plannerViewType: PlannerViewType;
   onClick: () => void;
 };
-const HOUR_HEIGHT = 72;
 
-const getSessionStyle = (session: Session, meta: HabitMeta) => {
-  const start = new Date(session.startedAt);
-  const end = new Date(session.finishedAt);
-
-  const startMinutes = start.getMinutes();
-  let durationMinutes = (end.getTime() - start.getTime()) / 1000 / 60;
-
-  if (durationMinutes < 0) {
-    durationMinutes += 24 * 60;
-  }
-
-  return {
-    top: `${(startMinutes / 60) * HOUR_HEIGHT}px`,
-    height: `${(durationMinutes / 60) * HOUR_HEIGHT}px`,
-    "--card-color": meta.color,
-  };
-};
-
-export function SessionBlock({ session, habits, onClick }: SessionProps) {
-  const habitData = getHabitData(habits, session.habitId);
+export function SessionBlock({
+  session,
+  habits,
+  plannerViewType,
+  onClick,
+}: SessionProps) {
+  const habit = getHabitData(habits, session.habitId);
   const { toggleSessionCompleted } = useSessions();
-  if (!habitData) return null;
-  const meta = HABIT_CATEGORY_META[habitData.category];
+  if (!habit) return null;
+  const meta = HABIT_CATEGORY_META[habit.category];
   const Icon = meta.icon;
+  const hourHeight = HOUR_HEIGHTS[plannerViewType];
+  const badgeSize = plannerViewType === PLANNER_VIEW_TYPES.DAY ? 20 : 16;
 
   return (
     <div
@@ -51,14 +42,14 @@ export function SessionBlock({ session, habits, onClick }: SessionProps) {
       className={`${styles.sessionBlock} ${
         session.completed ? styles.completed : ""
       }`}
-      style={getSessionStyle(session, meta)}
+      style={getSessionStyle(session, habit, hourHeight)}
       onClick={(e) => {
         e.stopPropagation();
       }}
     >
       <div className={styles.actions}>
         <Button
-          aria-label="complete-session-toggle"
+          aria-label="Complete session toggle"
           variant="icon"
           style={{ color: "var(--text)" }}
           onClick={(e) => {
@@ -70,7 +61,7 @@ export function SessionBlock({ session, habits, onClick }: SessionProps) {
         </Button>
 
         <Button
-          aria-label="edit-session"
+          aria-label="Edit session"
           variant="icon"
           style={{ color: "var(--text)" }}
           onClick={(e) => {
@@ -81,22 +72,24 @@ export function SessionBlock({ session, habits, onClick }: SessionProps) {
           <Pencil size={18} />
         </Button>
       </div>
+
       <div className={styles.sessionIcon}>
-        <Icon />
+        <Icon size={20} />
       </div>
-
-      <strong className={styles.habitName}>{habitData.name}</strong>
-
+      <span className={styles.habitName}>{habit.name}</span>
       <span className={styles.sessionNote}>{session.notes}</span>
-
       <span className={styles.sessionTime}>
         {formatSessionTime(session.startedAt)} -{" "}
         {formatSessionTime(session.finishedAt)}
       </span>
 
+      {session.recurrence.frequency !== RECURRENCE_FREQUENCIES.NONE && (
+        <Repeat className={styles.recurrenceBadge} size={14} />
+      )}
+
       {session.completed && (
         <div className={styles.completedBadge}>
-          <Check size={16} />
+          <Check size={badgeSize} />
         </div>
       )}
     </div>

@@ -1,0 +1,123 @@
+.header {
+  background: var(--primary);
+  padding: 15px;
+  border-radius: 5px;
+  color: var(--text);
+}
+
+.sessionTime {
+  grid-column: 2;
+  font-size: 0.9rem;
+}
+
+.sessionContainer {
+  display: grid;
+  gap: 20px;
+}
+
+.sessionCard {
+  display: grid;
+  grid-template-columns: 5fr 10fr;
+  overflow: hidden;
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgb(0 0 0 / 0.18);
+}
+
+.sessionHeader {
+  display: grid;
+  grid-template-columns: 2fr 2fr;
+  gap: 2rem;
+
+  padding: 1.8rem;
+  background: var(--habit-color);
+}
+
+.dateTime {
+  display: grid;
+  gap: 0.75rem;
+  align-self: center;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.habitInfo {
+  display: grid;
+  grid-template-columns: 1fr 5fr;
+  align-items: center;
+  align-self: center;
+  color: var(--text);
+  row-gap: 8px;
+}
+
+.habitName {
+  font-size: 1.35rem;
+  font-weight: var(--fw-bold);
+}
+
+.habitCategory {
+  background: color-mix(in srgb, var(--habit-color) 85%, black);
+  border-radius: 20px;
+  padding: 6px;
+  width: fit-content;
+}
+
+.categoryIcon {
+  grid-row: 1 / 3;
+}
+
+.notesContainer {
+  background: var(--panel);
+  padding: 0.8rem 0.8rem 0.8rem 0;
+  align-self: center;
+}
+
+.notes {
+  padding: 2rem;
+  background: var(--panel-soft);
+  color: var(--text);
+  border-radius: 0 8px 8px 0;
+}
+
+.notes p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.actions {
+  opacity: 0;
+  z-index: 3;
+  position: absolute;
+  background: var(--line);
+  top: 12px;
+  right: 10px;
+  padding: 5px;
+  display: flex;
+  gap: 10px;
+  border-radius: 5px;
+}
+.actions > *:hover {
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.sessionBlock:hover .actions {
+  opacity: 1;
+}
+
+.sessionBlock:hover {
+  border: 2px solid var(--muted);
+}
+
+@media (max-width: 768px) {
+  .date,
+  .sessionTime {
+    text-align: center;
+  }
+}

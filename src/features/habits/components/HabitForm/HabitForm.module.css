@@ -12,11 +12,10 @@
 .habitForm input,
 select,
 textarea {
-  background: #808fa6;
+  background: var(--input);
   border: 1px solid #000000;
   border-radius: 5px;
   padding: 5px;
-  width: 100%;
 }
 
 .habitForm textarea,
@@ -42,4 +41,41 @@ textarea:focus {
 
 .submitButton {
   float: right;
+}
+
+.firstRow {
+  display: flex;
+  gap: 5px;
+  position: relative;
+}
+
+.colorPicker {
+  background: var(--selected-color);
+  border-radius: 20px;
+  padding: 13px;
+  max-width: min-content;
+  border: 1px solid var(--bg);
+  cursor: pointer;
+}
+
+.colorPopover {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 28px);
+  gap: 8px;
+  padding: 12px;
+  border-radius: 14px;
+  background: var(--panel);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  z-index: 20;
+}
+
+.colorOption {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  cursor: pointer;
 }
