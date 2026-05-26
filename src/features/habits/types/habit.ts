@@ -28,28 +28,17 @@ export const HABIT_CATEGORIES = [
   "social",
 ] as const;
 
-  export const COLORS = [
-    "#ef4444",
-    "#f97316",
-    "#eab308",
-    "#22c55e",
-    "#06b6d4",
-    "#3b82f6",
-    "#8b5cf6",
-    "#ec4899",
-  ];
-
-  export const HABIT_COLORS = [
+export const HABIT_COLORS = [
   "#ef4444",
   "#f97316",
   "#f59e0b",
   "#eab308",
-  "#84cc16", 
+  "#84cc16",
   "#22c55e",
-  "#10b981", 
-  "#14b8a6", 
-  "#06b6d4", 
-  "#3b82f6", 
+  "#10b981",
+  "#14b8a6",
+  "#06b6d4",
+  "#3b82f6",
   "#6366f1",
   "#8b5cf6",
   "#a855f7",

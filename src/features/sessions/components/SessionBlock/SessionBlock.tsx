@@ -1,4 +1,4 @@
-import { Check, Pencil } from "lucide-react";
+import { Check, Pencil, Repeat } from "lucide-react";
 import { Button } from "../../../../ui/Button/Button";
 import {
   formatSessionTime,
@@ -6,7 +6,7 @@ import {
 } from "../../../../utils/dashboardUtils";
 import { HABIT_CATEGORY_META, type Habit } from "../../../habits/types/habit";
 import { useSessions } from "../../context/SessionsContext";
-import type { Session } from "../../types/session";
+import { RECURRENCE_FREQUENCIES, type Session } from "../../types/session";
 import {
   getSessionStyle,
   HOUR_HEIGHTS,
@@ -82,6 +82,10 @@ export function SessionBlock({
         {formatSessionTime(session.startedAt)} -{" "}
         {formatSessionTime(session.finishedAt)}
       </span>
+
+      {session.recurrence.frequency !== RECURRENCE_FREQUENCIES.NONE && (
+        <Repeat className={styles.recurrenceBadge} size={14} />
+      )}
 
       {session.completed && (
         <div className={styles.completedBadge}>

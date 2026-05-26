@@ -12,11 +12,10 @@
 .habitForm input,
 select,
 textarea {
-  background: #808fa6;
+  background: var(--input);
   border: 1px solid #000000;
   border-radius: 5px;
   padding: 5px;
-  width: 100%;
 }
 
 .habitForm textarea,

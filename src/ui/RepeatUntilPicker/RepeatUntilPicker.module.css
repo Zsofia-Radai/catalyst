@@ -1,0 +1,41 @@
+.datePickerWrapper {
+  position: relative;
+}
+
+.datePickerButton {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--input);
+  border-radius: 12px;
+  padding: 0.3rem;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.datePickerPopover {
+  position: absolute;
+  z-index: 20;
+  margin-top: 0.5rem;
+  background: var(--input);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 0.75rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  color: black;
+}
+
+.datePickerPopover :global(.rdp-day) {
+  --rdp-cell-size: 20px;
+  font-size: var(--font-sm);
+}
+
+.datePickerPopover :global(.rdp-caption_label) {
+  font-size: var(--font-md);
+}
+
+.datePickerPopover :global(.rdp-root) {
+  --rdp-accent-color: var(--text);
+}

@@ -1,4 +1,8 @@
-import type { Session, SessionInputs } from "../types/session";
+import {
+  RECURRENCE_FREQUENCIES,
+  type Session,
+  type SessionInputs,
+} from "../types/session";
 
 export function createSession(data: SessionInputs, day: Date): Session {
   const { startedAt, finishedAt } = buildSessionDates(data, day);
@@ -10,7 +14,66 @@ export function createSession(data: SessionInputs, day: Date): Session {
     finishedAt: finishedAt,
     notes: data.notes,
     completed: false,
+    recurrence: data.recurrence,
   };
+}
+
+export function createSessionSeries(session: Session): Session[] {
+  if (!session.recurrence) {
+    return [session];
+  }
+
+  const { frequency, repeatUntil } = session.recurrence;
+
+  if (frequency === RECURRENCE_FREQUENCIES.NONE || !repeatUntil) {
+    return [session];
+  }
+
+  const seriesId = crypto.randomUUID();
+  const sessions: Session[] = [];
+
+  const currentStart = new Date(session.startedAt);
+  const currentEnd = new Date(session.finishedAt);
+  const endDate = new Date(repeatUntil);
+  endDate.setHours(23, 59, 59, 999);
+
+  const today = new Date();
+
+  while (currentStart <= endDate) {
+    sessions.push({
+      ...session,
+      id: crypto.randomUUID(),
+      seriesId,
+      startedAt: new Date(currentStart),
+      finishedAt: new Date(currentEnd),
+    });
+
+    if (currentEnd < today) {
+      sessions[sessions.length - 1].completed = true;
+    }
+
+    if (frequency === RECURRENCE_FREQUENCIES.DAILY) {
+      currentStart.setDate(currentStart.getDate() + 1);
+      currentEnd.setDate(currentEnd.getDate() + 1);
+    }
+
+    if (frequency === RECURRENCE_FREQUENCIES.WEEKLY) {
+      currentStart.setDate(currentStart.getDate() + 7);
+      currentEnd.setDate(currentEnd.getDate() + 7);
+    }
+
+    if (frequency === RECURRENCE_FREQUENCIES.MONTHLY) {
+      currentStart.setMonth(currentStart.getMonth() + 1);
+      currentEnd.setMonth(currentEnd.getMonth() + 1);
+    }
+
+    if (frequency === RECURRENCE_FREQUENCIES.YEARLY) {
+      currentStart.setFullYear(currentStart.getFullYear() + 1);
+      currentEnd.setFullYear(currentEnd.getFullYear() + 1);
+    }
+  }
+
+  return sessions;
 }
 
 export function getSessionDurationHours(startedAt: Date, finishedAt: Date) {
@@ -26,6 +89,7 @@ export function convertSessionToSessionInput(session: Session) {
     endHour: new Date(session.finishedAt).getHours(),
     endMinute: new Date(session.finishedAt).getMinutes(),
     notes: session.notes,
+    recurrence: session.recurrence,
   };
 }
 
@@ -60,4 +124,17 @@ export function isEndAfterStart(data: SessionInputs) {
   const endTotal = data.endHour * 60 + data.endMinute;
   if (endTotal === 0) return true;
   return endTotal > startTotal;
+}
+
+export function copyTimeToDate(targetDate: Date, sourceDate: Date) {
+  const result = new Date(targetDate);
+
+  result.setHours(
+    sourceDate.getHours(),
+    sourceDate.getMinutes(),
+    sourceDate.getSeconds(),
+    sourceDate.getMilliseconds(),
+  );
+
+  return result;
 }

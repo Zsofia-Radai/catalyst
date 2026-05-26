@@ -8,8 +8,8 @@ import {
   type PlannerViewType,
 } from "../features/sessions/components/Planner/plannerUtils";
 import { WeekPlanner } from "../features/sessions/components/Planner/WeekPlanner/WeekPlanner";
-import { EditSessionModal } from "../features/sessions/components/SessionModal/EditSessionModal";
-import { NewSessionModal } from "../features/sessions/components/SessionModal/NewSessionModal";
+import { EditSessionModal } from "../features/sessions/components/SessionModal/EditSessionModal/EditSessionModal";
+import { NewSessionModal } from "../features/sessions/components/SessionModal/NewSessionModal/NewSessionModal";
 import { useSessions } from "../features/sessions/context/SessionsContext";
 import type { Session } from "../features/sessions/types/session";
 import layout from "../layout/AppLayout.module.css";

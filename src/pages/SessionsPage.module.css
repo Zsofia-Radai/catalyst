@@ -58,7 +58,7 @@
 
 .habitName {
   font-size: 1.35rem;
-  font-weight: 700;
+  font-weight: var(--fw-bold);
 }
 
 .habitCategory {
