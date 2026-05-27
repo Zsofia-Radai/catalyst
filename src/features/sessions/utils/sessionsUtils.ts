@@ -76,7 +76,9 @@ export function createSessionSeries(session: Session): Session[] {
   return sessions;
 }
 
-export function getSessionDurationHours(startedAt: Date, finishedAt: Date) {
+export function getSessionDurationHours(session: Session) {
+  const startedAt = new Date(session.startedAt);
+  const finishedAt = new Date(session.finishedAt);
   const diffMs = finishedAt.getTime() - startedAt.getTime();
   return diffMs / 1000 / 60 / 60;
 }

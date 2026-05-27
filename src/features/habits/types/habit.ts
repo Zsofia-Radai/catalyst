@@ -9,14 +9,7 @@ import {
   BriefcaseBusiness,
 } from "lucide-react";
 
-export type HabitCategory =
-  | "mind"
-  | "body"
-  | "hobby"
-  | "chore"
-  | "career"
-  | "finance"
-  | "social";
+export type HabitCategory = (typeof HABIT_CATEGORIES)[number];
 
 export const HABIT_CATEGORIES = [
   "mind",
@@ -53,13 +46,41 @@ export type HabitMeta = {
 };
 
 export const HABIT_CATEGORY_META: Record<HabitCategory, HabitMeta> = {
-  mind: { label: "Mind", icon: Brain, color: "#0ea5e9" },
-  body: { label: "Body", icon: Dumbbell, color: "#26b62c" },
-  hobby: { label: "Hobby", icon: Palette, color: "#eab308" },
-  chore: { label: "Chore", icon: House, color: "#c42a5e" },
-  career: { label: "Career", icon: BriefcaseBusiness, color: "#8b5cf6" },
-  finance: { label: "Finance", icon: Wallet, color: "#dd572d" },
-  social: { label: "Social", icon: Handshake, color: "#d51c1c" },
+  mind: {
+    label: "Mind",
+    icon: Brain,
+    color: "#68AEED",
+  },
+  body: {
+    label: "Body",
+    icon: Dumbbell,
+    color: "#90EDD9",
+  },
+  hobby: {
+    label: "Hobby",
+    icon: Palette,
+    color: "#EDBA68",
+  },
+  chore: {
+    label: "Chore",
+    icon: House,
+    color: "#797698",
+  },
+  career: {
+    label: "Career",
+    icon: BriefcaseBusiness,
+    color: "#6E685E",
+  },
+  finance: {
+    label: "Finance",
+    icon: Wallet,
+    color: "#6E434B",
+  },
+  social: {
+    label: "Social",
+    icon: Handshake,
+    color: "#AD8CA6",
+  },
 };
 
 export type HabitInputs = {

@@ -14,6 +14,7 @@ import {
   type PlannerViewType,
 } from "../Planner/plannerUtils";
 import styles from "./SessionBlock.module.css";
+import { isFuture } from "date-fns";
 
 type SessionProps = {
   session: Session;
@@ -48,6 +49,7 @@ export function SessionBlock({
       }}
     >
       <div className={styles.actions}>
+        {!isFuture(new Date(session.finishedAt)) &&
         <Button
           aria-label="Complete session toggle"
           variant="icon"
@@ -58,7 +60,7 @@ export function SessionBlock({
           }}
         >
           <Check size={18} />
-        </Button>
+        </Button>}
 
         <Button
           aria-label="Edit session"

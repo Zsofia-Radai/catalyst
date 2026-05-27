@@ -18,7 +18,14 @@ export function Tabs<T extends string>({
   onChange,
 }: TabsProps<T>) {
   return (
-    <div className={styles.tabs}>
+    <div
+      className={styles.tabs}
+      style={
+        {
+          "--columns": tabs.length,
+        } as React.CSSProperties
+      }
+    >
       {tabs.map((tab) => (
         <Button
           key={tab.value}
