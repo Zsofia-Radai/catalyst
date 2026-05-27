@@ -2,7 +2,7 @@ export const ANALYTICS_RANGES = {
   WEEK: "week",
   MONTH: "month",
   YEAR: "year",
-  ALL: "all",
+  ALL: "all time",
 } as const;
 
 export type AnalyticsRange =

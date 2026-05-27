@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import {
   Bar,
   BarChart,
-  Legend,
   Line,
   LineChart,
   Pie,
@@ -25,6 +24,8 @@ import layout from "../../layout/AppLayout.module.css";
 import { EmptyState } from "../../ui/EmptyState/EmptyState";
 import { Tabs } from "../../ui/Tabs/Tabs";
 import styles from "./AnalyticsPage.module.css";
+import { CustomLegend } from "./CustomLegend/CustomLegend";
+import { CustomTooltip } from "./CustomTooltip/CustomTooltip";
 import { StatCard } from "./StatCard/StatCard";
 import {
   ANALYTICS_RANGE_TABS,
@@ -72,6 +73,16 @@ export function AnalyticsPage() {
       fill: habit.color,
     };
   });
+
+  const legendPayload = loggedHoursByHabit.map((habit) => ({
+    value: habit.name,
+    color: habit.fill,
+  }));
+
+  const loggedHourRangeTitle =
+    range === ANALYTICS_RANGES.ALL
+      ? "Logged hours all time"
+      : `Logged hours this ${range}`;
 
   const categoryHours = getCategoryHours(filteredSessions, filteredHabits);
 
@@ -147,75 +158,58 @@ export function AnalyticsPage() {
           <div className={styles.chartsContainer}>
             <div className={styles.chart}>
               <div className={styles.title}>Logged hours by habit</div>
-              <ResponsiveContainer width={380} height={350}>
-                <PieChart width={400} height={400}>
-                  <Legend
-                    wrapperStyle={{
-                      bottom: "3rem",
-                    }}
-                  />
-                  <Pie
-                    data={loggedHoursByHabit}
-                    dataKey="loggedHours"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius="50%"
-                    shape
-                    stroke="var(--secondary)"
-                    strokeWidth={2}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "#111827",
-                      border: "1px solid #374151",
-                      borderRadius: "12px",
-                      color: "#f3f4f6",
-                    }}
-                    labelStyle={{
-                      color: "#9ca3af",
-                      fontWeight: 600,
-                    }}
-                    itemStyle={{
-                      color: "#f3f4f6",
-                    }}
-                    formatter={(value) => [`${value} hours`, "Total logged"]}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
+              <CustomLegend payload={legendPayload} />
+              <div className={styles.chartWrapper}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart className={styles.pieChart}>
+                    <Pie
+                      data={loggedHoursByHabit}
+                      dataKey="loggedHours"
+                      stroke="var(--secondary)"
+                      outerRadius="80%"
+                      strokeWidth={2}
+                    />
+                    <Tooltip content={<CustomTooltip />} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
             </div>
 
             <div className={styles.chart}>
               <div className={styles.title}>Logged hours by category</div>
-              <ResponsiveContainer width={380} height={350}>
-                <BarChart data={loggedHoursByCategory} margin={margin}>
-                  <XAxis
-                    dataKey="name"
-                    label={{
-                      position: "insideBottomRight",
-                    }}
-                  />
-                  <YAxis
-                    label={{
-                      position: "insideTopLeft",
-                    }}
-                  />
-                  <Bar dataKey="value" fill="fill" />
-                </BarChart>
-              </ResponsiveContainer>
+              <div className={styles.chartWrapper}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={loggedHoursByCategory} margin={margin}>
+                    <XAxis
+                      dataKey="name"
+                      label={{
+                        position: "insideBottomRight",
+                      }}
+                    />
+                    <YAxis
+                      label={{
+                        position: "insideTopLeft",
+                      }}
+                    />
+                    <Bar dataKey="value" fill="fill" activeBar={false} />
+                    <Tooltip cursor={false} content={<CustomTooltip />} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
             </div>
 
             <div className={styles.chart}>
-              <div className={styles.title}>Logged hours by {range}</div>
+              <div className={styles.title}>{loggedHourRangeTitle}</div>
 
               <div className={styles.chartScroll}>
                 <div
-                  className={styles.chartInner}
-                  style={{
-                    minWidth:
-                      range === ANALYTICS_RANGES.WEEK ? "100%" : "900px",
-                  }}
+                  className={`${styles.chartInner} ${
+                    range !== ANALYTICS_RANGES.WEEK
+                      ? styles.scrollableChart
+                      : ""
+                  }`}
                 >
-                  <ResponsiveContainer width="100%" height={300}>
+                  <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={loggedHoursTrend}>
                       <XAxis
                         dataKey="label"
@@ -233,7 +227,7 @@ export function AnalyticsPage() {
                       <Line
                         type="monotone"
                         dataKey="loggedHours"
-                        stroke="var(--text)"
+                        stroke="var(--muted)"
                         strokeWidth={2}
                         dot={(props) => {
                           if (props.payload.loggedHours === 0) {
@@ -252,8 +246,14 @@ export function AnalyticsPage() {
 
                           return <circle cx={cx} cy={cy} r={3} fill="white" />;
                         }}
-                        activeDot={{ r: 4 }}
+                        activeDot={{
+                          r: 6,
+                          fill: "var(--accent)",
+                          stroke: "var(--panel)",
+                          strokeWidth: 3,
+                        }}
                       />
+                      <Tooltip cursor={false} content={<CustomTooltip />} />
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
