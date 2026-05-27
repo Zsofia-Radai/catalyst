@@ -165,7 +165,7 @@ export function AnalyticsPage() {
                     <Pie
                       data={loggedHoursByHabit}
                       dataKey="loggedHours"
-                      stroke="var(--secondary)"
+                      stroke="var(--stroke)"
                       outerRadius="80%"
                       strokeWidth={2}
                     />
@@ -182,11 +182,13 @@ export function AnalyticsPage() {
                   <BarChart data={loggedHoursByCategory} margin={margin}>
                     <XAxis
                       dataKey="name"
+                      stroke="var(--stroke)"
                       label={{
                         position: "insideBottomRight",
                       }}
                     />
                     <YAxis
+                      stroke="var(--stroke)"
                       label={{
                         position: "insideTopLeft",
                       }}
@@ -213,7 +215,7 @@ export function AnalyticsPage() {
                     <LineChart data={loggedHoursTrend}>
                       <XAxis
                         dataKey="label"
-                        stroke="var(--muted)"
+                        stroke="var(--stroke)"
                         interval={
                           range === ANALYTICS_RANGES.WEEK
                             ? 0
@@ -222,7 +224,7 @@ export function AnalyticsPage() {
                               : 0
                         }
                       />
-                      <YAxis stroke="var(--muted)" />
+                      <YAxis stroke="var(--stroke)" />
 
                       <Line
                         type="monotone"
