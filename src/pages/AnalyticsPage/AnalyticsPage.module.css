@@ -28,7 +28,8 @@
   margin: 1rem;
   padding: 1rem;
   width: 100%;
-  min-width: 0;
+  min-width: 1;
+  min-height: 350px;
   overflow: hidden;
 }
 

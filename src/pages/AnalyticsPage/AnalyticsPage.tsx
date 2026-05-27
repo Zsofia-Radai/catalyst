@@ -162,7 +162,11 @@ export function AnalyticsPage() {
               <div className={styles.title}>Logged hours by habit</div>
               <CustomLegend payload={legendPayload} />
               <div className={styles.chartWrapper}>
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer
+                  width="100%"
+                  height="100%"
+                  initialDimension={{ width: 100, height: 50 }}
+                >
                   <PieChart className={styles.pieChart}>
                     <Pie
                       data={loggedHoursByHabit}
@@ -180,7 +184,11 @@ export function AnalyticsPage() {
             <div className={styles.chart}>
               <div className={styles.title}>Logged hours by category</div>
               <div className={styles.chartWrapper}>
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer
+                  width="100%"
+                  height="100%"
+                  initialDimension={{ width: 100, height: 50 }}
+                >
                   <BarChart data={loggedHoursByCategory} margin={margin}>
                     <XAxis
                       dataKey="name"
@@ -213,7 +221,11 @@ export function AnalyticsPage() {
                       : ""
                   }`}
                 >
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer
+                    width="100%"
+                    height="100%"
+                    initialDimension={{ width: 100, height: 50 }}
+                  >
                     <LineChart data={loggedHoursTrend}>
                       <XAxis
                         dataKey="label"
