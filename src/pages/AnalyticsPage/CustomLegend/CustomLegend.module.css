@@ -1,0 +1,28 @@
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+
+  background: var(--panel-soft);
+  border: 1px solid var(--line);
+
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.legendColor {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
