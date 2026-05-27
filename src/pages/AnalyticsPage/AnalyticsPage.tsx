@@ -56,7 +56,7 @@ export function AnalyticsPage() {
       return habit.archived;
     }
 
-    return habits;
+    return true;
   });
 
   const filteredSessions = sessions.filter(
@@ -68,6 +68,7 @@ export function AnalyticsPage() {
 
   const loggedHoursByHabit = filteredHabits.map((habit) => {
     return {
+      id: habit.id,
       name: habit.name,
       loggedHours: calculateHabitLoggedHours(habit.id, filteredSessions),
       fill: habit.color,
@@ -75,6 +76,7 @@ export function AnalyticsPage() {
   });
 
   const legendPayload = loggedHoursByHabit.map((habit) => ({
+    id: habit.id,
     value: habit.name,
     color: habit.fill,
   }));

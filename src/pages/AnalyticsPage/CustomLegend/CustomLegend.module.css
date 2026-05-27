@@ -14,15 +14,15 @@
   padding: 0.4rem 0.7rem;
   border-radius: 999px;
 
-  background: var(--panel-soft);
-  border: 1px solid var(--line);
+  background: var(--line);
+  border: 1px solid var(--stroke);
 
   color: var(--text);
   font-size: 0.9rem;
 }
 
 .legendColor {
-  width: 10px;
-  height: 10px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
 }
