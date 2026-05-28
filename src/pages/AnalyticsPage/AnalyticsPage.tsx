@@ -173,6 +173,7 @@ export function AnalyticsPage() {
                       dataKey="loggedHours"
                       stroke="var(--stroke)"
                       outerRadius="80%"
+                      label
                       strokeWidth={2}
                     />
                     <Tooltip content={<CustomTooltip />} />

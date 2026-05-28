@@ -1,4 +1,13 @@
-import { isSameMonth, isSameWeek, isSameYear } from "date-fns";
+import {
+  eachDayOfInterval,
+  endOfMonth,
+  endOfWeek,
+  isSameMonth,
+  isSameWeek,
+  isSameYear,
+  startOfMonth,
+  startOfWeek,
+} from "date-fns";
 import type { Habit } from "../../../features/habits/types/habit";
 import { type Session } from "../../../features/sessions/types/session";
 import { getSessionDurationHours } from "../../../features/sessions/utils/sessionsUtils";
@@ -45,39 +54,31 @@ export function isSessionInRange(session: Session, range: AnalyticsRange) {
 }
 
 function getDateKey(date: Date) {
-  return date.toISOString().split("T")[0];
+  return date.toLocaleDateString("en-CA");
 }
 
 function getDaysInRange(range: AnalyticsRange) {
   const today = new Date();
-  const days: Date[] = [];
-
-  const startDate = new Date(today);
 
   if (range === ANALYTICS_RANGES.WEEK) {
-    startDate.setDate(today.getDate() - 6);
+    return eachDayOfInterval({
+      start: startOfWeek(today, { weekStartsOn: 1 }),
+      end: endOfWeek(today, { weekStartsOn: 1 }),
+    });
   }
 
   if (range === ANALYTICS_RANGES.MONTH) {
-    startDate.setDate(today.getDate() - 29);
+    return eachDayOfInterval({
+      start: startOfMonth(today),
+      end: endOfMonth(today),
+    });
   }
 
   if (range === ANALYTICS_RANGES.YEAR) {
-    startDate.setDate(today.getDate() - 364);
-  }
-
-  if (range === ANALYTICS_RANGES.ALL) {
     return [];
   }
 
-  const currentDate = new Date(startDate);
-
-  while (currentDate <= today) {
-    days.push(new Date(currentDate));
-    currentDate.setDate(currentDate.getDate() + 1);
-  }
-
-  return days;
+  return [];
 }
 
 type TrendPoint = {
