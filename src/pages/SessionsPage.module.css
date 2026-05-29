@@ -21,21 +21,25 @@
   overflow: hidden;
   border-radius: 14px;
   box-shadow: 0 12px 30px rgb(0 0 0 / 0.18);
+  position: relative;
 }
 
 .sessionHeader {
   display: grid;
   grid-template-columns: 2fr 2fr;
   gap: 2rem;
-
-  padding: 1.8rem;
   background: var(--habit-color);
+}
+
+.sessionHeader:hover {
+  background: color-mix(in srgb, var(--habit-color) 85%, black);
 }
 
 .dateTime {
   display: grid;
   gap: 0.75rem;
   align-self: center;
+  margin: 0 2rem;
 }
 
 .metaRow {
@@ -79,7 +83,7 @@
 }
 
 .notes {
-  padding: 2rem;
+  padding: 1rem;
   background: var(--panel-soft);
   color: var(--text);
   border-radius: 0 8px 8px 0;
@@ -107,12 +111,9 @@
   background: rgba(255, 255, 255, 0.08);
 }
 
-.sessionBlock:hover .actions {
+.sessionCard:hover .actions {
   opacity: 1;
-}
-
-.sessionBlock:hover {
-  border: 2px solid var(--muted);
+  z-index: 3;
 }
 
 @media (max-width: 768px) {

@@ -46,6 +46,10 @@ export function AnalyticsPage() {
   const navigate = useNavigate();
   const [range, setRange] = useState<AnalyticsRange>(ANALYTICS_RANGES.WEEK);
   const [habitFilter, setHabitFilter] = useState(HABIT_FILTERS.ACTIVE);
+  const emptStateDescription =
+    habitFilter === HABIT_FILTERS.ARCHIVED
+      ? "No completed session from archived habits yet."
+      : "No completed session from active habits yet.";
 
   const filteredHabits = habits.filter((habit) => {
     if (habitFilter === HABIT_FILTERS.ACTIVE) {
@@ -132,8 +136,8 @@ export function AnalyticsPage() {
       {filteredSessions.length === 0 ? (
         <EmptyState
           title="No completed session yet."
-          description="Complete a session from the planner to see analytics."
-          actionLabel="Got to planner"
+          description={emptStateDescription}
+          actionLabel="Go to planner"
           action={() => navigate("/")}
         />
       ) : (

@@ -1,4 +1,4 @@
-import { useNavigate, type Session } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useHabits } from "../features/habits/context/HabitsContext";
 import { HABIT_CATEGORY_META } from "../features/habits/types/habit";
 import { useSessions } from "../features/sessions/context/SessionsContext";
@@ -15,6 +15,7 @@ import { Button } from "../ui/Button/Button";
 import { useState } from "react";
 import { DeleteConfirmModal } from "../ui/DeleteConfirmModal/DeleteConfirmModal";
 import { useToast } from "../context/ToastContext";
+import type { Session } from "../features/sessions/types/session";
 
 export function SessionsPage() {
   const { sessions, deleteSession } = useSessions();
@@ -36,6 +37,8 @@ export function SessionsPage() {
     if (!sessionToDelete) return;
     deleteSession(sessionToDelete.id);
     showToast("Session deleted!", "delete");
+    setIsConfirmDeleteModalOpen(false);
+    setSessionToDelete(null);
   };
 
   return (
@@ -102,6 +105,7 @@ export function SessionsPage() {
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsConfirmDeleteModalOpen(true);
+                    setSessionToDelete(session);
                   }}
                 >
                   <Trash size={16} />
