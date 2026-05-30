@@ -1,4 +1,3 @@
-import { isPast } from "date-fns";
 import { useToast } from "../../../../../context/ToastContext";
 import { Button } from "../../../../../ui/Button/Button";
 import { Modal } from "../../../../../ui/Modal/Modal";
@@ -8,12 +7,8 @@ import {
   RECURRENCE_FREQUENCIES,
   type SessionInputs,
 } from "../../../types/session";
-import {
-  createSession,
-  createSessionSeries,
-} from "../../../utils/sessionsUtils";
-import styles from "./NewSessionModal.module.css";
 import { SessionForm } from "../SessionForm";
+import styles from "./NewSessionModal.module.css";
 
 type NewSessionModalProps = {
   closeModal: () => void;
@@ -28,21 +23,17 @@ export function NewSessionModal({
   day,
   habits,
 }: NewSessionModalProps) {
-  const { addSessions } = useSessions();
+  const { createSession, createSessionSeries } = useSessions();
   const { showToast } = useToast();
 
-  const handleSessionCreated = (data: SessionInputs) => {
-    let session = createSession(data, day);
-    if (
-      isPast(session.finishedAt) &&
-      session.recurrence.frequency === RECURRENCE_FREQUENCIES.NONE
-    ) {
-      session = { ...session, completed: true };
+  const handleSessionCreated = async (data: SessionInputs) => {
+    if (data.recurrence.frequency === RECURRENCE_FREQUENCIES.NONE) {
+      await createSession(data, day);
+    } else {
+      await createSessionSeries(data, day);
     }
-    showToast("Session created!", "save");
-    const sessionsToSave = createSessionSeries(session);
 
-    addSessions(sessionsToSave);
+    showToast("Session created!", "save");
     closeModal();
   };
 

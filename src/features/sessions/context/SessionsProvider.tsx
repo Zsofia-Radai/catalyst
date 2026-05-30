@@ -1,61 +1,68 @@
 import { useEffect, useState } from "react";
-import type { Session } from "../types/session";
+import {
+  createSession as createSessionApi,
+  createSessionSeries as createSessionSeriesApi,
+  deleteSession as deleteSessionApi,
+  deleteSessionSeries as deleteSessionSeriesApi,
+  getSessions,
+  updateSession as updateSessionApi,
+  updateSessionSeries as updateSessionSeriesApi,
+} from "../../../api/sessionsApi";
+import type { Session, SessionInputs } from "../types/session";
 import { SessionsContext, type SessionContextValue } from "./SessionsContext";
-import { copyTimeToDate } from "../utils/sessionsUtils";
 
 export function SessionsProvider({ children }: { children: React.ReactNode }) {
-  const [sessions, setSessions] = useState<Session[]>(() =>
-    JSON.parse(localStorage.getItem("sessions") || "[]"),
-  );
+  const [sessions, setSessions] = useState<Session[]>([]);
 
   useEffect(() => {
-    localStorage.setItem("sessions", JSON.stringify(sessions));
-  }, [sessions]);
+    const loadSessions = async () => {
+      const savedSessions = await getSessions();
+      setSessions(savedSessions || []);
+    };
 
-  const addSession = (session: Session) => {
+    loadSessions();
+  }, []);
+
+  const createSession = async (sessionInputs: SessionInputs, day: Date) => {
+    const session = await createSessionApi(sessionInputs, day);
     setSessions((prev) => [...prev, session]);
   };
 
-  const addSessions = (sessions: Session[]) => {
+  const createSessionSeries = async (
+    sessionInputs: SessionInputs,
+    day: Date,
+  ) => {
+    const sessions = await createSessionSeriesApi(sessionInputs, day);
     setSessions((prev) => [...prev, ...sessions]);
   };
 
-  const updateSession = (session: Session) => {
-    setSessions((prev) =>
+  const updateSession = async (session: Session) => {
+    await updateSessionApi(session);
+    setSessions((prev: Session[]) =>
       prev.map((currentSession) =>
         currentSession.id === session.id ? session : currentSession,
       ),
     );
   };
 
-  const updateSessionSeries = (updatedSession: Session) => {
+  const updateSessionSeries = async (updatedSession: Session) => {
+    await updateSessionSeriesApi(updatedSession);
     setSessions((prev) =>
       prev.map((currentSession) =>
         currentSession.seriesId === updatedSession.seriesId
-          ? {
-              ...currentSession,
-              habitId: updatedSession.habitId,
-              notes: updatedSession.notes,
-              recurrence: updatedSession.recurrence,
-              startedAt: copyTimeToDate(
-                currentSession.startedAt,
-                updatedSession.startedAt,
-              ),
-              finishedAt: copyTimeToDate(
-                currentSession.finishedAt,
-                updatedSession.finishedAt,
-              ),
-            }
+          ? updatedSession
           : currentSession,
       ),
     );
   };
 
-  const deleteSession = (sessionId: string) => {
+  const deleteSession = async (sessionId: string) => {
+    await deleteSessionApi(sessionId);
     setSessions((prev) => prev.filter((session) => session.id !== sessionId));
   };
 
-  const deleteSessionSeries = (seriesId: string) => {
+  const deleteSessionSeries = async (seriesId: string) => {
+    await deleteSessionSeriesApi(seriesId);
     setSessions((prev) =>
       prev.filter((session) => session.seriesId !== seriesId),
     );
@@ -76,8 +83,8 @@ export function SessionsProvider({ children }: { children: React.ReactNode }) {
 
   const value: SessionContextValue = {
     sessions,
-    addSession,
-    addSessions,
+    createSession,
+    createSessionSeries,
     updateSession,
     updateSessionSeries,
     deleteSession,

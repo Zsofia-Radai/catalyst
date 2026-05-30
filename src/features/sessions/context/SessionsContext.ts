@@ -1,10 +1,10 @@
 import { createContext, useContext } from "react";
-import type { Session } from "../types/session";
+import type { Session, SessionInputs } from "../types/session";
 
 export type SessionContextValue = {
   sessions: Session[];
-  addSession: (session: Session) => void;
-  addSessions: (sessions: Session[]) => void;
+  createSession: (sessionInputs: SessionInputs, day: Date) => void;
+  createSessionSeries: (sessionInputs: SessionInputs, day: Date) => void;
   updateSession: (session: Session) => void;
   updateSessionSeries: (session: Session) => void;
   deleteSession: (sessionId: string) => void;

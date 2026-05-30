@@ -1,13 +1,14 @@
+import { isPast } from "date-fns";
 import {
   RECURRENCE_FREQUENCIES,
   type Session,
   type SessionInputs,
 } from "../types/session";
 
-export function createSession(data: SessionInputs, day: Date): Session {
+export function buildSession(data: SessionInputs, day: Date): Session {
   const { startedAt, finishedAt } = buildSessionDates(data, day);
 
-  return {
+  const session: Session = {
     id: crypto.randomUUID(),
     habitId: data.habitId,
     startedAt: startedAt,
@@ -16,9 +17,18 @@ export function createSession(data: SessionInputs, day: Date): Session {
     completed: false,
     recurrence: data.recurrence,
   };
+
+  if (
+    isPast(session.finishedAt) &&
+    session.recurrence.frequency === RECURRENCE_FREQUENCIES.NONE
+  ) {
+    return { ...session, completed: true };
+  }
+
+  return session;
 }
 
-export function createSessionSeries(session: Session): Session[] {
+export function buildSessionSeries(session: Session): Session[] {
   if (!session.recurrence) {
     return [session];
   }

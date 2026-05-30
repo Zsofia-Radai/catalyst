@@ -1,8 +1,7 @@
 import type { Session } from "../../sessions/types/session";
 import type { Habit, HabitInputs } from "../types/habit";
 
-export function createHabit(data: HabitInputs): Habit {
-  console.log(data);
+export function buildHabit(data: HabitInputs): Habit {
   return {
     id: crypto.randomUUID(),
     name: data.name,

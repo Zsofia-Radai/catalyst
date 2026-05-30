@@ -1,12 +1,12 @@
 import { createContext, useContext } from "react";
-import type { Habit } from "../types/habit";
+import type { Habit, HabitInputs } from "../types/habit";
 import type { Session } from "../../sessions/types/session";
 
 export type HabitsContextValue = {
   habits: Habit[];
   activeHabits: Habit[];
   archivedHabits: Habit[];
-  addHabit: (habit: Habit) => void;
+  createHabit: (habitInputs: HabitInputs) => void;
   deleteHabit: (habitId: string) => void;
   restoreHabit: (habitId: string) => void;
   archiveHabit: (habitId: string) => void;
