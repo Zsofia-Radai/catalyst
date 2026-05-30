@@ -5,6 +5,7 @@ import {
   deleteSession as deleteSessionApi,
   deleteSessionSeries as deleteSessionSeriesApi,
   getSessions,
+  setSessionCompleted,
   updateSession as updateSessionApi,
   updateSessionSeries as updateSessionSeriesApi,
 } from "../../../api/sessionsApi";
@@ -15,10 +16,10 @@ export function SessionsProvider({ children }: { children: React.ReactNode }) {
   const [sessions, setSessions] = useState<Session[]>([]);
 
   useEffect(() => {
-    const loadSessions = async () => {
+    async function loadSessions() {
       const savedSessions = await getSessions();
       setSessions(savedSessions || []);
-    };
+    }
 
     loadSessions();
   }, []);
@@ -68,16 +69,14 @@ export function SessionsProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
-  const toggleSessionCompleted = (sessionId: string) => {
+  const toggleSessionCompleted = async (session: Session) => {
+    const updatedSession = await setSessionCompleted(
+      session.id,
+      !session.completed,
+    );
+
     setSessions((prev) =>
-      prev.map((session) =>
-        session.id === sessionId
-          ? {
-              ...session,
-              completed: !session.completed,
-            }
-          : session,
-      ),
+      prev.map((s) => (s.id === updatedSession.id ? updatedSession : s)),
     );
   };
 

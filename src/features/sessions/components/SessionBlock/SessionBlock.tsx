@@ -56,7 +56,7 @@ export function SessionBlock({
           style={{ color: "var(--text)" }}
           onClick={(e) => {
             e.stopPropagation();
-            toggleSessionCompleted(session.id);
+            toggleSessionCompleted(session);
           }}
         >
           <Check size={18} />

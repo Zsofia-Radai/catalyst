@@ -1,89 +1,84 @@
-import { isPast } from "date-fns";
 import {
   RECURRENCE_FREQUENCIES,
+  type Recurrence,
   type Session,
   type SessionInputs,
+  type SessionRow,
 } from "../types/session";
 
-export function buildSession(data: SessionInputs, day: Date): Session {
-  const { startedAt, finishedAt } = buildSessionDates(data, day);
-
-  const session: Session = {
-    id: crypto.randomUUID(),
-    habitId: data.habitId,
-    startedAt: startedAt,
-    finishedAt: finishedAt,
-    notes: data.notes,
-    completed: false,
-    recurrence: data.recurrence,
-  };
-
-  if (
-    isPast(session.finishedAt) &&
-    session.recurrence.frequency === RECURRENCE_FREQUENCIES.NONE
-  ) {
-    return { ...session, completed: true };
-  }
-
-  return session;
-}
-
-export function buildSessionSeries(session: Session): Session[] {
-  if (!session.recurrence) {
-    return [session];
-  }
-
-  const { frequency, repeatUntil } = session.recurrence;
-
-  if (frequency === RECURRENCE_FREQUENCIES.NONE || !repeatUntil) {
-    return [session];
-  }
-
+export function buildSessionSeriesRows({
+  habitId,
+  startedAt,
+  finishedAt,
+  notes,
+  recurrence,
+}: {
+  habitId: string;
+  startedAt: Date;
+  finishedAt: Date;
+  notes?: string;
+  recurrence: Recurrence;
+}) {
   const seriesId = crypto.randomUUID();
-  const sessions: Session[] = [];
+  const rows = [];
 
-  const currentStart = new Date(session.startedAt);
-  const currentEnd = new Date(session.finishedAt);
-  const endDate = new Date(repeatUntil);
+  const currentStart = new Date(startedAt);
+  const currentEnd = new Date(finishedAt);
+  const endDate = new Date(recurrence.repeatUntil!);
   endDate.setHours(23, 59, 59, 999);
 
   const today = new Date();
 
   while (currentStart <= endDate) {
-    sessions.push({
-      ...session,
-      id: crypto.randomUUID(),
-      seriesId,
-      startedAt: new Date(currentStart),
-      finishedAt: new Date(currentEnd),
+    rows.push({
+      habit_id: habitId,
+      started_at: currentStart.toISOString(),
+      finished_at: currentEnd.toISOString(),
+      notes: notes ?? null,
+      completed: currentEnd < today,
+      frequency: recurrence.frequency,
+      repeat_until: recurrence.repeatUntil?.toISOString() ?? null,
+      series_id: seriesId,
     });
 
-    if (currentEnd < today) {
-      sessions[sessions.length - 1].completed = true;
-    }
-
-    if (frequency === RECURRENCE_FREQUENCIES.DAILY) {
+    if (recurrence.frequency === RECURRENCE_FREQUENCIES.DAILY) {
       currentStart.setDate(currentStart.getDate() + 1);
       currentEnd.setDate(currentEnd.getDate() + 1);
     }
 
-    if (frequency === RECURRENCE_FREQUENCIES.WEEKLY) {
+    if (recurrence.frequency === RECURRENCE_FREQUENCIES.WEEKLY) {
       currentStart.setDate(currentStart.getDate() + 7);
       currentEnd.setDate(currentEnd.getDate() + 7);
     }
 
-    if (frequency === RECURRENCE_FREQUENCIES.MONTHLY) {
+    if (recurrence.frequency === RECURRENCE_FREQUENCIES.MONTHLY) {
       currentStart.setMonth(currentStart.getMonth() + 1);
       currentEnd.setMonth(currentEnd.getMonth() + 1);
     }
 
-    if (frequency === RECURRENCE_FREQUENCIES.YEARLY) {
+    if (recurrence.frequency === RECURRENCE_FREQUENCIES.YEARLY) {
       currentStart.setFullYear(currentStart.getFullYear() + 1);
       currentEnd.setFullYear(currentEnd.getFullYear() + 1);
     }
   }
 
-  return sessions;
+  return rows;
+}
+
+export function mapSessionFromDb(row: SessionRow): Session {
+  return {
+    id: row.id,
+    habitId: row.habit_id,
+    startedAt: new Date(row.started_at),
+    finishedAt: new Date(row.finished_at),
+    notes: row.notes ?? "",
+    completed: row.completed,
+    recurrence: {
+      frequency: row.frequency,
+      repeatUntil: row.repeat_until ? new Date(row.repeat_until) : undefined,
+    },
+    seriesId: row.series_id ?? undefined,
+  };
 }
 
 export function getSessionDurationHours(session: Session) {
@@ -105,7 +100,7 @@ export function convertSessionToSessionInput(session: Session) {
   };
 }
 
-function buildSessionDates(data: SessionInputs, day: Date) {
+export function buildSessionDates(data: SessionInputs, day: Date) {
   const startedAt = new Date(day);
   const finishedAt = new Date(day);
 

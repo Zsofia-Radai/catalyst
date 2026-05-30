@@ -9,7 +9,7 @@ export type SessionContextValue = {
   updateSessionSeries: (session: Session) => void;
   deleteSession: (sessionId: string) => void;
   deleteSessionSeries: (seriesId: string) => void;
-  toggleSessionCompleted: (sessionId: string) => void;
+  toggleSessionCompleted: (session: Session) => void;
 };
 
 export const SessionsContext = createContext<SessionContextValue | null>(null);
