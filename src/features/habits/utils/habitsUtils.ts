@@ -1,19 +1,4 @@
 import type { Session } from "../../sessions/types/session";
-import type { Habit, HabitInputs } from "../types/habit";
-
-export function createHabit(data: HabitInputs): Habit {
-  console.log(data);
-  return {
-    id: crypto.randomUUID(),
-    name: data.name,
-    category: data.category,
-    createdAt: Date.now(),
-    goal: data.goal,
-    loggedHours: 0,
-    archived: false,
-    color: data.color,
-  };
-}
 
 export function calculateHabitLoggedHours(
   habitId: string,

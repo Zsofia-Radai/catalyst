@@ -3,6 +3,8 @@ import { HABIT_CATEGORY_META, type Habit } from "../../types/habit";
 import { Ellipsis } from "lucide-react";
 import styles from "./HabitCard.module.css";
 import { Pencil, Archive, Trash2, ArchiveRestore } from "lucide-react";
+import { calculateHabitLoggedHours } from "../../utils/habitsUtils";
+import { useSessions } from "../../../sessions/context/SessionsContext";
 
 type HabitCardProps = {
   habit: Habit;
@@ -23,8 +25,10 @@ export function HabitCard({
   onArchiveClicked,
   onRestoreClicked,
 }: HabitCardProps) {
+  const { sessions } = useSessions();
   const meta = HABIT_CATEGORY_META[habit.category];
   const Icon = meta.icon;
+  const loggedHours = calculateHabitLoggedHours(habit.id, sessions);
 
   return (
     <article
@@ -88,9 +92,7 @@ export function HabitCard({
         <div className={styles.habitGoal}>
           {habit.goal ? `Goal: ${habit.goal}` : null}
         </div>
-        <div className={styles.loggedHours}>
-          {habit.loggedHours ?? 0} hrs total
-        </div>
+        <div className={styles.loggedHours}>{loggedHours ?? 0} hrs total</div>
       </div>
     </article>
   );

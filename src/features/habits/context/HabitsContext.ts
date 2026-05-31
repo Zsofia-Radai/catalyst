@@ -1,17 +1,17 @@
 import { createContext, useContext } from "react";
-import type { Habit } from "../types/habit";
-import type { Session } from "../../sessions/types/session";
+import type { Habit, HabitInputs } from "../types/habit";
 
 export type HabitsContextValue = {
   habits: Habit[];
   activeHabits: Habit[];
   archivedHabits: Habit[];
-  addHabit: (habit: Habit) => void;
-  deleteHabit: (habitId: string) => void;
-  restoreHabit: (habitId: string) => void;
-  archiveHabit: (habitId: string) => void;
-  updateHabit: (habit: Habit) => void;
-  habitsWithLoggedHours: (sessions: Session[]) => Habit[];
+  createHabit: (habitInputs: HabitInputs) => Promise<void>;
+  deleteHabit: (habitId: string) => Promise<void>;
+  restoreHabit: (habitId: string) => Promise<void>;
+  archiveHabit: (habitId: string) => Promise<void>;
+  updateHabit: (habit: Habit) => Promise<void>;
+  isHabitsInitialized: boolean;
+  error: string | null;
 };
 
 export const HabitsContext = createContext<HabitsContextValue | null>(null);

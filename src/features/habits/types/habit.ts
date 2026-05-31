@@ -93,6 +93,5 @@ export type HabitInputs = {
 export type Habit = HabitInputs & {
   id: string;
   createdAt: number;
-  loggedHours: number;
   archived: boolean;
 };

@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
 import { ToastNotification } from "../ui/ToastNotification/ToastNotification";
 
-type ToastType = "save" | "delete";
+type ToastType = "success" | "delete" | "error";
 
 type Toast = {
   message: string;
@@ -34,7 +34,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
     setTimeout(() => {
       setToast(null);
-    }, 1500);
+    }, 3000);
   };
 
   const value: ToastContextValue = {

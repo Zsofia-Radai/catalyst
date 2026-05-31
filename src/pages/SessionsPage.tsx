@@ -16,10 +16,11 @@ import { useState } from "react";
 import { DeleteConfirmModal } from "../ui/DeleteConfirmModal/DeleteConfirmModal";
 import { useToast } from "../context/ToastContext";
 import type { Session } from "../features/sessions/types/session";
+import { PageLoader } from "../ui/PageLoader/PageLoader";
 
 export function SessionsPage() {
-  const { sessions, deleteSession } = useSessions();
-  const { habits } = useHabits();
+  const { sessions, deleteSession, isSessionsInitialized } = useSessions();
+  const { habits, isHabitsInitialized } = useHabits();
   const { showToast } = useToast();
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] =
     useState(false);
@@ -40,6 +41,14 @@ export function SessionsPage() {
     setIsConfirmDeleteModalOpen(false);
     setSessionToDelete(null);
   };
+
+  if (!isSessionsInitialized || !isHabitsInitialized) {
+    return (
+      <div className={layout.page}>
+        <PageLoader />
+      </div>
+    );
+  }
 
   return (
     <div className={layout.page}>

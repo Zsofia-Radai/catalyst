@@ -16,10 +16,11 @@ import layout from "../layout/AppLayout.module.css";
 import { EmptyState } from "../ui/EmptyState/EmptyState";
 import { Tabs } from "../ui/Tabs/Tabs";
 import styles from "./DashboardPage.module.css";
+import { PageLoader } from "../ui/PageLoader/PageLoader";
 
 export function DasboardPage() {
-  const { activeHabits } = useHabits();
-  const { sessions } = useSessions();
+  const { activeHabits, isHabitsInitialized } = useHabits();
+  const { sessions, error, isSessionsInitialized } = useSessions();
   const navigate = useNavigate();
   const [isNewSessionModalOpen, setIsNewSessionModalOpen] = useState(false);
   const [isEditSessionModalOpen, setIsEditSessionModalOpen] = useState(false);
@@ -52,46 +53,62 @@ export function DasboardPage() {
     setIsEditSessionModalOpen(false);
   };
 
+  if (!isSessionsInitialized || !isHabitsInitialized) {
+    return (
+      <div className={layout.page}>
+        <PageLoader />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={layout.page}>
+        <EmptyState title="Error" description={error} />
+      </div>
+    );
+  }
+
+  if (activeHabits.length === 0) {
+    return (
+      <div className={layout.page}>
+        <EmptyState
+          title="No active habits yet."
+          description="Create your first habit to start tracking sessions."
+          actionLabel="Go to habits page"
+          action={() => navigate("/habits")}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className={layout.page}>
-      {activeHabits.length === 0 ? (
-        <div className={styles.emptyState}>
-          <EmptyState
-            title="No active habits yet."
-            description="Create your first habit to start tracking sessions."
-            actionLabel="Go to habits page"
-            action={() => navigate("/habits")}
+      <Tabs
+        tabs={PLANNER_VIEW_TABS}
+        value={plannerView}
+        onChange={setPlannerView}
+      />
+
+      {plannerView === PLANNER_VIEW_TYPES.WEEK ? (
+        <WeekPlanner
+          plannerViewType={PLANNER_VIEW_TYPES.WEEK}
+          sessions={sessions}
+          habits={activeHabits}
+          onAddSession={addSession}
+          openSessionEditor={openSessionEditor}
+        />
+      ) : (
+        <div className={styles.dayPlan}>
+          <DayPlanner
+            plannerViewType={PLANNER_VIEW_TYPES.DAY}
+            day={currentDate}
+            sessions={sessions}
+            habits={activeHabits}
+            onAddSession={addSession}
+            openSessionEditor={openSessionEditor}
           />
         </div>
-      ) : (
-        <>
-          <Tabs
-            tabs={PLANNER_VIEW_TABS}
-            value={plannerView}
-            onChange={setPlannerView}
-          />
-
-          {plannerView === PLANNER_VIEW_TYPES.WEEK ? (
-            <WeekPlanner
-              plannerViewType={PLANNER_VIEW_TYPES.WEEK}
-              sessions={sessions}
-              habits={activeHabits}
-              onAddSession={addSession}
-              openSessionEditor={openSessionEditor}
-            />
-          ) : (
-            <div className={styles.dayPlan}>
-              <DayPlanner
-                plannerViewType={PLANNER_VIEW_TYPES.DAY}
-                day={currentDate}
-                sessions={sessions}
-                habits={activeHabits}
-                onAddSession={addSession}
-                openSessionEditor={openSessionEditor}
-              />
-            </div>
-          )}
-        </>
       )}
 
       {isNewSessionModalOpen && (
