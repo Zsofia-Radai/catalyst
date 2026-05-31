@@ -3,13 +3,18 @@ import type { Session, SessionInputs } from "../types/session";
 
 export type SessionContextValue = {
   sessions: Session[];
-  createSession: (sessionInputs: SessionInputs, day: Date) => void;
-  createSessionSeries: (sessionInputs: SessionInputs, day: Date) => void;
-  updateSession: (session: Session) => void;
-  updateSessionSeries: (session: Session) => void;
-  deleteSession: (sessionId: string) => void;
-  deleteSessionSeries: (seriesId: string) => void;
-  toggleSessionCompleted: (session: Session) => void;
+  createSession: (sessionInputs: SessionInputs, day: Date) => Promise<void>;
+  createSessionSeries: (
+    sessionInputs: SessionInputs,
+    day: Date,
+  ) => Promise<void>;
+  updateSession: (session: Session) => Promise<void>;
+  updateSessionSeries: (session: Session) => Promise<void>;
+  deleteSession: (sessionId: string) => Promise<void>;
+  deleteSessionSeries: (seriesId: string) => Promise<void>;
+  toggleSessionCompleted: (session: Session) => Promise<void>;
+  isSessionsInitialized: boolean;
+  error: string | null;
 };
 
 export const SessionsContext = createContext<SessionContextValue | null>(null);

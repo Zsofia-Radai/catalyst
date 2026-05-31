@@ -12,10 +12,14 @@ export function NewHabitModal({ closeModal }: NewHabitModalProps) {
   const { createHabit } = useHabits();
   const { showToast } = useToast();
 
-  const handleHabitCreated = (habitInputs: HabitInputs) => {
-    createHabit(habitInputs);
-    showToast("Habit created!", "save");
-    closeModal();
+  const handleHabitCreated = async (habitInputs: HabitInputs) => {
+    try {
+      await createHabit(habitInputs);
+      showToast("Habit created!", "success");
+      closeModal();
+    } catch (err) {
+      showToast(`Failed to create habit. ${err}`, "error");
+    }
   };
 
   return (

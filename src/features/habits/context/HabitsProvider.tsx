@@ -1,24 +1,31 @@
 import { useEffect, useState } from "react";
-import { getHabits } from "../../../api/habitsApi";
-import type { Session } from "../../sessions/types/session";
-import type { Habit, HabitInputs } from "../types/habit";
-import { calculateHabitLoggedHours } from "../utils/habitsUtils";
-import { HabitsContext, type HabitsContextValue } from "./HabitsContext";
 import {
+  archiveHabit as archiveHabitApi,
   createHabit as createHabitApi,
   deleteHabit as deleteHabitApi,
-  updateHabit as updateHabitApi,
-  archiveHabit as archiveHabitApi,
+  getHabits,
   restoreHabit as restoreHabitApi,
+  updateHabit as updateHabitApi,
 } from "../../../api/habitsApi";
+import { getErrorMessage } from "../../../utils/errorUtils";
+import type { Habit, HabitInputs } from "../types/habit";
+import { HabitsContext, type HabitsContextValue } from "./HabitsContext";
 
 export function HabitsProvider({ children }: { children: React.ReactNode }) {
   const [habits, setHabits] = useState<Habit[]>([]);
+  const [isHabitsInitialized, setIsHabitsInitialized] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadHabits() {
-      const habits = await getHabits();
-      setHabits(habits);
+      try {
+        const habits = await getHabits();
+        setHabits(habits);
+      } catch {
+        setError("Failed to load habits.");
+      } finally {
+        setIsHabitsInitialized(true);
+      }
     }
 
     loadHabits();
@@ -32,47 +39,82 @@ export function HabitsProvider({ children }: { children: React.ReactNode }) {
   );
 
   const createHabit = async (habitInputs: HabitInputs) => {
-    const habit = await createHabitApi(habitInputs);
-    setHabits((prev) => [...prev, habit]);
+    setError(null);
+
+    try {
+      const habit = await createHabitApi(habitInputs);
+      setHabits((prev) => [...prev, habit]);
+    } catch (err) {
+      const message = getErrorMessage(err);
+      throw new Error(message, { cause: err });
+    }
   };
 
   const updateHabit = async (habit: Habit) => {
-    await updateHabitApi(habit);
-    setHabits((prev: Habit[]) =>
-      prev.map((prevHabit) => (prevHabit.id === habit.id ? habit : prevHabit)),
-    );
+    setError(null);
+
+    try {
+      await updateHabitApi(habit);
+      setHabits((prev: Habit[]) =>
+        prev.map((prevHabit) =>
+          prevHabit.id === habit.id ? habit : prevHabit,
+        ),
+      );
+    } catch (err) {
+      const message = getErrorMessage(err);
+      throw new Error(message, { cause: err });
+    }
   };
 
   const deleteHabit = async (habitId: string) => {
-    await deleteHabitApi(habitId);
-    setHabits((prev: Habit[]) => prev.filter((habit) => habit.id !== habitId));
+    setError(null);
+
+    try {
+      await deleteHabitApi(habitId);
+      setHabits((prev: Habit[]) =>
+        prev.filter((habit) => habit.id !== habitId),
+      );
+    } catch (err) {
+      const message = getErrorMessage(err);
+      throw new Error(message, { cause: err });
+    }
   };
 
   const archiveHabit = async (habitId: string) => {
-    await archiveHabitApi(habitId);
-    setHabits((prev: Habit[]) =>
-      prev.map((prevHabit) =>
-        prevHabit.id === habitId ? { ...prevHabit, archived: true } : prevHabit,
-      ),
-    );
+    setError(null);
+
+    try {
+      await archiveHabitApi(habitId);
+      setHabits((prev: Habit[]) =>
+        prev.map((prevHabit) =>
+          prevHabit.id === habitId
+            ? { ...prevHabit, archived: true }
+            : prevHabit,
+        ),
+      );
+    } catch (err) {
+      const message = getErrorMessage(err);
+      throw new Error(message, { cause: err });
+    }
   };
 
   const restoreHabit = async (habitId: string) => {
-    await restoreHabitApi(habitId);
-    setHabits((prev: Habit[]) =>
-      prev.map((prevHabit) =>
-        prevHabit.id === habitId
-          ? { ...prevHabit, archived: false }
-          : prevHabit,
-      ),
-    );
-  };
+    setError(null);
 
-  const habitsWithLoggedHours = (sessions: Session[]) =>
-    habits.map((habit) => ({
-      ...habit,
-      loggedHours: calculateHabitLoggedHours(habit.id, sessions),
-    }));
+    try {
+      await restoreHabitApi(habitId);
+      setHabits((prev: Habit[]) =>
+        prev.map((prevHabit) =>
+          prevHabit.id === habitId
+            ? { ...prevHabit, archived: false }
+            : prevHabit,
+        ),
+      );
+    } catch (err) {
+      const message = getErrorMessage(err);
+      throw new Error(message, { cause: err });
+    }
+  };
 
   const value: HabitsContextValue = {
     habits,
@@ -83,7 +125,8 @@ export function HabitsProvider({ children }: { children: React.ReactNode }) {
     updateHabit,
     archiveHabit,
     restoreHabit,
-    habitsWithLoggedHours,
+    isHabitsInitialized,
+    error,
   };
   return (
     <HabitsContext.Provider value={value}>{children}</HabitsContext.Provider>

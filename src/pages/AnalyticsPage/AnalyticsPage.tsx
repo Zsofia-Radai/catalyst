@@ -39,10 +39,11 @@ import {
   getLoggedHoursTrend,
   isSessionInRange,
 } from "./utils/analyticsUtils";
+import { PageLoader } from "../../ui/PageLoader/PageLoader";
 
 export function AnalyticsPage() {
-  const { sessions } = useSessions();
-  const { habits } = useHabits();
+  const { sessions, isSessionsInitialized } = useSessions();
+  const { habits, isHabitsInitialized } = useHabits();
   const navigate = useNavigate();
   const [range, setRange] = useState<AnalyticsRange>(ANALYTICS_RANGES.WEEK);
   const [habitFilter, setHabitFilter] = useState(HABIT_FILTERS.ACTIVE);
@@ -122,6 +123,14 @@ export function AnalyticsPage() {
     left: 20,
     bottom: 25,
   };
+
+  if (!isSessionsInitialized || !isHabitsInitialized) {
+    return (
+      <div className={layout.page}>
+        <PageLoader />
+      </div>
+    );
+  }
 
   return (
     <div className={layout.page}>

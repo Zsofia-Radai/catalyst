@@ -48,19 +48,29 @@ export function EditSessionModal({
     handleSessionSave(sessionData);
   };
 
-  const handleSessionSave = (sessionData: SessionInputs) => {
-    updateSession(convertSessionInputToSession(sessionData, day, session));
-    showToast("Session saved!", "save");
-    closeModal();
+  const handleSessionSave = async (sessionData: SessionInputs) => {
+    try {
+      await updateSession(
+        convertSessionInputToSession(sessionData, day, session),
+      );
+      showToast("Session saved!", "success");
+      closeModal();
+    } catch (err) {
+      showToast(`Failed to save session. ${err}`, "error");
+    }
   };
 
-  const handleSessionSeriesSaved = () => {
+  const handleSessionSeriesSaved = async () => {
     if (!pendingSessionData) return;
-    updateSessionSeries(
-      convertSessionInputToSession(pendingSessionData, day, session),
-    );
-    showToast("Sessions saved!", "save");
-    closeModal();
+    try {
+      await updateSessionSeries(
+        convertSessionInputToSession(pendingSessionData, day, session),
+      );
+      showToast("Sessions saved!", "success");
+      closeModal();
+    } catch (err) {
+      showToast(`Failed to save sessions. ${err}`, "error");
+    }
   };
 
   const handleSessionDeleteClicked = () => {
@@ -73,17 +83,25 @@ export function EditSessionModal({
     closeModal();
   };
 
-  const handleSessionDelete = () => {
-    deleteSession(session.id);
-    showToast("Session deleted!", "delete");
-    closeModal();
+  const handleSessionDelete = async () => {
+    try {
+      await deleteSession(session.id);
+      showToast("Session deleted!", "delete");
+      closeModal();
+    } catch (err) {
+      showToast(`Failed to delete session. ${err}`, "error");
+    }
   };
 
-  const handleSessionSeriesDelete = () => {
+  const handleSessionSeriesDelete = async () => {
     if (!session.seriesId) return;
-    deleteSessionSeries(session.seriesId);
-    showToast("Sessions deleted!", "delete");
-    closeModal();
+    try {
+      await deleteSessionSeries(session.seriesId);
+      showToast("Sessions deleted!", "delete");
+      closeModal();
+    } catch (err) {
+      showToast(`Failed to delete sessions. ${err}`, "error");
+    }
   };
 
   return (

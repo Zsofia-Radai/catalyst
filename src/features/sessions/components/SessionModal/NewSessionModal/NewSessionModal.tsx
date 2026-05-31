@@ -27,14 +27,17 @@ export function NewSessionModal({
   const { showToast } = useToast();
 
   const handleSessionCreated = async (data: SessionInputs) => {
-    if (data.recurrence.frequency === RECURRENCE_FREQUENCIES.NONE) {
-      await createSession(data, day);
-    } else {
-      await createSessionSeries(data, day);
+    try {
+      if (data.recurrence.frequency === RECURRENCE_FREQUENCIES.NONE) {
+        await createSession(data, day);
+      } else {
+        await createSessionSeries(data, day);
+      }
+      showToast("Session created!", "success");
+      closeModal();
+    } catch (err) {
+      showToast(`Failed to create session. ${err}`, "error");
     }
-
-    showToast("Session created!", "save");
-    closeModal();
   };
 
   return (

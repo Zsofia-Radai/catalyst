@@ -15,6 +15,7 @@ import {
 } from "../Planner/plannerUtils";
 import styles from "./SessionBlock.module.css";
 import { isFuture } from "date-fns";
+import { useToast } from "../../../../context/ToastContext";
 
 type SessionProps = {
   session: Session;
@@ -31,11 +32,20 @@ export function SessionBlock({
 }: SessionProps) {
   const habit = getHabitData(habits, session.habitId);
   const { toggleSessionCompleted } = useSessions();
+  const { showToast } = useToast();
   if (!habit) return null;
   const meta = HABIT_CATEGORY_META[habit.category];
   const Icon = meta.icon;
   const hourHeight = HOUR_HEIGHTS[plannerViewType];
   const badgeSize = plannerViewType === PLANNER_VIEW_TYPES.DAY ? 20 : 16;
+
+  const handleSessionToggleCompleted = async () => {
+    try {
+      await toggleSessionCompleted(session);
+    } catch (err) {
+      showToast(`Failed to toggle session completed status. ${err}`, "error");
+    }
+  };
 
   return (
     <div
@@ -49,18 +59,19 @@ export function SessionBlock({
       }}
     >
       <div className={styles.actions}>
-        {!isFuture(new Date(session.finishedAt)) &&
-        <Button
-          aria-label="Complete session toggle"
-          variant="icon"
-          style={{ color: "var(--text)" }}
-          onClick={(e) => {
-            e.stopPropagation();
-            toggleSessionCompleted(session);
-          }}
-        >
-          <Check size={18} />
-        </Button>}
+        {!isFuture(new Date(session.finishedAt)) && (
+          <Button
+            aria-label="Complete session toggle"
+            variant="icon"
+            style={{ color: "var(--text)" }}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleSessionToggleCompleted();
+            }}
+          >
+            <Check size={18} />
+          </Button>
+        )}
 
         <Button
           aria-label="Edit session"

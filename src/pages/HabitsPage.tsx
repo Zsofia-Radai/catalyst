@@ -1,23 +1,27 @@
 import { useRef, useState } from "react";
+import { useToast } from "../context/ToastContext";
 import { EditHabitModal } from "../features/habits/components/EditHabitModal/EditHabitModal";
 import { HabitCard } from "../features/habits/components/HabitCard/HabitCard";
 import { NewHabitModal } from "../features/habits/components/NewHabitModal/NewHabitModal";
 import { useHabits } from "../features/habits/context/HabitsContext";
 import { type Habit } from "../features/habits/types/habit";
-import { calculateHabitLoggedHours } from "../features/habits/utils/habitsUtils";
-import { useSessions } from "../features/sessions/context/SessionsContext";
 import { useClickOutside } from "../hooks/useClickOutside";
 import layout from "../layout/AppLayout.module.css";
 import { Button } from "../ui/Button/Button";
 import { DeleteConfirmModal } from "../ui/DeleteConfirmModal/DeleteConfirmModal";
-import styles from "./HabitsPage.module.css";
-import { useToast } from "../context/ToastContext";
 import { EmptyState } from "../ui/EmptyState/EmptyState";
+import { PageLoader } from "../ui/PageLoader/PageLoader";
 import { Tabs } from "../ui/Tabs/Tabs";
+import styles from "./HabitsPage.module.css";
 
 export function HabitsPage() {
-  const { habits, archiveHabit, restoreHabit, deleteHabit } = useHabits();
-  const { sessions, deleteSession } = useSessions();
+  const {
+    habits,
+    archiveHabit,
+    restoreHabit,
+    deleteHabit,
+    isHabitsInitialized,
+  } = useHabits();
   const { showToast } = useToast();
   const habitsContainerRef = useRef<HTMLDivElement | null>(null);
   const [newHabitModalOpen, setNewHabitModalOpen] = useState(false);
@@ -25,12 +29,8 @@ export function HabitsPage() {
   const [habitToEdit, setHabitToEdit] = useState<Habit | null>(null);
   const [menuOpenForHabit, setMenuOpenForHabit] = useState<string | null>(null);
   const [habitView, setHabitView] = useState<HabitViewType>("active");
-  const habitsWithLoggedHours = habits.map((habit) => ({
-    ...habit,
-    loggedHours: calculateHabitLoggedHours(habit.id, sessions),
-  }));
 
-  const visibleHabits = habitsWithLoggedHours.filter((habit) =>
+  const visibleHabits = habits.filter((habit) =>
     habitView === "active" ? !habit.archived : habit.archived,
   );
 
@@ -52,16 +52,16 @@ export function HabitsPage() {
     setHabitToDelete(habit);
   };
 
-  const handleDeleteHabit = () => {
+  const handleDeleteHabit = async () => {
     if (!habitToDelete) return;
-    deleteHabit(habitToDelete.id);
-    sessions.map((session) => {
-      if (session.habitId === habitToDelete.id) {
-        deleteSession(session.id);
-      }
-    });
-    showToast("Habit deleted!", "delete");
-    setHabitToDelete(null);
+
+    try {
+      await deleteHabit(habitToDelete.id);
+      showToast("Habit deleted!", "delete");
+      setHabitToDelete(null);
+    } catch (err) {
+      showToast(`Failed to delete habit. ${err}`, "error");
+    }
   };
 
   const handleEditClicked = (habit: Habit) => {
@@ -69,14 +69,24 @@ export function HabitsPage() {
     setHabitToEdit(habit);
   };
 
-  const handleRestoreClicked = (habitId: string) => {
-    restoreHabit(habitId);
+  const handleRestoreClicked = async (habitId: string) => {
+    try {
+      await restoreHabit(habitId);
+      showToast("Habit restored!", "success");
+    } catch (err) {
+      showToast(`Failed to restore habit. ${err}`, "error");
+    }
     setMenuOpenForHabit(null);
   };
 
-  const handleArchiveClicked = (habitId: string) => {
-    archiveHabit(habitId);
-    setMenuOpenForHabit(null);
+  const handleArchiveClicked = async (habitId: string) => {
+    try {
+      await archiveHabit(habitId);
+      setMenuOpenForHabit(null);
+      showToast("Habit archived!", "success");
+    } catch (err) {
+      showToast(`Failed to archive habit. ${err}`, "error");
+    }
   };
 
   const onDeleteCancel = () => {
@@ -98,6 +108,14 @@ export function HabitsPage() {
       value: "archived",
     },
   ];
+
+  if (!isHabitsInitialized) {
+    return (
+      <div className={layout.page}>
+        <PageLoader />
+      </div>
+    );
+  }
 
   return (
     <div className={layout.page}>
