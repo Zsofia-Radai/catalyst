@@ -13,13 +13,11 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { useHabits } from "../../features/habits/context/HabitsContext";
 import {
   HABIT_CATEGORY_META,
   type HabitCategory,
 } from "../../features/habits/types/habit";
 import { calculateHabitLoggedHours } from "../../features/habits/utils/habitsUtils";
-import { useSessions } from "../../features/sessions/context/SessionsContext";
 import layout from "../../layout/AppLayout.module.css";
 import { EmptyState } from "../../ui/EmptyState/EmptyState";
 import { Tabs } from "../../ui/Tabs/Tabs";
@@ -40,10 +38,12 @@ import {
   isSessionInRange,
 } from "./utils/analyticsUtils";
 import { PageLoader } from "../../ui/PageLoader/PageLoader";
+import { useHabits } from "../../features/habits/hooks/useHabits";
+import { useSessions } from "../../features/sessions/hooks/useSessions";
 
 export function AnalyticsPage() {
-  const { sessions, isSessionsLoading } = useSessions();
-  const { habits, isHabitsLoading } = useHabits();
+  const { data: sessions = [], isLoading: isSessionsLoading } = useSessions();
+  const { data: habits = [], isLoading: isHabitsLoading } = useHabits();
   const navigate = useNavigate();
   const [range, setRange] = useState<AnalyticsRange>(ANALYTICS_RANGES.WEEK);
   const [habitFilter, setHabitFilter] = useState(HABIT_FILTERS.ACTIVE);

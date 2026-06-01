@@ -3,7 +3,6 @@ import { useToast } from "../context/ToastContext";
 import { EditHabitModal } from "../features/habits/components/EditHabitModal/EditHabitModal";
 import { HabitCard } from "../features/habits/components/HabitCard/HabitCard";
 import { NewHabitModal } from "../features/habits/components/NewHabitModal/NewHabitModal";
-import { useHabits } from "../features/habits/context/HabitsContext";
 import { type Habit } from "../features/habits/types/habit";
 import { useClickOutside } from "../hooks/useClickOutside";
 import layout from "../layout/AppLayout.module.css";
@@ -14,10 +13,20 @@ import { PageLoader } from "../ui/PageLoader/PageLoader";
 import { Tabs } from "../ui/Tabs/Tabs";
 import styles from "./HabitsPage.module.css";
 import { getErrorMessage } from "../utils/errorUtils";
+import { useHabits } from "../features/habits/hooks/useHabits";
+import { useDeleteHabit } from "../features/habits/hooks/useDeleteHabit";
+import { useArchiveHabit } from "../features/habits/hooks/useArchiveHabit";
+import { useRestoreHabit } from "../features/habits/hooks/useRestoreHabit";
 
 export function HabitsPage() {
-  const { habits, archiveHabit, restoreHabit, deleteHabit, isHabitsLoading } =
-    useHabits();
+  const {
+    data: habits = [],
+    isLoading: isHabitsLoading,
+    error: habitsError,
+  } = useHabits();
+  const deleteHabit = useDeleteHabit();
+  const archiveHabit = useArchiveHabit();
+  const restoreHabit = useRestoreHabit();
   const { showToast } = useToast();
   const habitsContainerRef = useRef<HTMLDivElement | null>(null);
   const [newHabitModalOpen, setNewHabitModalOpen] = useState(false);
@@ -52,7 +61,7 @@ export function HabitsPage() {
     if (!habitToDelete) return;
 
     try {
-      await deleteHabit(habitToDelete.id);
+      await deleteHabit.mutateAsync(habitToDelete.id);
       showToast("Habit deleted!", "delete");
       setHabitToDelete(null);
     } catch (err) {
@@ -67,7 +76,7 @@ export function HabitsPage() {
 
   const handleRestoreClicked = async (habitId: string) => {
     try {
-      await restoreHabit(habitId);
+      await restoreHabit.mutateAsync(habitId);
       showToast("Habit restored!", "success");
     } catch (err) {
       showToast(`Failed to restore habit. ${getErrorMessage(err)}`, "error");
@@ -77,7 +86,7 @@ export function HabitsPage() {
 
   const handleArchiveClicked = async (habitId: string) => {
     try {
-      await archiveHabit(habitId);
+      await archiveHabit.mutateAsync(habitId);
       setMenuOpenForHabit(null);
       showToast("Habit archived!", "success");
     } catch (err) {
@@ -109,6 +118,14 @@ export function HabitsPage() {
     return (
       <div className={layout.page}>
         <PageLoader />
+      </div>
+    );
+  }
+
+  if (habitsError) {
+    return (
+      <div className={layout.page}>
+        <EmptyState title="Failed to load habits." />
       </div>
     );
   }

@@ -4,7 +4,7 @@ import { Ellipsis } from "lucide-react";
 import styles from "./HabitCard.module.css";
 import { Pencil, Archive, Trash2, ArchiveRestore } from "lucide-react";
 import { calculateHabitLoggedHours } from "../../utils/habitsUtils";
-import { useSessions } from "../../../sessions/context/SessionsContext";
+import { useSessions } from "../../../sessions/hooks/useSessions";
 
 type HabitCardProps = {
   habit: Habit;
@@ -25,7 +25,7 @@ export function HabitCard({
   onArchiveClicked,
   onRestoreClicked,
 }: HabitCardProps) {
-  const { sessions } = useSessions();
+  const { data: sessions = [] } = useSessions();
   const meta = HABIT_CATEGORY_META[habit.category];
   const Icon = meta.icon;
   const loggedHours = calculateHabitLoggedHours(habit.id, sessions);

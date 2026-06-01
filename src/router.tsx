@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import { DasboardPage } from "./pages/DashboardPage";
+import { DashboardPage } from "./pages/DashboardPage";
 import { HabitsPage } from "./pages/HabitsPage";
 import { AnalyticsPage } from "./pages/AnalyticsPage/AnalyticsPage";
 import { AppLayout } from "./layout/AppLayout";
@@ -12,7 +12,7 @@ export const router = createBrowserRouter([
     element: <AppLayout />,
     errorElement: <ErrorPage />,
     children: [
-      { index: true, element: <DasboardPage /> },
+      { index: true, element: <DashboardPage /> },
       { path: "/habits", element: <HabitsPage /> },
       { path: "/sessions", element: <SessionsPage /> },
       { path: "/analytics", element: <AnalyticsPage /> },

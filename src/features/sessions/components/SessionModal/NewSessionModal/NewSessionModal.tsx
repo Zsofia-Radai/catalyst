@@ -2,7 +2,9 @@ import { useToast } from "../../../../../context/ToastContext";
 import { Button } from "../../../../../ui/Button/Button";
 import { Modal } from "../../../../../ui/Modal/Modal";
 import type { Habit } from "../../../../habits/types/habit";
-import { useSessions } from "../../../context/SessionsContext";
+import { useCreateSession } from "../../../hooks/useCreateSession";
+import { useCreateSessionSeries } from "../../../hooks/useCreateSessionSeries";
+
 import {
   RECURRENCE_FREQUENCIES,
   type SessionInputs,
@@ -23,15 +25,16 @@ export function NewSessionModal({
   day,
   habits,
 }: NewSessionModalProps) {
-  const { createSession, createSessionSeries } = useSessions();
+  const createSession = useCreateSession();
+  const createSessionSeries = useCreateSessionSeries();
   const { showToast } = useToast();
 
-  const handleSessionCreated = async (data: SessionInputs) => {
+  const handleSessionCreated = async (sessionInputs: SessionInputs) => {
     try {
-      if (data.recurrence.frequency === RECURRENCE_FREQUENCIES.NONE) {
-        await createSession(data, day);
+      if (sessionInputs.recurrence.frequency === RECURRENCE_FREQUENCIES.NONE) {
+        await createSession.mutateAsync({ sessionInputs, day });
       } else {
-        await createSessionSeries(data, day);
+        await createSessionSeries.mutateAsync({ sessionInputs, day });
       }
       showToast("Session created!", "success");
       closeModal();

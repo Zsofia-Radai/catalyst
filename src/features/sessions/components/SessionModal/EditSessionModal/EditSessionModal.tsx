@@ -3,7 +3,6 @@ import { useToast } from "../../../../../context/ToastContext";
 import { Button } from "../../../../../ui/Button/Button";
 import { Modal } from "../../../../../ui/Modal/Modal";
 import type { Habit } from "../../../../habits/types/habit";
-import { useSessions } from "../../../context/SessionsContext";
 import { type Session, type SessionInputs } from "../../../types/session";
 import {
   convertSessionInputToSession,
@@ -13,6 +12,10 @@ import { SeriesUpdateConfirmation } from "../SeriesUpdateConfirmation/SeriesUpda
 import { SessionForm } from "../SessionForm";
 import styles from "./EditSessionModal.module.css";
 import { getErrorMessage } from "../../../../../utils/errorUtils";
+import { useUpdateSession } from "../../../hooks/useUpdateSession";
+import { useUpdateSessionSeries } from "../../../hooks/useUpdateSessionSeries";
+import { useDeleteSession } from "../../../hooks/useDeleteSession";
+import { useDeleteSessionSeries } from "../../../hooks/useDeleteSessionSeries";
 
 type EditSessionModalProps = {
   closeModal: () => void;
@@ -27,12 +30,10 @@ export function EditSessionModal({
   day,
   habits,
 }: EditSessionModalProps) {
-  const {
-    updateSession,
-    updateSessionSeries,
-    deleteSession,
-    deleteSessionSeries,
-  } = useSessions();
+  const updateSession = useUpdateSession();
+  const updateSessionSeries = useUpdateSessionSeries();
+  const deleteSession = useDeleteSession();
+  const deleteSessionSeries = useDeleteSessionSeries();
   const { showToast } = useToast();
   const [deleteConfirmation, setDeleteConfirmation] = useState<boolean>(false);
   const [editConfirmation, setEditConfirmation] = useState<boolean>(false);
@@ -51,7 +52,7 @@ export function EditSessionModal({
 
   const handleSessionSave = async (sessionData: SessionInputs) => {
     try {
-      await updateSession(
+      await updateSession.mutateAsync(
         convertSessionInputToSession(sessionData, day, session),
       );
       showToast("Session saved!", "success");
@@ -64,7 +65,7 @@ export function EditSessionModal({
   const handleSessionSeriesSaved = async () => {
     if (!pendingSessionData) return;
     try {
-      await updateSessionSeries(
+      await updateSessionSeries.mutateAsync(
         convertSessionInputToSession(pendingSessionData, day, session),
       );
       showToast("Sessions saved!", "success");
@@ -74,19 +75,17 @@ export function EditSessionModal({
     }
   };
 
-  const handleSessionDeleteClicked = () => {
+  const handleSessionDeleteClicked = async () => {
     if (session.seriesId) {
       setDeleteConfirmation(true);
       return;
     }
-    deleteSession(session.id);
-    showToast("Session deleted!", "delete");
-    closeModal();
+    await handleSessionDelete();
   };
 
   const handleSessionDelete = async () => {
     try {
-      await deleteSession(session.id);
+      await deleteSession.mutateAsync(session.id);
       showToast("Session deleted!", "delete");
       closeModal();
     } catch (err) {
@@ -97,7 +96,7 @@ export function EditSessionModal({
   const handleSessionSeriesDelete = async () => {
     if (!session.seriesId) return;
     try {
-      await deleteSessionSeries(session.seriesId);
+      await deleteSessionSeries.mutateAsync(session.seriesId);
       showToast("Sessions deleted!", "delete");
       closeModal();
     } catch (err) {

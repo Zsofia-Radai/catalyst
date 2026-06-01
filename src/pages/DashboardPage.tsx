@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useHabits } from "../features/habits/context/HabitsContext";
 import { DayPlanner } from "../features/sessions/components/Planner/DayPlanner/DayPlanner";
 import {
   PLANNER_VIEW_TABS,
@@ -10,17 +9,27 @@ import {
 import { WeekPlanner } from "../features/sessions/components/Planner/WeekPlanner/WeekPlanner";
 import { EditSessionModal } from "../features/sessions/components/SessionModal/EditSessionModal/EditSessionModal";
 import { NewSessionModal } from "../features/sessions/components/SessionModal/NewSessionModal/NewSessionModal";
-import { useSessions } from "../features/sessions/context/SessionsContext";
 import type { Session } from "../features/sessions/types/session";
 import layout from "../layout/AppLayout.module.css";
 import { EmptyState } from "../ui/EmptyState/EmptyState";
 import { Tabs } from "../ui/Tabs/Tabs";
 import styles from "./DashboardPage.module.css";
 import { PageLoader } from "../ui/PageLoader/PageLoader";
+import { useHabits } from "../features/habits/hooks/useHabits";
+import { getErrorMessage } from "../utils/errorUtils";
+import { useSessions } from "../features/sessions/hooks/useSessions";
 
-export function DasboardPage() {
-  const { habits, isHabitsLoading } = useHabits();
-  const { sessions, error, isSessionsLoading } = useSessions();
+export function DashboardPage() {
+  const {
+    data: habits = [],
+    isLoading: isHabitsLoading,
+    error: habitsError,
+  } = useHabits();
+  const {
+    data: sessions = [],
+    isLoading: isSessionsLoading,
+    error: sessionsError,
+  } = useSessions();
   const navigate = useNavigate();
   const [isNewSessionModalOpen, setIsNewSessionModalOpen] = useState(false);
   const [isEditSessionModalOpen, setIsEditSessionModalOpen] = useState(false);
@@ -33,6 +42,10 @@ export function DasboardPage() {
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
   const currentDate = new Date();
   const activeHabits = habits.filter((habit) => !habit.archived);
+  const errors = [habitsError, sessionsError]
+    .filter(Boolean)
+    .map(getErrorMessage)
+    .join("\n");
 
   const addSession = (hour: number, day: Date) => {
     setNewSessionStartTime(hour);
@@ -62,10 +75,10 @@ export function DasboardPage() {
     );
   }
 
-  if (error) {
+  if (sessionsError || habitsError) {
     return (
       <div className={layout.page}>
-        <EmptyState title="Error" description={error} />
+        <EmptyState title="Error" description={errors} />
       </div>
     );
   }
