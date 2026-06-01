@@ -12,6 +12,7 @@ import {
 import { SeriesUpdateConfirmation } from "../SeriesUpdateConfirmation/SeriesUpdateConfirmation";
 import { SessionForm } from "../SessionForm";
 import styles from "./EditSessionModal.module.css";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
 
 type EditSessionModalProps = {
   closeModal: () => void;
@@ -69,7 +70,7 @@ export function EditSessionModal({
       showToast("Sessions saved!", "success");
       closeModal();
     } catch (err) {
-      showToast(`Failed to save sessions. ${err}`, "error");
+      showToast(`Failed to save sessions. ${getErrorMessage(err)}`, "error");
     }
   };
 
@@ -89,7 +90,7 @@ export function EditSessionModal({
       showToast("Session deleted!", "delete");
       closeModal();
     } catch (err) {
-      showToast(`Failed to delete session. ${err}`, "error");
+      showToast(`Failed to delete session. ${getErrorMessage(err)}`, "error");
     }
   };
 
@@ -100,7 +101,7 @@ export function EditSessionModal({
       showToast("Sessions deleted!", "delete");
       closeModal();
     } catch (err) {
-      showToast(`Failed to delete sessions. ${err}`, "error");
+      showToast(`Failed to delete sessions. ${getErrorMessage(err)}`, "error");
     }
   };
 

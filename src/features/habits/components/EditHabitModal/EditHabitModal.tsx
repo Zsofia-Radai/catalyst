@@ -1,5 +1,6 @@
 import { useToast } from "../../../../context/ToastContext";
 import { Modal } from "../../../../ui/Modal/Modal";
+import { getErrorMessage } from "../../../../utils/errorUtils";
 import { useHabits } from "../../context/HabitsContext";
 import type { Habit, HabitInputs } from "../../types/habit";
 import { HabitForm } from "../HabitForm/HabitForm";
@@ -25,7 +26,7 @@ export function EditHabitModal({ habit, closeModal }: EditHabitModalProps) {
       showToast("Habit updated!", "success");
       closeModal();
     } catch (err) {
-      showToast(`Failed to save sessions. ${err}`, "error");
+      showToast(`Failed to save sessions. ${getErrorMessage(err)}`, "error");
     }
   };
 

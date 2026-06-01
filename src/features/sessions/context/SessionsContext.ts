@@ -13,7 +13,7 @@ export type SessionContextValue = {
   deleteSession: (sessionId: string) => Promise<void>;
   deleteSessionSeries: (seriesId: string) => Promise<void>;
   toggleSessionCompleted: (session: Session) => Promise<void>;
-  isSessionsInitialized: boolean;
+  isSessionsLoading: boolean;
   error: string | null;
 };
 

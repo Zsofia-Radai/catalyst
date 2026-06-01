@@ -19,8 +19,8 @@ import type { Session } from "../features/sessions/types/session";
 import { PageLoader } from "../ui/PageLoader/PageLoader";
 
 export function SessionsPage() {
-  const { sessions, deleteSession, isSessionsInitialized } = useSessions();
-  const { habits, isHabitsInitialized } = useHabits();
+  const { sessions, deleteSession, isSessionsLoading } = useSessions();
+  const { habits, isHabitsLoading } = useHabits();
   const { showToast } = useToast();
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] =
     useState(false);
@@ -42,7 +42,7 @@ export function SessionsPage() {
     setSessionToDelete(null);
   };
 
-  if (!isSessionsInitialized || !isHabitsInitialized) {
+  if (isSessionsLoading || isHabitsLoading) {
     return (
       <div className={layout.page}>
         <PageLoader />

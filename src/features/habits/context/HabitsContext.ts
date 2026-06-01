@@ -3,14 +3,12 @@ import type { Habit, HabitInputs } from "../types/habit";
 
 export type HabitsContextValue = {
   habits: Habit[];
-  activeHabits: Habit[];
-  archivedHabits: Habit[];
   createHabit: (habitInputs: HabitInputs) => Promise<void>;
   deleteHabit: (habitId: string) => Promise<void>;
   restoreHabit: (habitId: string) => Promise<void>;
   archiveHabit: (habitId: string) => Promise<void>;
   updateHabit: (habit: Habit) => Promise<void>;
-  isHabitsInitialized: boolean;
+  isHabitsLoading: boolean;
   error: string | null;
 };
 

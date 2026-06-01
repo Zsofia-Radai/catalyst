@@ -19,8 +19,8 @@ import styles from "./DashboardPage.module.css";
 import { PageLoader } from "../ui/PageLoader/PageLoader";
 
 export function DasboardPage() {
-  const { activeHabits, isHabitsInitialized } = useHabits();
-  const { sessions, error, isSessionsInitialized } = useSessions();
+  const { habits, isHabitsLoading } = useHabits();
+  const { sessions, error, isSessionsLoading } = useSessions();
   const navigate = useNavigate();
   const [isNewSessionModalOpen, setIsNewSessionModalOpen] = useState(false);
   const [isEditSessionModalOpen, setIsEditSessionModalOpen] = useState(false);
@@ -32,6 +32,7 @@ export function DasboardPage() {
   const [selectedSessionDate, setSelectedSessionDate] = useState(new Date());
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
   const currentDate = new Date();
+  const activeHabits = habits.filter((habit) => !habit.archived);
 
   const addSession = (hour: number, day: Date) => {
     setNewSessionStartTime(hour);
@@ -53,7 +54,7 @@ export function DasboardPage() {
     setIsEditSessionModalOpen(false);
   };
 
-  if (!isSessionsInitialized || !isHabitsInitialized) {
+  if (isSessionsLoading || isHabitsLoading) {
     return (
       <div className={layout.page}>
         <PageLoader />

@@ -13,15 +13,11 @@ import { EmptyState } from "../ui/EmptyState/EmptyState";
 import { PageLoader } from "../ui/PageLoader/PageLoader";
 import { Tabs } from "../ui/Tabs/Tabs";
 import styles from "./HabitsPage.module.css";
+import { getErrorMessage } from "../utils/errorUtils";
 
 export function HabitsPage() {
-  const {
-    habits,
-    archiveHabit,
-    restoreHabit,
-    deleteHabit,
-    isHabitsInitialized,
-  } = useHabits();
+  const { habits, archiveHabit, restoreHabit, deleteHabit, isHabitsLoading } =
+    useHabits();
   const { showToast } = useToast();
   const habitsContainerRef = useRef<HTMLDivElement | null>(null);
   const [newHabitModalOpen, setNewHabitModalOpen] = useState(false);
@@ -60,7 +56,7 @@ export function HabitsPage() {
       showToast("Habit deleted!", "delete");
       setHabitToDelete(null);
     } catch (err) {
-      showToast(`Failed to delete habit. ${err}`, "error");
+      showToast(`Failed to delete habit. ${getErrorMessage(err)}`, "error");
     }
   };
 
@@ -74,7 +70,7 @@ export function HabitsPage() {
       await restoreHabit(habitId);
       showToast("Habit restored!", "success");
     } catch (err) {
-      showToast(`Failed to restore habit. ${err}`, "error");
+      showToast(`Failed to restore habit. ${getErrorMessage(err)}`, "error");
     }
     setMenuOpenForHabit(null);
   };
@@ -85,7 +81,7 @@ export function HabitsPage() {
       setMenuOpenForHabit(null);
       showToast("Habit archived!", "success");
     } catch (err) {
-      showToast(`Failed to archive habit. ${err}`, "error");
+      showToast(`Failed to archive habit. ${getErrorMessage(err)}`, "error");
     }
   };
 
@@ -109,7 +105,7 @@ export function HabitsPage() {
     },
   ];
 
-  if (!isHabitsInitialized) {
+  if (isHabitsLoading) {
     return (
       <div className={layout.page}>
         <PageLoader />

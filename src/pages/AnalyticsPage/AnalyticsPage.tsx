@@ -42,15 +42,11 @@ import {
 import { PageLoader } from "../../ui/PageLoader/PageLoader";
 
 export function AnalyticsPage() {
-  const { sessions, isSessionsInitialized } = useSessions();
-  const { habits, isHabitsInitialized } = useHabits();
+  const { sessions, isSessionsLoading } = useSessions();
+  const { habits, isHabitsLoading } = useHabits();
   const navigate = useNavigate();
   const [range, setRange] = useState<AnalyticsRange>(ANALYTICS_RANGES.WEEK);
   const [habitFilter, setHabitFilter] = useState(HABIT_FILTERS.ACTIVE);
-  const emptStateDescription =
-    habitFilter === HABIT_FILTERS.ARCHIVED
-      ? "No completed session from archived habits yet."
-      : "No completed session from active habits yet.";
 
   const filteredHabits = habits.filter((habit) => {
     if (habitFilter === HABIT_FILTERS.ACTIVE) {
@@ -124,7 +120,7 @@ export function AnalyticsPage() {
     bottom: 25,
   };
 
-  if (!isSessionsInitialized || !isHabitsInitialized) {
+  if (isSessionsLoading || isHabitsLoading) {
     return (
       <div className={layout.page}>
         <PageLoader />
@@ -144,8 +140,8 @@ export function AnalyticsPage() {
       </div>
       {filteredSessions.length === 0 ? (
         <EmptyState
-          title="No completed session yet."
-          description={emptStateDescription}
+          title="No completed sessions yet."
+          description="No completed sessions in this time period."
           actionLabel="Go to planner"
           action={() => navigate("/")}
         />
