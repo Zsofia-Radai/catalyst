@@ -1,6 +1,7 @@
 import { useToast } from "../../../../context/ToastContext";
 import { Modal } from "../../../../ui/Modal/Modal";
-import { useHabits } from "../../context/HabitsContext";
+import { getErrorMessage } from "../../../../utils/errorUtils";
+import { useCreateHabit } from "../../hooks/useCreateHabit";
 import type { HabitInputs } from "../../types/habit";
 import { HabitForm } from "../HabitForm/HabitForm";
 
@@ -9,16 +10,16 @@ type NewHabitModalProps = {
 };
 
 export function NewHabitModal({ closeModal }: NewHabitModalProps) {
-  const { createHabit } = useHabits();
+  const createHabit = useCreateHabit();
   const { showToast } = useToast();
 
   const handleHabitCreated = async (habitInputs: HabitInputs) => {
     try {
-      await createHabit(habitInputs);
+      await createHabit.mutateAsync(habitInputs);
       showToast("Habit created!", "success");
       closeModal();
     } catch (err) {
-      showToast(`Failed to create habit. ${err}`, "error");
+      showToast(`Failed to create habit. ${getErrorMessage(err)}`, "error");
     }
   };
 

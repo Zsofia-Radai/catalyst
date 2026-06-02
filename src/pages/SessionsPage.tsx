@@ -1,7 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useHabits } from "../features/habits/context/HabitsContext";
 import { HABIT_CATEGORY_META } from "../features/habits/types/habit";
-import { useSessions } from "../features/sessions/context/SessionsContext";
 import layout from "../layout/AppLayout.module.css";
 import { EmptyState } from "../ui/EmptyState/EmptyState";
 import {
@@ -17,10 +15,15 @@ import { DeleteConfirmModal } from "../ui/DeleteConfirmModal/DeleteConfirmModal"
 import { useToast } from "../context/ToastContext";
 import type { Session } from "../features/sessions/types/session";
 import { PageLoader } from "../ui/PageLoader/PageLoader";
+import { useHabits } from "../features/habits/hooks/useHabits";
+import { useSessions } from "../features/sessions/hooks/useSessions";
+import { useDeleteSession } from "../features/sessions/hooks/useDeleteSession";
+import { getErrorMessage } from "../utils/errorUtils";
 
 export function SessionsPage() {
-  const { sessions, deleteSession, isSessionsInitialized } = useSessions();
-  const { habits, isHabitsInitialized } = useHabits();
+  const { data: sessions = [], isLoading: isSessionsLoading } = useSessions();
+  const deleteSession = useDeleteSession();
+  const { data: habits = [], isLoading: isHabitsLoading } = useHabits();
   const { showToast } = useToast();
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] =
     useState(false);
@@ -36,13 +39,17 @@ export function SessionsPage() {
 
   const handleDeleteSession = () => {
     if (!sessionToDelete) return;
-    deleteSession(sessionToDelete.id);
-    showToast("Session deleted!", "delete");
-    setIsConfirmDeleteModalOpen(false);
+    try {
+      deleteSession.mutateAsync(sessionToDelete.id);
+      showToast("Session deleted!", "delete");
+      setIsConfirmDeleteModalOpen(false);
+    } catch (err) {
+      showToast(`Failed to delete sessions. ${getErrorMessage(err)}`, "error");
+    }
     setSessionToDelete(null);
   };
 
-  if (!isSessionsInitialized || !isHabitsInitialized) {
+  if (isSessionsLoading || isHabitsLoading) {
     return (
       <div className={layout.page}>
         <PageLoader />

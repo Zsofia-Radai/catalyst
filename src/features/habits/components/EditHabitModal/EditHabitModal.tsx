@@ -1,6 +1,7 @@
 import { useToast } from "../../../../context/ToastContext";
 import { Modal } from "../../../../ui/Modal/Modal";
-import { useHabits } from "../../context/HabitsContext";
+import { getErrorMessage } from "../../../../utils/errorUtils";
+import { useUpdateHabit } from "../../hooks/useUpdateHabit";
 import type { Habit, HabitInputs } from "../../types/habit";
 import { HabitForm } from "../HabitForm/HabitForm";
 
@@ -10,7 +11,7 @@ type EditHabitModalProps = {
 };
 
 export function EditHabitModal({ habit, closeModal }: EditHabitModalProps) {
-  const { updateHabit } = useHabits();
+  const updateHabit = useUpdateHabit();
   const { showToast } = useToast();
 
   const handleUpdateHabit = async (data: HabitInputs) => {
@@ -21,11 +22,11 @@ export function EditHabitModal({ habit, closeModal }: EditHabitModalProps) {
         ...habit,
         ...data,
       };
-      await updateHabit(updatedHabit);
+      await updateHabit.mutateAsync(updatedHabit);
       showToast("Habit updated!", "success");
       closeModal();
     } catch (err) {
-      showToast(`Failed to save sessions. ${err}`, "error");
+      showToast(`Failed to save sessions. ${getErrorMessage(err)}`, "error");
     }
   };
 

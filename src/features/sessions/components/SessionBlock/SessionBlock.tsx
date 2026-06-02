@@ -5,7 +5,6 @@ import {
   getHabitData,
 } from "../../../../utils/dashboardUtils";
 import { HABIT_CATEGORY_META, type Habit } from "../../../habits/types/habit";
-import { useSessions } from "../../context/SessionsContext";
 import { RECURRENCE_FREQUENCIES, type Session } from "../../types/session";
 import {
   getSessionStyle,
@@ -16,6 +15,7 @@ import {
 import styles from "./SessionBlock.module.css";
 import { isFuture } from "date-fns";
 import { useToast } from "../../../../context/ToastContext";
+import { useToggleSessionCompleted } from "../../hooks/useToggleSessionCompleted";
 
 type SessionProps = {
   session: Session;
@@ -31,7 +31,7 @@ export function SessionBlock({
   onClick,
 }: SessionProps) {
   const habit = getHabitData(habits, session.habitId);
-  const { toggleSessionCompleted } = useSessions();
+  const toggleSessionCompleted = useToggleSessionCompleted();
   const { showToast } = useToast();
   if (!habit) return null;
   const meta = HABIT_CATEGORY_META[habit.category];
@@ -41,7 +41,10 @@ export function SessionBlock({
 
   const handleSessionToggleCompleted = async () => {
     try {
-      await toggleSessionCompleted(session);
+      await toggleSessionCompleted.mutateAsync({
+        sessionId: session.id,
+        completed: !session.completed,
+      });
     } catch (err) {
       showToast(`Failed to toggle session completed status. ${err}`, "error");
     }

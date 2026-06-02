@@ -103,11 +103,10 @@ export async function updateSession(updatedSession: Session): Promise<Session> {
       finished_at: updatedSession.finishedAt.toISOString(),
       notes: updatedSession.notes,
       completed: updatedSession.completed,
-      frequency: updatedSession.recurrence.frequency,
-      repeat_until: updatedSession.recurrence.repeatUntil
-        ? updatedSession.recurrence.repeatUntil.toISOString()
-        : null,
-      series_id: updatedSession.seriesId ?? null,
+      // For single session updates, we reset recurrence to NONE to remove from a series, if it was part of one.
+      frequency: RECURRENCE_FREQUENCIES.NONE,
+      repeat_until: null,
+      series_id: null,
     })
     .eq("id", updatedSession.id)
     .select()
