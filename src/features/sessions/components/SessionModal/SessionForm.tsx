@@ -237,6 +237,9 @@ export function SessionForm({
               <Controller
                 name="recurrence.repeatUntil"
                 control={control}
+                rules={{
+                  required: "Repeat until is required",
+                }}
                 render={({ field }) => (
                   <RepeatUntilPicker
                     value={field.value}
@@ -244,6 +247,11 @@ export function SessionForm({
                   />
                 )}
               />
+            </div>
+          )}
+          {errors.recurrence?.repeatUntil && (
+            <div className={styles.errorMessage} role="alert">
+              {errors.recurrence.repeatUntil.message}
             </div>
           )}
         </div>

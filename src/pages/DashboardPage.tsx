@@ -54,6 +54,10 @@ export function DashboardPage() {
     .filter(Boolean)
     .map(getErrorMessage)
     .join("\n");
+  const [currentWeekStart, setCurrentWeekStart] = useState(
+    startOfWeek(new Date(), { weekStartsOn: 1 }),
+  );
+  const weekDates = getWeekDates(currentWeekStart);
 
   const addSession = (hour: number, day: Date) => {
     setNewSessionStartTime(hour);
@@ -74,14 +78,6 @@ export function DashboardPage() {
   const closeEditSessionModal = () => {
     setIsEditSessionModalOpen(false);
   };
-
-  const [currentWeekStart, setCurrentWeekStart] = useState(
-    startOfWeek(new Date(), { weekStartsOn: 1 }),
-  );
-
-  const weekDates = getWeekDates(currentWeekStart);
-  console.log(weekDates);
-  console.log(plannerView);
 
   const goToNextWeek = () => {
     setCurrentWeekStart((prev) => addDays(prev, 7));

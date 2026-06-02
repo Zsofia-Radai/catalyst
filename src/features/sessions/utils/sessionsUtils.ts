@@ -123,6 +123,7 @@ export function convertSessionInputToSession(
     startedAt: startedAt,
     finishedAt: finishedAt,
     notes: data.notes,
+    recurrence: data.recurrence,
   };
 }
 
