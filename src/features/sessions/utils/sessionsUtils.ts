@@ -12,14 +12,16 @@ export function buildSessionSeriesRows({
   finishedAt,
   notes,
   recurrence,
+  seriesId,
 }: {
   habitId: string;
   startedAt: Date;
   finishedAt: Date;
   notes?: string;
   recurrence: Recurrence;
+  seriesId?: string;
 }) {
-  const seriesId = crypto.randomUUID();
+  const finalSeriesId = seriesId ?? crypto.randomUUID();
   const rows = [];
 
   const currentStart = new Date(startedAt);
@@ -38,7 +40,7 @@ export function buildSessionSeriesRows({
       completed: currentEnd < today,
       frequency: recurrence.frequency,
       repeat_until: recurrence.repeatUntil?.toISOString() ?? null,
-      series_id: seriesId,
+      series_id: finalSeriesId,
     });
 
     if (recurrence.frequency === RECURRENCE_FREQUENCIES.DAILY) {

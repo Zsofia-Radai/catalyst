@@ -118,6 +118,7 @@ export async function updateSession(updatedSession: Session): Promise<Session> {
 
 export async function updateSessionSeries(
   updatedSession: Session,
+  originalSession: Session,
 ): Promise<Session[]> {
   if (!updatedSession.seriesId) return [];
 
@@ -127,6 +128,18 @@ export async function updateSessionSeries(
     .eq("series_id", updatedSession.seriesId);
 
   if (fetchError) throw fetchError;
+
+  const frequencyChanged =
+    originalSession.recurrence.frequency !==
+    updatedSession.recurrence.frequency;
+
+  const repeatUntilChanged =
+    originalSession.recurrence.repeatUntil?.getTime() !==
+    updatedSession.recurrence.repeatUntil?.getTime();
+
+  if (frequencyChanged || repeatUntilChanged) {
+    return rebuildSessionSeries(updatedSession);
+  }
 
   const updatedSessions = seriesSessions.map((currentSession) => {
     const startedAt = copyTimeToDate(
@@ -156,6 +169,37 @@ export async function updateSessionSeries(
   const { data, error } = await supabase
     .from("sessions")
     .upsert(updatedSessions)
+    .select();
+
+  if (error) throw error;
+
+  return (data ?? []).map(mapSessionFromDb);
+}
+
+export async function rebuildSessionSeries(
+  updatedSession: Session,
+): Promise<Session[]> {
+  if (!updatedSession.seriesId) return [];
+
+  const { error: deleteError } = await supabase
+    .from("sessions")
+    .delete()
+    .eq("series_id", updatedSession.seriesId);
+
+  if (deleteError) throw deleteError;
+
+  const sessionsToInsert = buildSessionSeriesRows({
+    habitId: updatedSession.habitId,
+    startedAt: updatedSession.startedAt,
+    finishedAt: updatedSession.finishedAt,
+    notes: updatedSession.notes,
+    recurrence: updatedSession.recurrence,
+    seriesId: updatedSession.seriesId,
+  });
+
+  const { data, error } = await supabase
+    .from("sessions")
+    .insert(sessionsToInsert)
     .select();
 
   if (error) throw error;

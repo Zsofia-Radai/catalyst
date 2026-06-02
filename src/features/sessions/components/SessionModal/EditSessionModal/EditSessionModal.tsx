@@ -65,9 +65,14 @@ export function EditSessionModal({
   const handleSessionSeriesSaved = async () => {
     if (!pendingSessionData) return;
     try {
-      await updateSessionSeries.mutateAsync(
-        convertSessionInputToSession(pendingSessionData, day, session),
-      );
+      await updateSessionSeries.mutateAsync({
+        updatedSession: convertSessionInputToSession(
+          pendingSessionData,
+          day,
+          session,
+        ),
+        originalSession: session,
+      });
       showToast("Sessions saved!", "success");
       closeModal();
     } catch (err) {
