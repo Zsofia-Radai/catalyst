@@ -145,3 +145,10 @@ export function copyTimeToDate(targetDate: Date, sourceDate: Date) {
 
   return result;
 }
+
+export function isNightSession(session: Session) {
+  const startHour = new Date(session.startedAt).getHours();
+  const endHour = new Date(session.finishedAt).getHours();
+
+  return startHour < 8 || endHour < 8;
+}

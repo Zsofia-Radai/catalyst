@@ -18,6 +18,11 @@ import { PageLoader } from "../ui/PageLoader/PageLoader";
 import { useHabits } from "../features/habits/hooks/useHabits";
 import { getErrorMessage } from "../utils/errorUtils";
 import { useSessions } from "../features/sessions/hooks/useSessions";
+import { Button } from "../ui/Button/Button";
+import { isNightSession } from "../features/sessions/utils/sessionsUtils";
+import { formatDate, getWeekDates } from "../utils/dashboardUtils";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { addDays, startOfWeek } from "date-fns";
 
 export function DashboardPage() {
   const {
@@ -38,6 +43,9 @@ export function DashboardPage() {
   const [plannerView, setPlannerView] = useState<PlannerViewType>(
     PLANNER_VIEW_TYPES.WEEK,
   );
+  const [showNightSessions, setShowNightSessions] = useState(false);
+
+  const nightSessions = sessions.filter((session) => isNightSession(session));
   const [selectedSessionDate, setSelectedSessionDate] = useState(new Date());
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
   const currentDate = new Date();
@@ -65,6 +73,22 @@ export function DashboardPage() {
 
   const closeEditSessionModal = () => {
     setIsEditSessionModalOpen(false);
+  };
+
+  const [currentWeekStart, setCurrentWeekStart] = useState(
+    startOfWeek(new Date(), { weekStartsOn: 1 }),
+  );
+
+  const weekDates = getWeekDates(currentWeekStart);
+  console.log(weekDates);
+  console.log(plannerView);
+
+  const goToNextWeek = () => {
+    setCurrentWeekStart((prev) => addDays(prev, 7));
+  };
+
+  const goToPreviousWeek = () => {
+    setCurrentWeekStart((prev) => addDays(prev, -7));
   };
 
   if (isSessionsLoading || isHabitsLoading) {
@@ -104,26 +128,83 @@ export function DashboardPage() {
         onChange={setPlannerView}
       />
 
-      {plannerView === PLANNER_VIEW_TYPES.WEEK ? (
-        <WeekPlanner
-          plannerViewType={PLANNER_VIEW_TYPES.WEEK}
-          sessions={sessions}
-          habits={activeHabits}
-          onAddSession={addSession}
-          openSessionEditor={openSessionEditor}
+      <header className={styles.calendarHeader}>
+        <Button
+          className={styles.prevButton}
+          onClick={() => goToPreviousWeek()}
+        >
+          Previous week
+        </Button>
+        <div className={styles.currentDate}>{formatDate(currentDate)}</div>
+        <Button className={styles.nextButton} onClick={() => goToNextWeek()}>
+          Next week
+        </Button>
+      </header>
+
+      <div className={styles.plannerContainer}>
+        <ChevronLeft
+          className={styles.arrowLeft}
+          onClick={() => goToPreviousWeek()}
         />
-      ) : (
-        <div className={styles.dayPlan}>
-          <DayPlanner
-            plannerViewType={PLANNER_VIEW_TYPES.DAY}
-            day={currentDate}
+        <ChevronRight
+          className={styles.arrowRight}
+          onClick={() => goToNextWeek()}
+        />
+
+        {plannerView === PLANNER_VIEW_TYPES.WEEK ? (
+          <WeekPlanner
+            plannerViewType={PLANNER_VIEW_TYPES.WEEK}
             sessions={sessions}
             habits={activeHabits}
             onAddSession={addSession}
             openSessionEditor={openSessionEditor}
+            weekDates={weekDates}
           />
-        </div>
-      )}
+        ) : (
+          <div className={styles.dayPlan}>
+            <DayPlanner
+              plannerViewType={PLANNER_VIEW_TYPES.DAY}
+              day={currentDate}
+              sessions={sessions}
+              habits={activeHabits}
+              onAddSession={addSession}
+              openSessionEditor={openSessionEditor}
+              daytime={true}
+            />
+          </div>
+        )}
+      </div>
+      <Button
+        variant="secondary"
+        onClick={() => setShowNightSessions(!showNightSessions)}
+      >
+        Show night sessions
+      </Button>
+
+      {showNightSessions &&
+        (plannerView === PLANNER_VIEW_TYPES.WEEK ? (
+          <WeekPlanner
+            plannerViewType={PLANNER_VIEW_TYPES.WEEK}
+            sessions={nightSessions}
+            habits={activeHabits}
+            onAddSession={addSession}
+            openSessionEditor={openSessionEditor}
+            daytime={false}
+            weekDates={weekDates}
+          />
+        ) : (
+          <div className={styles.dayPlan}>
+            <DayPlanner
+              plannerViewType={PLANNER_VIEW_TYPES.DAY}
+              day={currentDate}
+              sessions={nightSessions}
+              habits={activeHabits}
+              onAddSession={addSession}
+              openSessionEditor={openSessionEditor}
+              daytime={false}
+            />
+          </div>
+        ))}
 
       {isNewSessionModalOpen && (
         <NewSessionModal

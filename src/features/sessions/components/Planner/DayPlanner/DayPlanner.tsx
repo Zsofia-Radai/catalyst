@@ -6,6 +6,7 @@ import {
   getSessionForHour,
   getSessionsForToday,
   isPastDay,
+  NIGHT_HOURS,
 } from "../../../../../utils/dashboardUtils";
 import type { Habit } from "../../../../habits/types/habit";
 import type { Session } from "../../../types/session";
@@ -24,6 +25,7 @@ type DayPlannerProps = {
   sessions: Session[];
   habits: Habit[];
   plannerViewType: PlannerViewType;
+  daytime: boolean;
   onAddSession: (hour: number, day: Date) => void;
   openSessionEditor: (session: Session, day: Date) => void;
 };
@@ -35,11 +37,13 @@ export function DayPlanner({
   plannerViewType,
   onAddSession,
   openSessionEditor,
+  daytime,
 }: DayPlannerProps) {
   const [currentDay, setCurrentDay] = useState(day);
   const hourHeight = HOUR_HEIGHTS[plannerViewType];
   const currentDate = new Date();
   const isPast = isPastDay(day);
+  const HOURS = daytime ? DAY_HOURS : NIGHT_HOURS;
   const timelineBorder =
     plannerViewType === PLANNER_VIEW_TYPES.WEEK
       ? isSameDay(currentDate, day)
@@ -75,7 +79,7 @@ export function DayPlanner({
         {formatDate(currentDay)}
       </div>
       <div className={`${styles.timeline} ${timelineBorder}`}>
-        {DAY_HOURS.map((hour) => {
+        {HOURS.map((hour) => {
           const hourSessions = getSessionForHour(
             getSessionsForToday(sessions, currentDay),
             hour,
