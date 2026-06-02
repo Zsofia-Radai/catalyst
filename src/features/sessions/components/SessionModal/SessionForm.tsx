@@ -12,6 +12,7 @@ import {
   useWatch,
   type SubmitHandler,
 } from "react-hook-form";
+import { useEffect } from "react";
 import { Button } from "../../../../ui/Button/Button";
 import { RepeatUntilPicker } from "../../../../ui/RepeatUntilPicker/RepeatUntilPicker";
 import {
@@ -79,6 +80,12 @@ export function SessionForm({
 
   const selectedHabitId = useWatch({ control, name: "habitId" });
   const frequency = useWatch({ control, name: "recurrence.frequency" });
+
+  useEffect(() => {
+    if (frequency === RECURRENCE_FREQUENCIES.NONE) {
+      setValue("recurrence.repeatUntil", undefined);
+    }
+  }, [frequency, setValue]);
 
   const onSubmit: SubmitHandler<SessionInputs> = (data) => {
     if (!isEndAfterStart(data)) {
