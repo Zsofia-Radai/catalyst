@@ -137,17 +137,16 @@ export function DashboardPage() {
         </Button>
       </header>
 
-      <div className={styles.plannerContainer}>
-        <ChevronLeft
-          className={styles.arrowLeft}
-          onClick={() => goToPreviousWeek()}
-        />
-        <ChevronRight
-          className={styles.arrowRight}
-          onClick={() => goToNextWeek()}
-        />
-
-        {plannerView === PLANNER_VIEW_TYPES.WEEK ? (
+      {plannerView === PLANNER_VIEW_TYPES.WEEK ? (
+        <div className={styles.plannerContainer}>
+          <ChevronLeft
+            className={styles.arrowLeft}
+            onClick={() => goToPreviousWeek()}
+          />
+          <ChevronRight
+            className={styles.arrowRight}
+            onClick={() => goToNextWeek()}
+          />
           <WeekPlanner
             plannerViewType={PLANNER_VIEW_TYPES.WEEK}
             sessions={sessions}
@@ -156,20 +155,21 @@ export function DashboardPage() {
             openSessionEditor={openSessionEditor}
             weekDates={weekDates}
           />
-        ) : (
-          <div className={styles.dayPlan}>
-            <DayPlanner
-              plannerViewType={PLANNER_VIEW_TYPES.DAY}
-              day={currentDate}
-              sessions={sessions}
-              habits={activeHabits}
-              onAddSession={addSession}
-              openSessionEditor={openSessionEditor}
-              daytime={true}
-            />
-          </div>
-        )}
-      </div>
+        </div>
+      ) : (
+        <div className={styles.dayPlan}>
+          <DayPlanner
+            plannerViewType={PLANNER_VIEW_TYPES.DAY}
+            day={currentDate}
+            sessions={sessions}
+            habits={activeHabits}
+            onAddSession={addSession}
+            openSessionEditor={openSessionEditor}
+            daytime={true}
+          />
+        </div>
+      )}
+
       <Button
         variant="secondary"
         onClick={() => setShowNightSessions(!showNightSessions)}
