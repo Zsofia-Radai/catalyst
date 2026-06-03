@@ -2,8 +2,28 @@
   background: var(--card-color);
   border-radius: 5px;
   padding: 20px;
+  position: relative;
+  align-content: center;
+  overflow: visible;
+}
+
+.habit {
   display: grid;
-  grid-template-columns: 1fr 5fr 0fr;
+  grid-template-columns: 1fr 8fr;
+  grid-template-rows: auto auto auto;
+  align-items: center;
+  row-gap: 2px;
+  column-gap: 10px;
+}
+
+.habitGoal {
+  grid-row: 2;
+  grid-column: 2;
+}
+
+.loggedHours {
+  grid-row: 3;
+  grid-column: 2;
 }
 
 .habitName {
@@ -16,7 +36,10 @@
 }
 
 .menuWrapper {
-  position: relative;
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  right: 12px;
   transition:
     transform 0.25s ease,
     opacity 0.25s ease;
@@ -37,6 +60,7 @@
   transform-origin: top right;
   pointer-events: none;
   visibility: hidden;
+  right: inherit;
 
   transition:
     opacity 160ms ease,

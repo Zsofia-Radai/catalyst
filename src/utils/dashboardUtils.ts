@@ -1,11 +1,35 @@
 import type { Habit } from "../features/habits/types/habit";
 import type { Session } from "../features/sessions/types/session";
+import {
+  startOfWeek,
+  addDays,
+  isSameDay,
+  isBefore,
+  startOfDay,
+} from "date-fns";
 
 export const FULL_DAY_HOURS = Array.from({ length: 24 }, (_, index) => index);
 export const DAY_HOURS = FULL_DAY_HOURS.filter((hour) => hour >= 8);
 export const NIGHT_HOURS = FULL_DAY_HOURS.filter((hour) => hour < 8);
 export const MODAL_HOURS = [...DAY_HOURS, ...NIGHT_HOURS];
 export const MINUTES = Array.from([0, 15, 30, 45]);
+
+const weekStart = startOfWeek(new Date(), {
+  weekStartsOn: 1,
+});
+
+export const WEEK_DATES = Array.from({ length: 7 }, (_, index) =>
+  addDays(weekStart, index),
+);
+
+export const getWeekDates = (weekStart: Date) =>
+  Array.from({ length: 7 }, (_, index) => addDays(weekStart, index));
+
+export function formatWeekDay(date: Date) {
+  return date.toLocaleDateString("en-US", {
+    weekday: "short",
+  });
+}
 
 export function formatSessionTime(date: string | Date) {
   return new Date(date).toLocaleTimeString("hu-HU", {
@@ -27,7 +51,7 @@ export const formatMinute = (minute: number) => {
   return minute;
 };
 
-export function formatCurrentDate(date: Date) {
+export function formatDate(date: Date) {
   return date.toLocaleDateString("en-US", {
     weekday: "short",
     month: "short",
@@ -39,16 +63,16 @@ export function getHabitData(habits: Habit[], habitId: string) {
   return habits.find((habit) => habit.id === habitId);
 }
 
-export function isSameDay(date1: Date, date2: Date) {
-  return (
-    date1.getFullYear() === date2.getFullYear() &&
-    date1.getMonth() === date2.getMonth() &&
-    date1.getDate() === date2.getDate()
-  );
-}
-
 export function getSessionForHour(sessions: Session[], hour: number) {
   return sessions.filter(
     (session) => new Date(session.startedAt).getHours() === hour,
   );
+}
+
+export function getSessionsForToday(sessions: Session[], date: Date) {
+  return sessions.filter((session) => isSameDay(session.startedAt, date));
+}
+
+export function isPastDay(date: Date) {
+  return isBefore(startOfDay(date), startOfDay(new Date()));
 }

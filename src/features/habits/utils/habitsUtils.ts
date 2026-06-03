@@ -1,17 +1,4 @@
 import type { Session } from "../../sessions/types/session";
-import type { Habit, HabitInputs } from "../types/habit";
-
-export function createHabit(data: HabitInputs): Habit {
-  return {
-    id: crypto.randomUUID(),
-    name: data.name,
-    category: data.category,
-    createdAt: Date.now(),
-    goal: data.goal,
-    loggedHours: 0,
-    archived: false,
-  };
-}
 
 export function calculateHabitLoggedHours(
   habitId: string,
@@ -19,6 +6,7 @@ export function calculateHabitLoggedHours(
 ) {
   return sessions
     .filter((session) => session.habitId === habitId)
+    .filter((session) => session.completed)
     .reduce((total, session) => {
       const started = new Date(session.startedAt).getTime();
       const finished = new Date(session.finishedAt).getTime();

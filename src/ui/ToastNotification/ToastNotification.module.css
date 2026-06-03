@@ -1,8 +1,12 @@
-.save {
+.success {
   background: var(--accent);
 }
 
 .delete {
+  background: var(--danger);
+}
+
+.error {
   background: var(--danger);
 }
 

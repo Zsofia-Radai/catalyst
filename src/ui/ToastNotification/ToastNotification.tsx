@@ -1,6 +1,6 @@
 import styles from "./ToastNotification.module.css";
 
-export type ToastNotificationType = "save" | "delete";
+export type ToastNotificationType = "success" | "delete" | "error";
 
 export type ToastNotificationProps = {
   type: ToastNotificationType;
@@ -9,7 +9,11 @@ export type ToastNotificationProps = {
 
 export function ToastNotification({ type, message }: ToastNotificationProps) {
   const toastStyle =
-    type === "save" ? styles.save : type === "delete" ? styles.delete : "";
+    type === "success"
+      ? styles.success
+      : type === "delete"
+        ? styles.delete
+        : styles.error;
 
   return (
     <div className={`${styles.notification} ${toastStyle}`}>{message}</div>

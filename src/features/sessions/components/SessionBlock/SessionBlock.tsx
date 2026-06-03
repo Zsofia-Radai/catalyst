@@ -1,64 +1,113 @@
-import type { Session } from "../../types/session";
+import { Check, Pencil, Repeat } from "lucide-react";
+import { Button } from "../../../../ui/Button/Button";
 import {
   formatSessionTime,
   getHabitData,
 } from "../../../../utils/dashboardUtils";
+import { HABIT_CATEGORY_META, type Habit } from "../../../habits/types/habit";
+import { RECURRENCE_FREQUENCIES, type Session } from "../../types/session";
 import {
-  HABIT_CATEGORY_META,
-  type Habit,
-  type HabitMeta,
-} from "../../../habits/types/habit";
+  getSessionStyle,
+  HOUR_HEIGHTS,
+  PLANNER_VIEW_TYPES,
+  type PlannerViewType,
+} from "../Planner/plannerUtils";
 import styles from "./SessionBlock.module.css";
+import { isFuture } from "date-fns";
+import { useToast } from "../../../../context/ToastContext";
+import { useToggleSessionCompleted } from "../../hooks/useToggleSessionCompleted";
 
 type SessionProps = {
   session: Session;
   habits: Habit[];
+  plannerViewType: PlannerViewType;
   onClick: () => void;
 };
-const HOUR_HEIGHT = 72;
 
-const getSessionStyle = (session: Session, meta: HabitMeta) => {
-  const start = new Date(session.startedAt);
-  const end = new Date(session.finishedAt);
-
-  const startMinutes = start.getMinutes();
-  const durationMinutes = (end.getTime() - start.getTime()) / 1000 / 60;
-
-  return {
-    top: `${(startMinutes / 60) * HOUR_HEIGHT}px`,
-    height: `${(durationMinutes / 60) * HOUR_HEIGHT}px`,
-    "--card-color": meta.color,
-  };
-};
-
-export function SessionBlock({ session, habits, onClick }: SessionProps) {
-  const habitData = getHabitData(habits, session.habitId);
-  if (!habitData) return null;
-  const meta = HABIT_CATEGORY_META[habitData.category];
+export function SessionBlock({
+  session,
+  habits,
+  plannerViewType,
+  onClick,
+}: SessionProps) {
+  const habit = getHabitData(habits, session.habitId);
+  const toggleSessionCompleted = useToggleSessionCompleted();
+  const { showToast } = useToast();
+  if (!habit) return null;
+  const meta = HABIT_CATEGORY_META[habit.category];
   const Icon = meta.icon;
+  const hourHeight = HOUR_HEIGHTS[plannerViewType];
+  const badgeSize = plannerViewType === PLANNER_VIEW_TYPES.DAY ? 20 : 16;
+
+  const handleSessionToggleCompleted = async () => {
+    try {
+      await toggleSessionCompleted.mutateAsync({
+        sessionId: session.id,
+        completed: !session.completed,
+      });
+    } catch (err) {
+      showToast(`Failed to toggle session completed status. ${err}`, "error");
+    }
+  };
 
   return (
     <div
       key={session.id}
-      className={styles.sessionBlock}
-      style={getSessionStyle(session, meta)}
+      className={`${styles.sessionBlock} ${
+        session.completed ? styles.completed : ""
+      }`}
+      style={getSessionStyle(session, habit, hourHeight)}
       onClick={(e) => {
         e.stopPropagation();
-        onClick();
       }}
     >
-      <div className={styles.sessionIcon}>
-        <Icon />
+      <div className={styles.actions}>
+        {!isFuture(new Date(session.finishedAt)) && (
+          <Button
+            aria-label="Complete session toggle"
+            variant="icon"
+            style={{ color: "var(--text)" }}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleSessionToggleCompleted();
+            }}
+          >
+            <Check size={18} />
+          </Button>
+        )}
+
+        <Button
+          aria-label="Edit session"
+          variant="icon"
+          style={{ color: "var(--text)" }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onClick();
+          }}
+        >
+          <Pencil size={18} />
+        </Button>
       </div>
 
-      <strong className={styles.habitName}>{habitData.name}</strong>
-
+      <div className={styles.sessionIcon}>
+        <Icon size={20} />
+      </div>
+      <span className={styles.habitName}>{habit.name}</span>
       <span className={styles.sessionNote}>{session.notes}</span>
-
       <span className={styles.sessionTime}>
         {formatSessionTime(session.startedAt)} -{" "}
         {formatSessionTime(session.finishedAt)}
       </span>
+
+      {session.recurrence.frequency !== RECURRENCE_FREQUENCIES.NONE && (
+        <Repeat className={styles.recurrenceBadge} size={14} />
+      )}
+
+      {session.completed && (
+        <div className={styles.completedBadge}>
+          <Check size={badgeSize} />
+        </div>
+      )}
     </div>
   );
 }

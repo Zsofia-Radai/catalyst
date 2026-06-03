@@ -1,9 +1,9 @@
 .button {
-  background: var(--accent);
   border: black;
   padding: 10px;
   border-radius: 5px;
   cursor: pointer;
+  background: var(--line);
 }
 
 .delete {
@@ -11,6 +11,28 @@
 }
 
 .secondary {
-  background: var(--muted);
+  background: var(--line);
   color: var(--text);
+}
+
+.secondary:hover {
+  background: var(--bg);
+}
+
+.neutral {
+  background: var(--muted);
+}
+
+.save {
+  background: var(--accent);
+}
+
+.save:hover {
+  background: var(--accent-hover);
+}
+
+.icon {
+  background: transparent;
+  padding: 0;
+  border: none;
 }

@@ -20,7 +20,23 @@
 }
 
 .activeTab {
-  color: #1e1e1e;
-  border-bottom: 2px solid #1e1e1e;
+  color: var(--highlight);
+  border-bottom: 2px solid var(--highlight);
   margin-bottom: -1px;
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding: 1rem;
+  }
+}
+
+.title {
+  font-size: var(--font-lg);
+  margin: 5px 0;
+  font-weight: var(--fw-semibold);
+}
+
+.projectTitle {
+  color: var(--highlight);
 }

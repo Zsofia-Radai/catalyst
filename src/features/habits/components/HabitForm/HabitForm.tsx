@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { Button } from "../../../../ui/Button/Button";
 import {
   HABIT_CATEGORIES,
+  HABIT_COLORS,
   type Habit,
   type HabitInputs,
 } from "../../types/habit";
@@ -13,16 +15,22 @@ type HabitFormProps = {
 };
 
 export function HabitForm({ onHabitSubmitted, habit }: HabitFormProps) {
+  const [isColorPickerOpen, setIsColorPickerOpen] = useState<boolean>(false);
+  const [selectedColor, setSelectedColor] = useState<string>(
+    habit?.color ?? HABIT_COLORS[0],
+  );
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<HabitInputs>({
     defaultValues: {
       name: habit?.name,
       category: habit?.category,
       goal: habit?.goal,
+      color: habit?.color ?? HABIT_COLORS[0],
     },
   });
 
@@ -40,7 +48,7 @@ export function HabitForm({ onHabitSubmitted, habit }: HabitFormProps) {
         noValidate
       >
         <label htmlFor="habit-name">Habit name</label>
-        <div>
+        <div className={styles.firstRow}>
           <input
             className={styles.habitNameInput}
             id="habit-name"
@@ -51,6 +59,29 @@ export function HabitForm({ onHabitSubmitted, habit }: HabitFormProps) {
             <span className={styles.errorMessage} role="alert">
               Habit name is required
             </span>
+          )}
+          <div
+            className={styles.colorPicker}
+            style={{ "--selected-color": selectedColor } as React.CSSProperties}
+            onClick={() => setIsColorPickerOpen((prev) => !prev)}
+          ></div>
+          {isColorPickerOpen && (
+            <div className={styles.colorPopover}>
+              {HABIT_COLORS.map((color) => (
+                <button
+                  key={color}
+                  type="button"
+                  className={styles.colorOption}
+                  style={{ backgroundColor: color }}
+                  {...register("color")}
+                  onClick={() => {
+                    setSelectedColor(color);
+                    setIsColorPickerOpen(false);
+                    setValue("color", color);
+                  }}
+                />
+              ))}
+            </div>
           )}
         </div>
 
@@ -73,7 +104,7 @@ export function HabitForm({ onHabitSubmitted, habit }: HabitFormProps) {
       <Button
         form="habit-form"
         type="submit"
-        variant="create"
+        variant="save"
         className={styles.submitButton}
       >
         Save habit

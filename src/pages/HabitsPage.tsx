@@ -1,37 +1,48 @@
 import { useRef, useState } from "react";
+import { useToast } from "../context/ToastContext";
 import { EditHabitModal } from "../features/habits/components/EditHabitModal/EditHabitModal";
 import { HabitCard } from "../features/habits/components/HabitCard/HabitCard";
 import { NewHabitModal } from "../features/habits/components/NewHabitModal/NewHabitModal";
-import { useHabits } from "../features/habits/context/HabitsContext";
 import { type Habit } from "../features/habits/types/habit";
-import { calculateHabitLoggedHours } from "../features/habits/utils/habitsUtils";
-import { useSessions } from "../features/sessions/context/SessionsContext";
 import { useClickOutside } from "../hooks/useClickOutside";
 import layout from "../layout/AppLayout.module.css";
 import { Button } from "../ui/Button/Button";
 import { DeleteConfirmModal } from "../ui/DeleteConfirmModal/DeleteConfirmModal";
+import { EmptyState } from "../ui/EmptyState/EmptyState";
+import { PageLoader } from "../ui/PageLoader/PageLoader";
+import { Tabs } from "../ui/Tabs/Tabs";
 import styles from "./HabitsPage.module.css";
+import { getErrorMessage } from "../utils/errorUtils";
+import { useHabits } from "../features/habits/hooks/useHabits";
+import { useDeleteHabit } from "../features/habits/hooks/useDeleteHabit";
+import { useArchiveHabit } from "../features/habits/hooks/useArchiveHabit";
+import { useRestoreHabit } from "../features/habits/hooks/useRestoreHabit";
 
 export function HabitsPage() {
-  const { habits, archiveHabit, restoreHabit } = useHabits();
-  const { sessions } = useSessions();
+  const {
+    data: habits = [],
+    isLoading: isHabitsLoading,
+    error: habitsError,
+  } = useHabits();
+  const deleteHabit = useDeleteHabit();
+  const archiveHabit = useArchiveHabit();
+  const restoreHabit = useRestoreHabit();
+  const { showToast } = useToast();
   const habitsContainerRef = useRef<HTMLDivElement | null>(null);
   const [newHabitModalOpen, setNewHabitModalOpen] = useState(false);
   const [habitToDelete, setHabitToDelete] = useState<Habit | null>(null);
   const [habitToEdit, setHabitToEdit] = useState<Habit | null>(null);
   const [menuOpenForHabit, setMenuOpenForHabit] = useState<string | null>(null);
-  const [showActive, setShowActive] = useState<boolean>(true);
-  const habitsWithLoggedHours = habits.map((habit) => ({
-    ...habit,
-    loggedHours: calculateHabitLoggedHours(habit.id, sessions),
-  }));
+  const [habitView, setHabitView] = useState<HabitViewType>("active");
 
-  const visibleHabits = habitsWithLoggedHours.filter((habit) =>
-    showActive ? !habit.archived : habit.archived,
+  const visibleHabits = habits.filter((habit) =>
+    habitView === "active" ? !habit.archived : habit.archived,
   );
-  const emptyMessage = showActive
-    ? "No active habits yet."
-    : "No archived habits yet.";
+
+  const emptyMessage =
+    habitView === "active"
+      ? "No active habits yet."
+      : "No archived habits yet.";
 
   useClickOutside(habitsContainerRef, () => {
     setMenuOpenForHabit(null);
@@ -46,19 +57,41 @@ export function HabitsPage() {
     setHabitToDelete(habit);
   };
 
+  const handleDeleteHabit = async () => {
+    if (!habitToDelete) return;
+
+    try {
+      await deleteHabit.mutateAsync(habitToDelete.id);
+      showToast("Habit deleted!", "delete");
+      setHabitToDelete(null);
+    } catch (err) {
+      showToast(`Failed to delete habit. ${getErrorMessage(err)}`, "error");
+    }
+  };
+
   const handleEditClicked = (habit: Habit) => {
     setMenuOpenForHabit(null);
     setHabitToEdit(habit);
   };
 
-  const handleRestoreClicked = (habitId: string) => {
-    restoreHabit(habitId);
+  const handleRestoreClicked = async (habitId: string) => {
+    try {
+      await restoreHabit.mutateAsync(habitId);
+      showToast("Habit restored!", "success");
+    } catch (err) {
+      showToast(`Failed to restore habit. ${getErrorMessage(err)}`, "error");
+    }
     setMenuOpenForHabit(null);
   };
 
-  const handleArchiveClicked = (habitId: string) => {
-    archiveHabit(habitId);
-    setMenuOpenForHabit(null);
+  const handleArchiveClicked = async (habitId: string) => {
+    try {
+      await archiveHabit.mutateAsync(habitId);
+      setMenuOpenForHabit(null);
+      showToast("Habit archived!", "success");
+    } catch (err) {
+      showToast(`Failed to archive habit. ${getErrorMessage(err)}`, "error");
+    }
   };
 
   const onDeleteCancel = () => {
@@ -69,23 +102,42 @@ export function HabitsPage() {
     setMenuOpenForHabit((prev) => (prev === habit.id ? null : habit.id));
   };
 
+  type HabitViewType = "active" | "archived";
+  const HABIT_VIEW_TABS: { label: string; value: HabitViewType }[] = [
+    {
+      label: "Active",
+      value: "active",
+    },
+    {
+      label: "Archived",
+      value: "archived",
+    },
+  ];
+
+  if (isHabitsLoading) {
+    return (
+      <div className={layout.page}>
+        <PageLoader />
+      </div>
+    );
+  }
+
+  if (habitsError) {
+    return (
+      <div className={layout.page}>
+        <EmptyState title="Failed to load habits." />
+      </div>
+    );
+  }
+
   return (
     <div className={layout.page}>
       <div className={styles.header}>
-        <div className={styles.tabs}>
-          <div
-            className={showActive ? styles.activeTab : styles.tab}
-            onClick={() => setShowActive(true)}
-          >
-            Active
-          </div>
-          <div
-            className={!showActive ? styles.activeTab : styles.tab}
-            onClick={() => setShowActive(false)}
-          >
-            Archived
-          </div>
-        </div>
+        <Tabs
+          tabs={HABIT_VIEW_TABS}
+          value={habitView}
+          onChange={setHabitView}
+        />
         <Button
           type="button"
           variant="secondary"
@@ -95,8 +147,15 @@ export function HabitsPage() {
           Create habit
         </Button>
       </div>
-      {visibleHabits.length === 0 && (
-        <div className={styles.emptyState}>{emptyMessage}</div>
+      {visibleHabits.length === 0 && habitView === "active" && (
+        <EmptyState
+          title={emptyMessage}
+          actionLabel="Create habit"
+          action={createHabitClicked}
+        />
+      )}
+      {visibleHabits.length === 0 && habitView === "archived" && (
+        <EmptyState title={emptyMessage} />
       )}
       <div className={styles.habitsContainer} ref={habitsContainerRef}>
         {visibleHabits?.map((habit: Habit) => (
@@ -116,7 +175,10 @@ export function HabitsPage() {
       {habitToDelete && (
         <DeleteConfirmModal
           onCancel={onDeleteCancel}
-          habit={habitToDelete}
+          objectToDelete={habitToDelete.name}
+          onDelete={handleDeleteHabit}
+          title="Are you sure you want to delete this habit?"
+          details="This action will permanently delete this habit and the associated sessions."
         ></DeleteConfirmModal>
       )}
 

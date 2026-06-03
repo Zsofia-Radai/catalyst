@@ -1,27 +1,12 @@
-.backdrop {
-  position: fixed;
-  z-index: 9998;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  padding: 20px;
-  background: rgb(0 0 0 / 25%);
-  backdrop-filter: blur(2px);
-}
-
-.modal {
-  background: #008073;
-  padding: 20px;
-  border-radius: 5px;
-}
-
-.habit {
-  color: white;
-}
-
-.message {
-  margin: 0 10px 20px;
+.modalBody {
   text-align: center;
+  padding: 15px;
+}
+
+.name {
+  font-size: 1.3rem;
+  color: var(--accent);
+  margin: 0 0 20px;
 }
 
 .footer {

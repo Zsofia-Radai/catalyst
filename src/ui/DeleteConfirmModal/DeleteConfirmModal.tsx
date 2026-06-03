@@ -1,43 +1,36 @@
-import { useHabits } from "../../features/habits/context/HabitsContext";
-import type { Habit } from "../../features/habits/types/habit";
 import { Button } from "../Button/Button";
+import { Modal } from "../Modal/Modal";
 import styles from "./DeleteConfirmModal.module.css";
 
 type DeleteConfirmModalProps = {
-  habit: Habit;
+  objectToDelete?: string;
+  title: string;
+  details?: string;
+  onDelete: () => void;
   onCancel: () => void;
 };
 
 export function DeleteConfirmModal({
-  habit,
+  objectToDelete,
+  title,
+  details,
+  onDelete,
   onCancel,
 }: DeleteConfirmModalProps) {
-  const { deleteHabit } = useHabits();
-
-  const handleDelete = () => {
-    deleteHabit(habit.id);
-    onCancel();
-  };
-
   return (
-    <div className={styles.backdrop}>
-      <div className={styles.modal}>
-        <div className={styles.message}>
-          <h3>
-            Are you sure you want to delete this habit?
-            <div className={styles.habit}>{habit.name}</div>
-          </h3>
-          <div>
-            It permanently deletes this habit and the associated sessions.
-          </div>
-        </div>
-        <div className={styles.footer}>
-          <Button onClick={() => onCancel()}>Cancel</Button>
-          <Button variant="delete" onClick={() => handleDelete()}>
-            Delete
-          </Button>
-        </div>
+    <Modal title={title} onClose={onCancel} deleteModal={true}>
+      <div className={styles.modalBody}>
+        <div className={styles.name}>{objectToDelete}</div>
+        <div>{details}</div>
       </div>
-    </div>
+      <div className={styles.footer}>
+        <Button variant="secondary" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button variant="delete" onClick={onDelete}>
+          Delete
+        </Button>
+      </div>
+    </Modal>
   );
 }

@@ -1,22 +1,20 @@
 .sessionForm {
-  padding: 20px;
-  background: var(--panel);
-  border-radius: 5px;
-  margin: 0 10px 10px;
+  border-radius: 8px;
+  margin: 10px;
 }
 
-.timeContainer {
+.detailsContainer {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  margin: 10px;
-  gap: 0 30px;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin: 10px 0;
+  column-gap: 1rem;
 }
 
 .habits {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 5px;
-  margin: 10px;
+  gap: 0.4rem;
+  border-radius: 8px;
 }
 
 .habitChip {
@@ -24,12 +22,74 @@
   border-radius: 5px;
   padding: 20px;
   display: grid;
-  grid-template-columns: 1fr 5fr 0fr;
+  grid-template-columns: 1fr 10fr 2fr;
   border: 2px solid transparent;
+  gap: 10px;
+  text-align: start;
+  align-items: center;
+}
+
+.habitChip:hover {
+  background: color-mix(in srgb, var(--card-color) 85%, black);
 }
 
 .selected {
-  border: 2px solid white;
+  border: 2px solid var(--text);
+}
+
+.checkmark {
+  color: var(--text);
+}
+
+.sectionHeader {
+  display: grid;
+  grid-template-columns: 2rem 10rem 5rem;
+  margin: 1rem 0;
+}
+
+.description {
+  color: var(--muted);
+  font-size: var(--font-sm);
+  grid-column: 2 / 4;
+}
+
+.label {
+  font-size: var(--font-sm);
+  color: var(--muted);
+}
+
+.sectionTitle {
+  font-weight: var(--fw-bold);
+}
+
+.repeatDetails {
+  margin: 1rem 0;
+}
+
+.dateInput {
+  background: var(--input);
+  border: 1px solid black;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.timeSection,
+.repeatSection,
+.notesSection,
+.habitsSection {
+  background: var(--panel);
+  padding: 20px;
+  border-radius: 8px;
+  height: stretch;
+  align-content: baseline;
+}
+
+.timeContainer {
+  display: grid;
+  grid-template-columns: 1fr 0fr 1fr;
+  column-gap: 1rem;
+  margin: 1rem 0;
+  align-items: center;
 }
 
 .time {
@@ -38,14 +98,29 @@
   align-items: center;
 }
 
-.notes {
-  display: grid;
-  margin: 10px;
+.frequencyDropdown {
+  width: 100%;
 }
 
-.notes textarea {
-  width: 50%;
+.recurringBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 6px;
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--muted);
+  font-size: var(--font-xs);
+}
+
+.notesSection {
+  display: grid;
+}
+
+.notesSection textarea {
   resize: vertical;
+  height: 5vh;
 }
 
 .error {
@@ -54,8 +129,6 @@
 
 .errorMessage {
   color: #bd1105;
-}
-
-.hourError {
-  grid-column: 2;
+  margin: 10px;
+  grid-column: 1 / 4;
 }

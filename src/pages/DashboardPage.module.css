@@ -1,24 +1,15 @@
-.hourRow {
-  display: grid;
-  grid-template-columns: 56px 1fr;
-  min-height: 72px;
-  position: relative;
-  border-top: 1px solid rgb(0 0 0 / 21%);
+@media (min-width: 768px) {
+  .dayPlan {
+    max-width: 50%;
+  }
 }
 
-.timeline {
-  background: #f2f5f491;
+.dayHeader {
+  background: var(--current);
+  padding: 10px;
+  color: var(--text);
   border-radius: 5px;
-  padding: 20px;
-  width: 50%;
-  margin: 20px 0;
-  cursor: pointer;
-  position: relative;
-}
-
-.hourContent {
-  position: relative;
-  min-height: 72px;
+  margin: 10px 0;
 }
 
 .nightSessions {
@@ -44,4 +35,71 @@
 
 .nightDrawerInner {
   padding-top: 12px;
+}
+
+.plannerContainer {
+  position: relative;
+}
+
+.calendarHeader {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin: 15px 0 0 0;
+}
+
+@media (min-width: 1200px) {
+  .calendarHeader,
+  .currentDate {
+    display: none;
+  }
+}
+
+.prevButton {
+  border-radius: 15px 0 0 15px;
+  color: var(--text);
+}
+
+.nextButton {
+  border-radius: 0 15px 15px 0;
+  color: var(--text);
+}
+
+.nextButton:hover,
+.prevButton:hover {
+  background: var(--bg);
+}
+
+.arrowLeft,
+.arrowRight {
+  position: absolute;
+  top: 32px;
+  cursor: pointer;
+  color: var(--highlight);
+}
+
+.arrowRight {
+  left: calc(100% + 5px);
+}
+
+.arrowLeft {
+  right: calc(100% + 5px);
+}
+
+.arrowLeft:hover,
+.arrowRight:hover {
+  color: var(--text);
+}
+
+.currentDate {
+  background: var(--bg);
+  text-align: center;
+  color: var(--text);
+  align-content: center;
+}
+
+@media (max-width: 1200px) {
+  .arrowRight,
+  .arrowLeft {
+    display: none;
+  }
 }

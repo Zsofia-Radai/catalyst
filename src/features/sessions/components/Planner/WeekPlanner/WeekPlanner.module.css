@@ -1,0 +1,18 @@
+.weekPlanner {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  gap: 20px;
+  position: relative;
+}
+
+@media (max-width: 600px) {
+  .weekPlanner {
+    display: block;
+  }
+}
+
+@media (max-width: 1200px) {
+  .weekPlanner {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}

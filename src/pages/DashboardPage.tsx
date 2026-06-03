@@ -1,39 +1,74 @@
 import { useState } from "react";
-import { SessionBlock } from "../features/sessions/components/SessionBlock/SessionBlock";
-import { EditSessionModal } from "../features/sessions/components/SessionModal/EditSessionModal";
-import { NewSessionModal } from "../features/sessions/components/SessionModal/NewSessionModal";
-import { useHabits } from "../features/habits/context/HabitsContext";
-import layout from "../layout/AppLayout.module.css";
-import type { Session } from "../features/sessions/types/session";
-import { Button } from "../ui/Button/Button";
-import { EmptyState } from "../ui/EmptyState/EmptyState";
+import { useNavigate } from "react-router-dom";
+import { DayPlanner } from "../features/sessions/components/Planner/DayPlanner/DayPlanner";
 import {
-  DAY_HOURS,
-  formatCurrentDate,
-  formatTime,
-  getSessionForHour,
-  isSameDay,
-  NIGHT_HOURS,
-} from "../utils/dashboardUtils";
+  PLANNER_VIEW_TABS,
+  PLANNER_VIEW_TYPES,
+  type PlannerViewType,
+} from "../features/sessions/components/Planner/plannerUtils";
+import { WeekPlanner } from "../features/sessions/components/Planner/WeekPlanner/WeekPlanner";
+import { EditSessionModal } from "../features/sessions/components/SessionModal/EditSessionModal/EditSessionModal";
+import { NewSessionModal } from "../features/sessions/components/SessionModal/NewSessionModal/NewSessionModal";
+import type { Session } from "../features/sessions/types/session";
+import layout from "../layout/AppLayout.module.css";
+import { EmptyState } from "../ui/EmptyState/EmptyState";
+import { Tabs } from "../ui/Tabs/Tabs";
 import styles from "./DashboardPage.module.css";
-import { useSessions } from "../features/sessions/context/SessionsContext";
+import { PageLoader } from "../ui/PageLoader/PageLoader";
+import { useHabits } from "../features/habits/hooks/useHabits";
+import { getErrorMessage } from "../utils/errorUtils";
+import { useSessions } from "../features/sessions/hooks/useSessions";
+import { Button } from "../ui/Button/Button";
+import { isNightSession } from "../features/sessions/utils/sessionsUtils";
+import { formatDate, getWeekDates } from "../utils/dashboardUtils";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { addDays, startOfWeek } from "date-fns";
 
-export function DasboardPage() {
-  const { activeHabits } = useHabits();
-  const { sessions } = useSessions();
+export function DashboardPage() {
+  const {
+    data: habits = [],
+    isLoading: isHabitsLoading,
+    error: habitsError,
+  } = useHabits();
+  const {
+    data: sessions = [],
+    isLoading: isSessionsLoading,
+    error: sessionsError,
+  } = useSessions();
+  const navigate = useNavigate();
   const [isNewSessionModalOpen, setIsNewSessionModalOpen] = useState(false);
   const [isEditSessionModalOpen, setIsEditSessionModalOpen] = useState(false);
+  const [newSessionstartTime, setNewSessionStartTime] = useState(0);
+  const [newSessionDate, setNewSessionDate] = useState(new Date());
+  const [plannerView, setPlannerView] = useState<PlannerViewType>(
+    PLANNER_VIEW_TYPES.WEEK,
+  );
   const [showNightSessions, setShowNightSessions] = useState(false);
-  const [startTime, setStartTime] = useState(0);
+
+  const nightSessions = sessions.filter((session) => isNightSession(session));
+  const [selectedSessionDate, setSelectedSessionDate] = useState(new Date());
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
   const currentDate = new Date();
-  const todaysSessions = sessions.filter((session) =>
-    isSameDay(new Date(session.startedAt), currentDate),
+  const activeHabits = habits.filter((habit) => !habit.archived);
+  const errors = [habitsError, sessionsError]
+    .filter(Boolean)
+    .map(getErrorMessage)
+    .join("\n");
+  const [currentWeekStart, setCurrentWeekStart] = useState(
+    startOfWeek(new Date(), { weekStartsOn: 1 }),
   );
+  const weekDates = getWeekDates(currentWeekStart);
 
-  const addSession = (hour: number) => {
-    setStartTime(hour);
+  const addSession = (hour: number, day: Date) => {
+    setNewSessionStartTime(hour);
+    setNewSessionDate(day);
     setIsNewSessionModalOpen(true);
+  };
+
+  const openSessionEditor = (session: Session, day: Date) => {
+    setSelectedSession(session);
+    setSelectedSessionDate(day);
+    setIsEditSessionModalOpen(true);
   };
 
   const closeNewSessionModal = () => {
@@ -44,83 +79,134 @@ export function DasboardPage() {
     setIsEditSessionModalOpen(false);
   };
 
-  const handleSessionBlockClicked = (sessionId: string) => {
-    const session = sessions.find((session) => session.id === sessionId);
-    if (!session) return;
-    setSelectedSession(session);
-    setIsEditSessionModalOpen(true);
+  const goToNextWeek = () => {
+    setCurrentWeekStart((prev) => addDays(prev, 7));
   };
+
+  const goToPreviousWeek = () => {
+    setCurrentWeekStart((prev) => addDays(prev, -7));
+  };
+
+  if (isSessionsLoading || isHabitsLoading) {
+    return (
+      <div className={layout.page}>
+        <PageLoader />
+      </div>
+    );
+  }
+
+  if (sessionsError || habitsError) {
+    return (
+      <div className={layout.page}>
+        <EmptyState title="Error" description={errors} />
+      </div>
+    );
+  }
+
+  if (activeHabits.length === 0) {
+    return (
+      <div className={layout.page}>
+        <EmptyState
+          title="No active habits yet."
+          description="Create your first habit to start tracking sessions."
+          actionLabel="Go to habits page"
+          action={() => navigate("/habits")}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className={layout.page}>
-      <div>{formatCurrentDate(currentDate)}</div>
-      {!activeHabits && (
-        <div>
-          <div>No tracked sessions for today yet.</div>
-          <EmptyState
-            title="No habits yet."
-            description="Create your first habit to start tracking sessions."
-            actionLabel="Go to habits page"
-            actionTo="/habits"
+      <Tabs
+        tabs={PLANNER_VIEW_TABS}
+        value={plannerView}
+        onChange={setPlannerView}
+      />
+
+      <header className={styles.calendarHeader}>
+        <Button
+          className={styles.prevButton}
+          onClick={() => goToPreviousWeek()}
+        >
+          Previous week
+        </Button>
+        <div className={styles.currentDate}>{formatDate(currentDate)}</div>
+        <Button className={styles.nextButton} onClick={() => goToNextWeek()}>
+          Next week
+        </Button>
+      </header>
+
+      {plannerView === PLANNER_VIEW_TYPES.WEEK ? (
+        <div className={styles.plannerContainer}>
+          <ChevronLeft
+            className={styles.arrowLeft}
+            onClick={() => goToPreviousWeek()}
+          />
+          <ChevronRight
+            className={styles.arrowRight}
+            onClick={() => goToNextWeek()}
+          />
+          <WeekPlanner
+            plannerViewType={PLANNER_VIEW_TYPES.WEEK}
+            sessions={sessions}
+            habits={activeHabits}
+            onAddSession={addSession}
+            openSessionEditor={openSessionEditor}
+            weekDates={weekDates}
+          />
+        </div>
+      ) : (
+        <div className={styles.dayPlan}>
+          <DayPlanner
+            plannerViewType={PLANNER_VIEW_TYPES.DAY}
+            day={currentDate}
+            sessions={sessions}
+            habits={activeHabits}
+            onAddSession={addSession}
+            openSessionEditor={openSessionEditor}
+            daytime={true}
           />
         </div>
       )}
-      <div className={styles.timeline}>
-        {DAY_HOURS.map((hour) => {
-          const sessions = getSessionForHour(todaysSessions, hour);
-          return (
-            <div
-              key={hour}
-              className={styles.hourRow}
-              onClick={() => addSession(hour)}
-            >
-              <span>{formatTime(hour)}</span>
-              <div className={styles.hourContent}>
-                {sessions.map((session) => (
-                  <SessionBlock
-                    onClick={() => handleSessionBlockClicked(session.id)}
-                    key={session.id}
-                    session={session}
-                    habits={activeHabits}
-                  />
-                ))}
-              </div>
-            </div>
-          );
-        })}
-      </div>
 
-      <section className={styles.nightSessions}>
-        <Button
-          type="button"
-          onClick={() => setShowNightSessions((prev) => !prev)}
-        >
-          Show night sessions
-        </Button>
+      <Button
+        variant="secondary"
+        onClick={() => setShowNightSessions(!showNightSessions)}
+      >
+        Show night sessions
+      </Button>
 
-        <div
-          className={`${styles.nightDrawer} ${
-            showNightSessions ? styles.open : ""
-          }`}
-        >
-          <div className={styles.nightDrawerInner}>
-            <div className={styles.timeline}>
-              {NIGHT_HOURS.map((hour) => {
-                return (
-                  <div key={hour} className={styles.hourRow}>
-                    <span>{formatTime(hour)}</span>
-                  </div>
-                );
-              })}
-            </div>
+      {showNightSessions &&
+        (plannerView === PLANNER_VIEW_TYPES.WEEK ? (
+          <WeekPlanner
+            plannerViewType={PLANNER_VIEW_TYPES.WEEK}
+            sessions={nightSessions}
+            habits={activeHabits}
+            onAddSession={addSession}
+            openSessionEditor={openSessionEditor}
+            daytime={false}
+            weekDates={weekDates}
+          />
+        ) : (
+          <div className={styles.dayPlan}>
+            <DayPlanner
+              plannerViewType={PLANNER_VIEW_TYPES.DAY}
+              day={currentDate}
+              sessions={nightSessions}
+              habits={activeHabits}
+              onAddSession={addSession}
+              openSessionEditor={openSessionEditor}
+              daytime={false}
+            />
           </div>
-        </div>
-      </section>
+        ))}
 
       {isNewSessionModalOpen && (
         <NewSessionModal
           closeModal={closeNewSessionModal}
-          startTime={startTime}
+          startTime={newSessionstartTime}
+          day={newSessionDate}
           habits={activeHabits}
         />
       )}
@@ -129,6 +215,7 @@ export function DasboardPage() {
         <EditSessionModal
           closeModal={closeEditSessionModal}
           session={selectedSession}
+          day={selectedSessionDate}
           habits={activeHabits}
         />
       )}
