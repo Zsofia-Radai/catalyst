@@ -1,33 +1,37 @@
 .activeTab {
-  background: var(--primary);
-  padding: 10px;
-  border-radius: 5px;
+  background: var(--panel-soft);
+  box-shadow: inset 0 0 0 1px rgba(33, 220, 147, 0.24);
+  color: var(--text);
 }
 
 .tabs {
   display: grid;
   grid-template-columns: repeat(var(--columns), 1fr);
   width: min(500px, 100%);
-  height: min(35px);
-  background: var(--secondary);
+  min-height: 44px;
+  background: rgba(16, 32, 37, 0.78);
   padding: 5px;
-  border-radius: 5px;
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  backdrop-filter: blur(12px);
 }
 
 .tabs button {
-  padding: 5px;
-  border-radius: 5px;
+  padding: 0.55rem 0.75rem;
+  border-radius: 8px;
   text-align: center;
   align-items: center;
-  color: white;
+  color: var(--muted);
+  border: 0;
 }
 
 .tab {
   cursor: pointer;
-  padding: 10px;
   background: none;
+  font-size: var(--font-sm);
+  font-weight: var(--fw-semibold);
   transition:
     background-color 0.2s ease,
-    color 1.2s ease,
+    color 0.2s ease,
     transform 0.2s ease;
 }

@@ -1,14 +1,14 @@
 @media (min-width: 768px) {
   .dayPlan {
-    max-width: 50%;
+    max-width: 760px;
   }
 }
 
 .dayHeader {
-  background: var(--current);
+  background: var(--panel-soft);
   padding: 10px;
   color: var(--text);
-  border-radius: 5px;
+  border-radius: 8px;
   margin: 10px 0;
 }
 
@@ -44,7 +44,10 @@
 .calendarHeader {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  margin: 15px 0 0 0;
+  margin: 18px 0 0;
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 @media (min-width: 1200px) {
@@ -55,12 +58,12 @@
 }
 
 .prevButton {
-  border-radius: 15px 0 0 15px;
+  border-radius: 0;
   color: var(--text);
 }
 
 .nextButton {
-  border-radius: 0 15px 15px 0;
+  border-radius: 0;
   color: var(--text);
 }
 
@@ -72,29 +75,35 @@
 .arrowLeft,
 .arrowRight {
   position: absolute;
-  top: 32px;
+  top: 30px;
+  z-index: 5;
   cursor: pointer;
-  color: var(--highlight);
+  color: var(--muted);
+  padding: 6px;
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  background: rgba(16, 32, 37, 0.82);
 }
 
 .arrowRight {
-  left: calc(100% + 5px);
+  right: 5px;
 }
 
 .arrowLeft {
-  right: calc(100% + 5px);
+  left: 5px;
 }
 
 .arrowLeft:hover,
 .arrowRight:hover {
-  color: var(--text);
+  color: var(--accent);
 }
 
 .currentDate {
-  background: var(--bg);
+  background: var(--primary);
   text-align: center;
   color: var(--text);
   align-content: center;
+  font-weight: var(--fw-semibold);
 }
 
 @media (max-width: 1200px) {

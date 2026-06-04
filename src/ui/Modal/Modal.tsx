@@ -19,7 +19,7 @@ export function Modal({ title, onClose, children, deleteModal }: ModalProps) {
           )}
         </header>
 
-        <div className="modalBody">{children}</div>
+        <div className={styles.body}>{children}</div>
       </div>
     </div>
   );
