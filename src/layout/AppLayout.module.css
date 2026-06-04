@@ -1,5 +1,13 @@
 .page {
+  width: 80%;
+  margin: 0 auto;
   padding: 20px;
+}
+
+.page .page {
+  width: 100%;
+  padding-right: 0;
+  padding-left: 0;
 }
 
 .tabs {
@@ -27,6 +35,7 @@
 
 @media (max-width: 600px) {
   .page {
+    width: 100%;
     padding: 1rem;
   }
 }
