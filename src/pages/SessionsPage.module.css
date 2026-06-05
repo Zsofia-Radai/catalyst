@@ -100,7 +100,7 @@
   background: var(--panel-soft);
   color: var(--text);
   border: 1px solid var(--line-soft);
-  border-radius: 8px;
+  border-radius: 0 8px 8px 0;
 }
 
 .notes p {

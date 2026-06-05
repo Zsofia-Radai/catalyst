@@ -14,6 +14,16 @@
   padding: 0;
 }
 
+.logo {
+  height: 60px;
+}
+
+.logoWrapper {
+  display: flex;
+  align-items: center;
+  align-items: end;
+}
+
 .sidebar {
   position: sticky;
   top: 24px;
@@ -80,26 +90,10 @@
   }
 }
 
-.title {
-  font-size: var(--font-lg);
-  margin: 5px 0;
-  font-weight: var(--fw-semibold);
-}
-
 .projectTitle {
   margin: 0 0 16px;
   color: var(--text);
-  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-size: 2rem;
   letter-spacing: 0;
   line-height: 1;
-}
-
-.projectTitle::after {
-  content: "";
-  display: block;
-  width: 52px;
-  height: 3px;
-  margin-top: 12px;
-  border-radius: 999px;
-  background: var(--accent);
 }

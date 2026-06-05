@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { BarChart3, CalendarDays, Clock3, ListChecks } from "lucide-react";
 import layout from "./AppLayout.module.css";
+import catalystLogo from "../assets/catalyst-logo.png";
 
 export function AppLayout() {
   const navItems = [
@@ -13,7 +14,14 @@ export function AppLayout() {
   return (
     <div className={layout.page}>
       <aside className={layout.sidebar}>
-        <h1 className={layout.projectTitle}>Catalyst</h1>
+        <div className={layout.logoWrapper}>
+          <h1 className={layout.projectTitle}>Catalyst</h1>
+          <img
+            className={layout.logo}
+            src={catalystLogo}
+            alt="Catalyst logo"
+          ></img>
+        </div>
         <nav className={layout.tabs}>
           {navItems.map(({ to, label, icon: Icon }) => (
             <NavLink
