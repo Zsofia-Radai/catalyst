@@ -1,8 +1,8 @@
 import type { Habit } from "../../../habits/types/habit";
 import type { Session } from "../../types/session";
 
-export const DAY_VIEW_HOUR_HEIGHT = 108;
-export const WEEK_VIEW_HOUR_HEIGHT = 72;
+export const DAY_VIEW_HOUR_HEIGHT = 112;
+export const WEEK_VIEW_HOUR_HEIGHT = 96;
 
 export const PLANNER_VIEW_TYPES = {
   DAY: "day",
@@ -48,4 +48,16 @@ export const getSessionStyle = (
     height: `${(durationMinutes / 60) * hourHeight}px`,
     "--card-color": habit.color,
   };
+};
+
+export const getSessionDurationMinutes = (session: Session) => {
+  const start = new Date(session.startedAt);
+  const end = new Date(session.finishedAt);
+  let durationMinutes = (end.getTime() - start.getTime()) / 1000 / 60;
+
+  if (durationMinutes < 0) {
+    durationMinutes += 24 * 60;
+  }
+
+  return durationMinutes;
 };

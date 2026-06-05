@@ -1,30 +1,50 @@
 .button {
-  border: black;
-  padding: 10px;
-  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  padding: 0.68rem 0.95rem;
+  border-radius: 8px;
   cursor: pointer;
-  background: var(--line);
+  background: #2b3439;
+  color: var(--text);
+  font-weight: var(--fw-semibold);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
+  transition:
+    transform 0.16s ease,
+    background 0.16s ease,
+    border-color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+  background: #364147;
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.28);
 }
 
 .delete {
   background: var(--danger);
+  color: #1b0708;
+  border-color: transparent;
 }
 
 .secondary {
-  background: var(--line);
+  background: #303a40;
   color: var(--text);
 }
 
 .secondary:hover {
-  background: var(--bg);
+  background: #3b474e;
 }
 
 .neutral {
-  background: var(--muted);
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text);
 }
 
 .save {
   background: var(--accent);
+  color: #031c13;
+  border-color: transparent;
 }
 
 .save:hover {
@@ -35,4 +55,11 @@
   background: transparent;
   padding: 0;
   border: none;
+  box-shadow: none;
+}
+
+.icon:hover {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+  transform: none;
 }

@@ -61,22 +61,22 @@ export function DayPlanner({
 
   return (
     <div className={`${styles.dayPlanner} ${isPast ? styles.pastDay : ""}`}>
-      {plannerViewType === PLANNER_VIEW_TYPES.DAY && (
-        <div>
+      <div
+        className={`${styles.header} ${isSameDay(currentDate, currentDay) ? styles.currentDayHeader : ""}`}
+      >
+        {plannerViewType === PLANNER_VIEW_TYPES.DAY && (
           <ChevronLeft
             className={styles.arrowLeft}
             onClick={() => goToPreviousDay()}
           />
+        )}
+        <span>{formatDate(currentDay)}</span>
+        {plannerViewType === PLANNER_VIEW_TYPES.DAY && (
           <ChevronRight
             className={styles.arrowRight}
             onClick={() => goToNextDay()}
           />
-        </div>
-      )}
-      <div
-        className={`${styles.header} ${isSameDay(currentDate, currentDay) ? styles.currentDayHeader : ""}`}
-      >
-        {formatDate(currentDay)}
+        )}
       </div>
       <div className={`${styles.timeline} ${timelineBorder}`}>
         {HOURS.map((hour) => {

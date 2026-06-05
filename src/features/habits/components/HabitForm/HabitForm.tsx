@@ -60,29 +60,33 @@ export function HabitForm({ onHabitSubmitted, habit }: HabitFormProps) {
               Habit name is required
             </span>
           )}
-          <div
-            className={styles.colorPicker}
-            style={{ "--selected-color": selectedColor } as React.CSSProperties}
-            onClick={() => setIsColorPickerOpen((prev) => !prev)}
-          ></div>
-          {isColorPickerOpen && (
-            <div className={styles.colorPopover}>
-              {HABIT_COLORS.map((color) => (
-                <button
-                  key={color}
-                  type="button"
-                  className={styles.colorOption}
-                  style={{ backgroundColor: color }}
-                  {...register("color")}
-                  onClick={() => {
-                    setSelectedColor(color);
-                    setIsColorPickerOpen(false);
-                    setValue("color", color);
-                  }}
-                />
-              ))}
-            </div>
-          )}
+          <div className={styles.colorPickerWrapper}>
+            <div
+              className={styles.colorPicker}
+              style={
+                { "--selected-color": selectedColor } as React.CSSProperties
+              }
+              onClick={() => setIsColorPickerOpen((prev) => !prev)}
+            ></div>
+            {isColorPickerOpen && (
+              <div className={styles.colorPopover}>
+                {HABIT_COLORS.map((color) => (
+                  <button
+                    key={color}
+                    type="button"
+                    className={styles.colorOption}
+                    style={{ backgroundColor: color }}
+                    {...register("color")}
+                    onClick={() => {
+                      setSelectedColor(color);
+                      setIsColorPickerOpen(false);
+                      setValue("color", color);
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         <label htmlFor="habit-category">Category</label>

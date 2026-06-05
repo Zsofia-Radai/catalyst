@@ -1,6 +1,6 @@
 .saveButton {
-  float: right;
-  margin: 10px;
+  display: block;
+  margin: 1.5rem 0 0 auto;
   background: var(--accent);
 }
 

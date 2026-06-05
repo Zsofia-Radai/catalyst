@@ -1,14 +1,94 @@
 .sessionBlock {
   position: absolute;
   z-index: 1;
-  border-radius: 12px;
-  background: var(--card-color);
+  border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--card-color) 85%, black),
+    var(--card-color)
+  );
   display: grid;
-  grid-template-columns: 40px minmax(80px, 100px) 1fr;
+  grid-template-columns: 34px minmax(72px, 96px) 1fr;
   grid-template-rows: auto auto;
   row-gap: 4px;
   width: -webkit-fill-available;
-  min-height: 60px;
+  min-height: 28px;
+  padding: 8px;
+  border: 1px solid color-mix(in srgb, var(--card-color) 70%, black);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.22);
+  overflow: hidden;
+  transition:
+    box-shadow 0.16s ease,
+    transform 0.16s ease,
+    filter 0.16s ease;
+}
+
+.compactSession {
+  grid-template-columns: 26px minmax(0, 1fr) auto;
+  grid-template-rows: 1fr;
+  align-items: center;
+  min-height: 34px;
+  padding: 5px 8px;
+}
+
+.compactSession .sessionIcon {
+  grid-row: 1;
+}
+
+.compactSession .habitName,
+.compactSession .sessionTime {
+  align-self: center;
+}
+
+.compactSession .habitName {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.compactSession .sessionNote {
+  display: none;
+}
+
+.tinySession {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 3px 8px;
+}
+
+.tinySession .sessionIcon,
+.tinySession .sessionNote,
+.tinySession .recurrenceBadge {
+  display: none;
+}
+
+.tinySession .habitName,
+.tinySession .sessionTime {
+  display: block;
+  align-self: center;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tinySession .habitName {
+  flex: 1;
+  font-size: var(--font-xs);
+}
+
+.tinySession .sessionTime {
+  flex-shrink: 0;
+  font-size: 0.68rem;
+}
+
+.sessionBlock:hover {
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.3);
+  filter: brightness(1.08);
+  transform: translateY(-1px);
 }
 
 .sessionIcon {
@@ -55,14 +135,37 @@
   opacity: 0;
   z-index: 3;
   position: absolute;
-  background: var(--line);
+  background: rgba(7, 17, 16, 0.74);
   top: 8px;
   right: 8px;
   padding: 5px;
   display: flex;
   gap: 10px;
-  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
 }
+
+.compactSession .actions,
+.tinySession .actions {
+  top: 50%;
+  right: 5px;
+  padding: 3px;
+  gap: 6px;
+  transform: translateY(-50%);
+}
+
+.compactSession .actions svg,
+.tinySession .actions svg {
+  width: 14px;
+  height: 14px;
+}
+
+.compactSession:hover,
+.tinySession:hover {
+  z-index: 4;
+}
+
 .actions > *:hover {
   transform: scale(1.1);
   background: rgba(255, 255, 255, 0.08);
@@ -89,10 +192,12 @@
   place-items: center;
   background: var(--accent);
   z-index: 2;
+  color: var(--bg);
 }
 
 .recurrenceBadge {
   align-self: end;
   margin: 0.4rem;
   position: absolute;
+  color: var(--bg);
 }
