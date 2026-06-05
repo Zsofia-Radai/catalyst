@@ -1,58 +1,81 @@
 .timeline {
-  background: #86d9bea8;
-  border-radius: 5px;
-  padding: 5px 15px;
+  background: rgba(16, 34, 41, 0.76);
+  border-radius: 10px;
+  padding: 8px 14px;
   cursor: pointer;
   position: relative;
-  border: 2px solid transparent;
+  border: 1px solid var(--line-soft);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(14px);
 }
 
 .hourRow {
   display: grid;
-  grid-template-columns: 45px 1fr;
-  min-height: 72px;
+  grid-template-columns: 52px 1fr;
+  min-height: 96px;
   position: relative;
-  border-top: 1px solid rgb(0 0 0 / 21%);
+  border-top: 1px solid rgba(210, 245, 242, 0.1);
+  color: var(--muted);
+  font-size: var(--font-xs);
 }
 
 .hourContent {
   position: relative;
-  min-height: 72px;
+  min-height: 96px;
 }
 
 .dayPlanner {
   position: relative;
-  margin: 25px 0;
+  margin: 20px 0;
 }
 
 .arrowLeft,
 .arrowRight {
   position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   cursor: pointer;
-  color: var(--highlight);
-  top: 7px;
-}
-
-.arrowRight {
-  left: calc(100% + 5px);
+  color: var(--muted);
+  padding: 6px;
+  border-radius: 999px;
+  border: 1px solid var(--line-soft);
+  background: rgba(16, 32, 37, 0.82);
+  flex: 0 0 auto;
 }
 
 .arrowLeft {
-  right: calc(100% + 5px);
+  left: 5px;
+}
+
+.arrowRight {
+  right: 5px;
 }
 
 .arrowLeft:hover,
 .arrowRight:hover {
-  color: var(--text);
+  color: var(--accent);
 }
 
 .header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
   text-align: center;
-  background: #273449;
-  padding: 10px;
+  background: rgba(16, 34, 41, 0.9);
+  padding: 0.8rem;
   color: var(--text);
-  border-radius: 5px;
-  margin: 10px 0;
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  margin: 0 0 10px;
+  font-weight: var(--fw-semibold);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(14px);
+}
+
+.header span {
+  min-width: 11rem;
 }
 
 .currentDate {
@@ -63,11 +86,12 @@
 }
 
 .currentDayHeader {
-  background: var(--current);
+  background: rgba(33, 220, 147, 0.16);
+  border-color: rgba(33, 220, 147, 0.4);
 }
 
 .currentDay {
-  border: 2px solid var(--current);
+  border-color: rgba(33, 220, 147, 0.42);
 }
 
 .pastDay {
@@ -75,11 +99,8 @@
 }
 
 @media (max-width: 600px) {
-  .arrowRight {
-    left: calc(100% - 25px);
-  }
-
-  .arrowLeft {
-    left: 5px;
+  .header span {
+    min-width: 0;
+    flex: 1;
   }
 }

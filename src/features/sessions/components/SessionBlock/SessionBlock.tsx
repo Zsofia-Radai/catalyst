@@ -7,6 +7,7 @@ import {
 import { HABIT_CATEGORY_META, type Habit } from "../../../habits/types/habit";
 import { RECURRENCE_FREQUENCIES, type Session } from "../../types/session";
 import {
+  getSessionDurationMinutes,
   getSessionStyle,
   HOUR_HEIGHTS,
   PLANNER_VIEW_TYPES,
@@ -38,6 +39,13 @@ export function SessionBlock({
   const Icon = meta.icon;
   const hourHeight = HOUR_HEIGHTS[plannerViewType];
   const badgeSize = plannerViewType === PLANNER_VIEW_TYPES.DAY ? 20 : 16;
+  const durationMinutes = getSessionDurationMinutes(session);
+  const compactClass =
+    durationMinutes <= 15
+      ? styles.tinySession
+      : durationMinutes <= 30
+        ? styles.compactSession
+        : "";
 
   const handleSessionToggleCompleted = async () => {
     try {
@@ -55,7 +63,7 @@ export function SessionBlock({
       key={session.id}
       className={`${styles.sessionBlock} ${
         session.completed ? styles.completed : ""
-      }`}
+      } ${compactClass}`}
       style={getSessionStyle(session, habit, hourHeight)}
       onClick={(e) => {
         e.stopPropagation();

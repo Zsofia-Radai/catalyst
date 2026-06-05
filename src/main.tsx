@@ -3,8 +3,23 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import Catalyst from "./Catalyst.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { supabase } from "./lib/supabase.ts";
 
 const queryClient = new QueryClient();
+
+export async function initializeAuth() {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    const { error } = await supabase.auth.signInAnonymously();
+
+    if (error) throw error;
+  }
+}
+
+await initializeAuth();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

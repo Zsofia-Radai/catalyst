@@ -4,6 +4,7 @@
   align-items: center;
   gap: 24px;
   flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
 .activeTab {
@@ -38,7 +39,7 @@
 }
 
 .createButton:hover {
-  background: var(--bg);
+  background: #3b474e;
 }
 
 .habitForm {
@@ -59,14 +60,13 @@
 
 .habitsContainer {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 10px;
-  margin: 10px 0;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+  margin: 16px 0;
 }
 
 @media (max-width: 600px) {
   .habitsContainer {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
   }
 }

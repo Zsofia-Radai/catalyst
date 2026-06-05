@@ -6,8 +6,9 @@
   width: 100%;
   border: 1px solid var(--line);
   background: var(--input);
-  border-radius: 12px;
-  padding: 0.3rem;
+  color: var(--text);
+  border-radius: 8px;
+  padding: 0.65rem 0.75rem;
   text-align: left;
   cursor: pointer;
   display: flex;
@@ -16,15 +17,14 @@
 }
 
 .datePickerPopover {
-  position: absolute;
-  z-index: 20;
-  margin-top: 0.5rem;
-  background: var(--input);
-  border: 1px solid var(--line);
-  border-radius: 18px;
+  position: fixed;
+  z-index: 10000;
+  background: var(--modal);
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
   padding: 0.75rem;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-  color: black;
+  box-shadow: var(--shadow-card);
+  color: var(--text);
 }
 
 .datePickerPopover :global(.rdp-day) {
@@ -37,5 +37,14 @@
 }
 
 .datePickerPopover :global(.rdp-root) {
-  --rdp-accent-color: var(--text);
+  --rdp-accent-color: var(--accent);
+  --rdp-accent-background-color: var(--accent-soft);
+}
+
+.datePickerPopover :global(.rdp-selected .rdp-day_button) {
+  color: var(--text);
+}
+
+.datePickerPopover :global(.rdp-day_button) {
+  color: var(--text);
 }

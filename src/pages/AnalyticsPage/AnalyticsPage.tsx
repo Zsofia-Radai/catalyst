@@ -67,14 +67,16 @@ export function AnalyticsPage() {
       filteredHabits.some((habit) => habit.id === session.habitId),
   );
 
-  const loggedHoursByHabit = filteredHabits.map((habit) => {
-    return {
-      id: habit.id,
-      name: habit.name,
-      loggedHours: calculateHabitLoggedHours(habit.id, filteredSessions),
-      fill: habit.color,
-    };
-  });
+  const loggedHoursByHabit = filteredHabits
+    .map((habit) => {
+      return {
+        id: habit.id,
+        name: habit.name,
+        loggedHours: calculateHabitLoggedHours(habit.id, filteredSessions),
+        fill: habit.color,
+      };
+    })
+    .filter((habit) => habit.loggedHours > 0);
 
   const legendPayload = loggedHoursByHabit.map((habit) => ({
     id: habit.id,
