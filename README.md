@@ -9,6 +9,20 @@ The app is organized around four main views:
 - **Sessions**: recent completed session history.
 - **Analytics**: tracked hours by habit, category, and time range.
 
+Dashboard:
+<img width="1902" height="947" alt="catalyst_dashboard" src="https://github.com/user-attachments/assets/4643b080-7534-48bb-a073-2bc1c33c106f" />
+
+Habits:
+<img width="1412" height="948" alt="catalyst_habits" src="https://github.com/user-attachments/assets/f5839d42-2356-49b8-bd83-a09cb26c6b58" />
+
+Sessions:
+<img width="1411" height="949" alt="catalyst_sessions" src="https://github.com/user-attachments/assets/3081f186-a007-42c7-98ea-ca2a9f6c4a74" />
+
+Analytics:
+<img width="1903" height="949" alt="catalyst_analytics" src="https://github.com/user-attachments/assets/80306793-3f5a-4eed-957d-3ac86625b51e" />
+
+
+
 ## Features
 
 - Create, edit, archive, restore, and delete habits.
