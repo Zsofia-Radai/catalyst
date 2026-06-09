@@ -3,11 +3,13 @@ import {
   RECURRENCE_FREQUENCIES,
   type Session,
   type SessionInputs,
+  type SessionRow,
 } from "../features/sessions/types/session";
 import {
   buildSessionDates,
   buildSessionSeriesRows,
   copyTimeToDate,
+  getSeriesRebuildDates,
   mapSessionFromDb,
 } from "../features/sessions/utils/sessionsUtils";
 import { supabase } from "../lib/supabase";
@@ -138,7 +140,7 @@ export async function updateSessionSeries(
     updatedSession.recurrence.repeatUntil?.getTime();
 
   if (frequencyChanged || repeatUntilChanged) {
-    return rebuildSessionSeries(updatedSession);
+    return rebuildSessionSeries(updatedSession, seriesSessions);
   }
 
   const updatedSessions = seriesSessions.map((currentSession) => {
@@ -178,8 +180,14 @@ export async function updateSessionSeries(
 
 export async function rebuildSessionSeries(
   updatedSession: Session,
+  seriesSessions: Pick<SessionRow, "started_at" | "finished_at">[] = [],
 ): Promise<Session[]> {
   if (!updatedSession.seriesId) return [];
+
+  const { startedAt, finishedAt } = getSeriesRebuildDates(
+    updatedSession,
+    seriesSessions,
+  );
 
   const { error: deleteError } = await supabase
     .from("sessions")
@@ -190,8 +198,8 @@ export async function rebuildSessionSeries(
 
   const sessionsToInsert = buildSessionSeriesRows({
     habitId: updatedSession.habitId,
-    startedAt: updatedSession.startedAt,
-    finishedAt: updatedSession.finishedAt,
+    startedAt,
+    finishedAt,
     notes: updatedSession.notes,
     recurrence: updatedSession.recurrence,
     seriesId: updatedSession.seriesId,
