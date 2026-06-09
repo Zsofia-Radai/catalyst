@@ -101,7 +101,9 @@ export function SessionBlock({
         <Icon size={20} />
       </div>
       <span className={styles.habitName}>{habit.name}</span>
-      {/*       <span className={styles.sessionNote}>{session.notes}</span> */}
+      {plannerViewType === PLANNER_VIEW_TYPES.DAY && (
+        <span className={styles.sessionNote}>{session.notes}</span>
+      )}
       <span className={styles.sessionTime}>
         {formatSessionTime(session.startedAt)} -{" "}
         {formatSessionTime(session.finishedAt)}
