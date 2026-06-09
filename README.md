@@ -20,6 +20,9 @@ The app is organized around four main views:
 - Edit or delete an entire recurring series.
 - Mark sessions as completed.
 - Separate daytime and night sessions in the planner.
+- Sign in anonymously on app startup for demo-friendly persistence.
+- Seed demo habits and sessions for the current week.
+- Reset demo data from the sidebar.
 - View the 20 most recent completed sessions.
 - Filter analytics by week, month, year, or all time.
 - Filter analytics by active, archived, or all habits.
@@ -84,6 +87,21 @@ npm.cmd run dev
 ```
 
 Vite will print the local development URL, usually `http://localhost:5173`.
+
+## Demo Data
+
+On startup, the app signs in anonymously and seeds demo data if the current anonymous user has no habits yet.
+
+The seed data is date-aware: sessions are generated for the current week rather than hard-coded calendar dates. This keeps the Dashboard useful whenever the app is opened.
+
+Seeded data includes:
+
+- 3 habits: Gym, Deep work, and Reading.
+- Gym one-off sessions on Monday and Friday.
+- Deep work as a recurring daily series from Tuesday through Thursday, 11:00-12:30.
+- Reading as a recurring daily series from Saturday through Sunday, 08:00-09:00.
+
+The sidebar includes a **Reset demo data** button. It clears the current user's visible habits and sessions, recreates the demo data for the current week, and refreshes the cached habit/session queries.
 
 ## Available Scripts
 
@@ -186,11 +204,12 @@ src/
 
 - `src/router.tsx` defines the application routes.
 - `src/layout/AppLayout.tsx` renders the app title, navigation, and route outlet.
-- `src/main.tsx` creates the React root and provides the TanStack Query client.
+- `src/main.tsx` initializes anonymous auth, seeds demo data, creates the React root, and provides the TanStack Query client.
 - `src/api/` contains all Supabase reads and writes.
 - `src/features/*/hooks/` wraps API calls in TanStack Query hooks.
 - `src/features/*/types/` defines domain types and constants.
 - `src/features/*/utils/` contains reusable domain logic.
+- `src/utils/demoData.ts` defines and resets the demo habits and current-week sessions.
 - `src/ui/` contains shared UI building blocks such as buttons, tabs, modals, loaders, empty states, and toast notifications.
 
 ## Routing
