@@ -78,6 +78,48 @@ export async function createSessionSeries(
   return (data ?? []).map(mapSessionFromDb);
 }
 
+export async function convertSessionToSeries(
+  updatedSession: Session,
+): Promise<Session[]> {
+  const seriesId = crypto.randomUUID();
+
+  const sessionsToCreate = buildSessionSeriesRows({
+    habitId: updatedSession.habitId,
+    startedAt: updatedSession.startedAt,
+    finishedAt: updatedSession.finishedAt,
+    notes: updatedSession.notes,
+    recurrence: updatedSession.recurrence,
+    seriesId,
+  });
+
+  const [firstSession, ...remainingSessions] = sessionsToCreate;
+
+  const { data: convertedSession, error: updateError } = await supabase
+    .from("sessions")
+    .update(firstSession)
+    .eq("id", updatedSession.id)
+    .select()
+    .single();
+
+  if (updateError) throw updateError;
+
+  if (remainingSessions.length === 0) {
+    return [mapSessionFromDb(convertedSession)];
+  }
+
+  const { data: createdSessions, error: insertError } = await supabase
+    .from("sessions")
+    .insert(remainingSessions)
+    .select();
+
+  if (insertError) throw insertError;
+
+  return [
+    mapSessionFromDb(convertedSession),
+    ...(createdSessions ?? []).map(mapSessionFromDb),
+  ];
+}
+
 export async function deleteSession(sessionId: string): Promise<void> {
   const { error } = await supabase
     .from("sessions")

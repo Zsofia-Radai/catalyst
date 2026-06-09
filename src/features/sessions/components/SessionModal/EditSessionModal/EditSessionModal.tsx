@@ -3,7 +3,11 @@ import { useToast } from "../../../../../context/ToastContext";
 import { Button } from "../../../../../ui/Button/Button";
 import { Modal } from "../../../../../ui/Modal/Modal";
 import type { Habit } from "../../../../habits/types/habit";
-import { type Session, type SessionInputs } from "../../../types/session";
+import {
+  RECURRENCE_FREQUENCIES,
+  type Session,
+  type SessionInputs,
+} from "../../../types/session";
 import {
   convertSessionInputToSession,
   convertSessionToSessionInput,
@@ -16,6 +20,7 @@ import { useUpdateSession } from "../../../hooks/useUpdateSession";
 import { useUpdateSessionSeries } from "../../../hooks/useUpdateSessionSeries";
 import { useDeleteSession } from "../../../hooks/useDeleteSession";
 import { useDeleteSessionSeries } from "../../../hooks/useDeleteSessionSeries";
+import { useConvertSessionToSeries } from "../../../hooks/useConvertSessionToSeries";
 
 type EditSessionModalProps = {
   closeModal: () => void;
@@ -32,6 +37,7 @@ export function EditSessionModal({
 }: EditSessionModalProps) {
   const updateSession = useUpdateSession();
   const updateSessionSeries = useUpdateSessionSeries();
+  const convertSessionToSeries = useConvertSessionToSeries();
   const deleteSession = useDeleteSession();
   const deleteSessionSeries = useDeleteSessionSeries();
   const { showToast } = useToast();
@@ -52,13 +58,25 @@ export function EditSessionModal({
 
   const handleSessionSave = async (sessionData: SessionInputs) => {
     try {
-      await updateSession.mutateAsync(
-        convertSessionInputToSession(sessionData, day, session),
+      const updatedSession = convertSessionInputToSession(
+        sessionData,
+        day,
+        session,
       );
+
+      if (
+        !session.seriesId &&
+        sessionData.recurrence.frequency !== RECURRENCE_FREQUENCIES.NONE
+      ) {
+        await convertSessionToSeries.mutateAsync(updatedSession);
+      } else {
+        await updateSession.mutateAsync(updatedSession);
+      }
+
       showToast("Session saved!", "success");
       closeModal();
     } catch (err) {
-      showToast(`Failed to save session. ${err}`, "error");
+      showToast(`Failed to save session. ${getErrorMessage(err)}`, "error");
     }
   };
 
