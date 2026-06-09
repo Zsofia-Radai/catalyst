@@ -149,6 +149,34 @@ export function copyTimeToDate(targetDate: Date, sourceDate: Date) {
   return result;
 }
 
+export function getSeriesRebuildDates(
+  updatedSession: Session,
+  seriesSessions: Pick<SessionRow, "started_at" | "finished_at">[],
+) {
+  const firstSeriesSession = [...seriesSessions].sort(
+    (a, b) =>
+      new Date(a.started_at).getTime() - new Date(b.started_at).getTime(),
+  )[0];
+
+  if (!firstSeriesSession) {
+    return {
+      startedAt: updatedSession.startedAt,
+      finishedAt: updatedSession.finishedAt,
+    };
+  }
+
+  return {
+    startedAt: copyTimeToDate(
+      new Date(firstSeriesSession.started_at),
+      updatedSession.startedAt,
+    ),
+    finishedAt: copyTimeToDate(
+      new Date(firstSeriesSession.finished_at),
+      updatedSession.finishedAt,
+    ),
+  };
+}
+
 export function isNightSession(session: Session) {
   const startHour = new Date(session.startedAt).getHours();
   const endHour = new Date(session.finishedAt).getHours();

@@ -6,6 +6,7 @@ import {
   convertSessionToSessionInput,
   copyTimeToDate,
   getSessionDurationHours,
+  getSeriesRebuildDates,
   isEndAfterStart,
   isNightSession,
   mapSessionFromDb,
@@ -171,5 +172,26 @@ describe("sessionsUtils", () => {
       frequency: RECURRENCE_FREQUENCIES.DAILY,
       series_id: "series-1",
     });
+  });
+
+  it("rebuilds recurring series from the first original occurrence", () => {
+    const updatedSession = createSession({
+      startedAt: new Date("2026-06-03T11:30:00.000Z"),
+      finishedAt: new Date("2026-06-03T12:45:00.000Z"),
+    });
+
+    const { startedAt, finishedAt } = getSeriesRebuildDates(updatedSession, [
+      {
+        started_at: "2026-06-03T09:00:00.000Z",
+        finished_at: "2026-06-03T10:00:00.000Z",
+      },
+      {
+        started_at: "2026-06-01T09:00:00.000Z",
+        finished_at: "2026-06-01T10:00:00.000Z",
+      },
+    ]);
+
+    expect(startedAt.toISOString()).toBe("2026-06-01T11:30:00.000Z");
+    expect(finishedAt.toISOString()).toBe("2026-06-01T12:45:00.000Z");
   });
 });

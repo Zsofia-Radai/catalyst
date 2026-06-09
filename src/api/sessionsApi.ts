@@ -3,11 +3,13 @@ import {
   RECURRENCE_FREQUENCIES,
   type Session,
   type SessionInputs,
+  type SessionRow,
 } from "../features/sessions/types/session";
 import {
   buildSessionDates,
   buildSessionSeriesRows,
   copyTimeToDate,
+  getSeriesRebuildDates,
   mapSessionFromDb,
 } from "../features/sessions/utils/sessionsUtils";
 import { supabase } from "../lib/supabase";
@@ -76,6 +78,48 @@ export async function createSessionSeries(
   return (data ?? []).map(mapSessionFromDb);
 }
 
+export async function convertSessionToSeries(
+  updatedSession: Session,
+): Promise<Session[]> {
+  const seriesId = crypto.randomUUID();
+
+  const sessionsToCreate = buildSessionSeriesRows({
+    habitId: updatedSession.habitId,
+    startedAt: updatedSession.startedAt,
+    finishedAt: updatedSession.finishedAt,
+    notes: updatedSession.notes,
+    recurrence: updatedSession.recurrence,
+    seriesId,
+  });
+
+  const [firstSession, ...remainingSessions] = sessionsToCreate;
+
+  const { data: convertedSession, error: updateError } = await supabase
+    .from("sessions")
+    .update(firstSession)
+    .eq("id", updatedSession.id)
+    .select()
+    .single();
+
+  if (updateError) throw updateError;
+
+  if (remainingSessions.length === 0) {
+    return [mapSessionFromDb(convertedSession)];
+  }
+
+  const { data: createdSessions, error: insertError } = await supabase
+    .from("sessions")
+    .insert(remainingSessions)
+    .select();
+
+  if (insertError) throw insertError;
+
+  return [
+    mapSessionFromDb(convertedSession),
+    ...(createdSessions ?? []).map(mapSessionFromDb),
+  ];
+}
+
 export async function deleteSession(sessionId: string): Promise<void> {
   const { error } = await supabase
     .from("sessions")
@@ -138,7 +182,7 @@ export async function updateSessionSeries(
     updatedSession.recurrence.repeatUntil?.getTime();
 
   if (frequencyChanged || repeatUntilChanged) {
-    return rebuildSessionSeries(updatedSession);
+    return rebuildSessionSeries(updatedSession, seriesSessions);
   }
 
   const updatedSessions = seriesSessions.map((currentSession) => {
@@ -178,8 +222,14 @@ export async function updateSessionSeries(
 
 export async function rebuildSessionSeries(
   updatedSession: Session,
+  seriesSessions: Pick<SessionRow, "started_at" | "finished_at">[] = [],
 ): Promise<Session[]> {
   if (!updatedSession.seriesId) return [];
+
+  const { startedAt, finishedAt } = getSeriesRebuildDates(
+    updatedSession,
+    seriesSessions,
+  );
 
   const { error: deleteError } = await supabase
     .from("sessions")
@@ -190,8 +240,8 @@ export async function rebuildSessionSeries(
 
   const sessionsToInsert = buildSessionSeriesRows({
     habitId: updatedSession.habitId,
-    startedAt: updatedSession.startedAt,
-    finishedAt: updatedSession.finishedAt,
+    startedAt,
+    finishedAt,
     notes: updatedSession.notes,
     recurrence: updatedSession.recurrence,
     seriesId: updatedSession.seriesId,

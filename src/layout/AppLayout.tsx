@@ -2,8 +2,12 @@ import { NavLink, Outlet } from "react-router-dom";
 import { BarChart3, CalendarDays, Clock3, ListChecks } from "lucide-react";
 import layout from "./AppLayout.module.css";
 import catalystLogo from "../assets/catalyst-logo.png";
+import { Button } from "../ui/Button/Button";
+import { seedDemoData } from "../utils/demoData";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function AppLayout() {
+  const queryClient = useQueryClient();
   const navItems = [
     { to: "/", label: "Dashboard", icon: CalendarDays },
     { to: "/habits", label: "Habits", icon: ListChecks },
@@ -36,6 +40,15 @@ export function AppLayout() {
             </NavLink>
           ))}
         </nav>
+        <Button
+          onClick={async () => {
+            await seedDemoData({ reset: true });
+            await queryClient.invalidateQueries({ queryKey: ["habits"] });
+            await queryClient.invalidateQueries({ queryKey: ["sessions"] });
+          }}
+        >
+          Reset demo data
+        </Button>
       </aside>
 
       <main className={layout.content}>
