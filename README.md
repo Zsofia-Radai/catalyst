@@ -26,13 +26,14 @@ Analytics:
 ## Features
 
 - Create, edit, archive, restore, and delete habits.
+- Archive and restore habits with optimistic UI updates.
 - Categorize habits by mind, body, hobby, chore, career, finance, or social.
 - Assign custom colors to habits for planner and chart visibility.
 - Add one-off sessions from the day or week planner.
 - Create recurring session series with daily, weekly, monthly, or yearly cadence.
 - Edit or delete a single session.
 - Edit or delete an entire recurring series.
-- Mark sessions as completed.
+- Mark sessions as completed with optimistic UI updates.
 - Separate daytime and night sessions in the planner.
 - View the 20 most recent completed sessions.
 - Filter analytics by week, month, year, or all time.
@@ -222,9 +223,16 @@ src/
 2. Hooks use TanStack Query to call functions in `src/api/`.
 3. API functions read from or write to Supabase.
 4. Successful mutations invalidate the relevant query keys, usually `habits` or `sessions`.
-5. Pages re-render with the updated data.
+5. Selected high-frequency actions update the cache optimistically before the Supabase request finishes.
+6. Pages re-render with the updated data.
 
 This keeps Supabase-specific logic out of the UI and centralizes cache behavior inside feature hooks.
+
+Optimistic updates are currently used for:
+
+- toggling session completion
+- archiving habits
+- restoring habits
 
 ## Habits
 
@@ -237,6 +245,8 @@ Habits are managed on the Habits page. A habit contains:
 - archived state
 
 Active habits are available in the planner. Archived habits are hidden from active workflows but can still be restored and included in analytics with the archived/all filters.
+
+Archiving and restoring habits use optimistic updates so the habit moves between active and archived states immediately while the Supabase mutation is still in flight.
 
 ## Sessions
 
@@ -253,6 +263,8 @@ A session contains:
 - optional series ID
 
 Recurring sessions are expanded into individual session rows. Sessions in the same recurrence group share a `series_id`, allowing the app to update or delete an entire series.
+
+Session completion toggles use optimistic updates so completed state changes feel immediate in the planner, session list, and analytics-backed views.
 
 ### Known Recurring Session Edge Cases
 
@@ -332,7 +344,6 @@ Potential next improvements:
 - Add component tests for modal forms, planner interactions, and analytics filters.
 - Improve analytics with streaks, goal completion, category comparisons, and habit-specific detail pages.
 - Add authentication and per-user data isolation if the app becomes multi-user.
-- Add optimistic updates for common mutations so the UI feels faster.
 - Improve bundle size through route-level code splitting if production build size becomes a priority.
 
 ### Quick Tasks
